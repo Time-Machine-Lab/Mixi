@@ -2,8 +2,7 @@ name: Build Package Check
 
 on:
   pull_request:
-    branches:
-      - master # 触发条件，比如当推送至main分支时
+    types: [opened, synchronize, reopened] #opened：当新Pull Request创建时触发，synchronize表示当已有Pull Request的源分支有新的提交时触发，reopened表示当被关闭的Pull Request重新打开时触发
 
 jobs:
   build-backend:
