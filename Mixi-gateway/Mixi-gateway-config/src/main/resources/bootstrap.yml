@@ -1,0 +1,12 @@
+server:
+  port: ${SERVER_PORT:10010}
+
+spring:
+  main:
+    web-application-type: reactive
+  config:
+    import: classpath:you-cant-see-that.yml
+  profiles:
+    active: ${ACTIVE:dev}
+  application:
+    name: mixi-gateway-${UNIQUE_ID:0}-service

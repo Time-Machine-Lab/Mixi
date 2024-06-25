@@ -29,6 +29,17 @@
         <fastjson.version>1.2.75</fastjson.version>
         <junit.version>4.12</junit.version>
         <Mixi-common.version>1.0-SNAPSHOT</Mixi-common.version>
+
+        <assistant-mysql.verison>1.1.2</assistant-mysql.verison>
+        <assistant-common.version>1.1.2</assistant-common.version>
+        <assistant-boot-start.version>1.1.2</assistant-boot-start.version>
+        <assistant-cache.version>1.1.2</assistant-cache.version>
+        <assistant-plus-generator.version>1.1.2</assistant-plus-generator.version>
+        <assistant-service.version>1.1.2</assistant-service.version>
+        <assistant-util.version>1.1.2</assistant-util.version>
+        <assistant-webscoket.version>1.1.2</assistant-webscoket.version>
+
+        <jasypt.version>3.0.3</jasypt.version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -43,6 +54,7 @@
         <module>Mixi-user</module>
         <module>Mixi-webRoom</module>
         <module>Mixi-audoVideo</module>
+        <module>Mixi-gateway</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -172,6 +184,56 @@
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>3.0.3</version> <!-- 使用最新版本 -->
+            </dependency>
+
+            <!--Assistant-->
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-boot-start</artifactId>
+                <version>${assistant-boot-start.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-common</artifactId>
+                <version>${assistant-common.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-mysql</artifactId>
+                <version>${assistant-mysql.verison}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-cache</artifactId>
+                <version>${assistant-cache.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-plus-generator</artifactId>
+                <version>${assistant-plus-generator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-service</artifactId>
+                <version>${assistant-service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.geniusay</groupId>
+                <artifactId>assistant-util</artifactId>
+                <version>${assistant-util.version}</version>
+            </dependency>
+
+            <!--配置文件加密-->
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt.version}</version> <!-- 使用最新版本 -->
             </dependency>
         </dependencies>
     </dependencyManagement>
