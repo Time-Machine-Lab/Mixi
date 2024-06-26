@@ -1,0 +1,88 @@
+name: Build and Deploy Web
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 下载源码
+      - uses: actions/checkout@v3
+      # node.js
+      - name: 下载 Nodejs-18 📀
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      # 缓存
+      - name: 查找依赖缓存 🔍
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      # 下载依赖
+      - name: 如果没有缓存就 NPM 下载依赖 📥
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+      # build项目
+      - name: NPM 构建项目 🛠️
+        run: npm run build
+      # 登录docker
+      - name: 登录 Docker Hub 🛬
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      # 创建docker镜像
+      - name: 创建 Docker 镜像 📷
+        run: sudo docker buildx build --platform=linux/amd64 --file ./Dockerfile . --tag ${{ secrets.DOCKER_USERNAME }}/lisianthus
+      # 上传docker镜像
+      - name: 上传 Docker 镜像 📸
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/lisianthus
+      # 连接并部署
+      - name: SSH 连接并部署
+        uses: appleboy/ssh-action@master
+        with:
+          host: 122.152.215.226
+          username: ubuntu
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            # 配置镜像名称
+            img=zjj1120/lisianthus
+            # 配置容器名称
+            container=mycontainer
+            sudo -i
+            
+            if sudo docker ps -a --filter name=mycontainer; then
+              echo "容器: $container 存在，删除容器."
+              sudo docker stop mycontainer
+              sudo docker rm -f mycontainer
+            else
+              echo "容器: mycontainer 不存在" 
+            fi
+            
+            if sudo docker images --filter=reference=zjj1120/lisianthus; then
+              echo "镜像: zjj1120/lisianthus 镜像存在, 删除镜像重新构建."
+              sudo docker rmi -f zjj1120/lisianthus
+            fi
+            sleep 3
+            echo "拉取 $img 新镜像."
+            sudo docker pull zjj1120/lisianthus:latest
+
+            echo "启动 $img 容器服务!"
+            sudo docker run --name mycontainer -d -p 80:80 -p 443:443 zjj1120/lisianthus
+            
+            # 检测服务是否启动成功
+            if sudo docker ps --filter name=mycontainer; then
+                echo "$img 服务启动成功Pass"
+            else
+                echo "$img 服务启动失败Fail"
+            fi
