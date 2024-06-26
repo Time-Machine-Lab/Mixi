@@ -6,7 +6,6 @@ import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import static com.mixi.user.constant.enums.AppHttpCodeEnum.INTERFACE_NOT_DEVELOPED;
 
 /**
  * @NAME: UserController

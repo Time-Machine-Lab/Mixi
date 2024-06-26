@@ -1,4 +1,4 @@
-package com.mixi.user.constant.enums;
+package com.mixi.common.constant.enums;
 
 public enum AppHttpCodeEnum {
     // 成功

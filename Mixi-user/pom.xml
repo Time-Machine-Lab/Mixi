@@ -76,6 +76,13 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+<!--        mixi-common-->
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
