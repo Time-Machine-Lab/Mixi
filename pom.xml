@@ -50,7 +50,6 @@
     <modules>
         <module>Mixi-server</module>
         <module>Mixi-common</module>
-        <module>Mixi-server</module>
         <module>Mixi-user</module>
         <module>Mixi-webRoom</module>
         <module>Mixi-audoVideo</module>
