@@ -2,6 +2,7 @@ package com.mixi.user.service;
 
 import com.mixi.user.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mixi.user.domain.vo.UserLoginVo;
 
 /**
 * @author yuech
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
+    Object linkLogin(UserLoginVo userLoginVo);
 }
