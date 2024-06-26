@@ -1,0 +1,58 @@
+name: Build Package Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened] #opened：当新Pull Request创建时触发，synchronize表示当已有Pull Request的源分支有新的提交时触发，reopened表示当被关闭的Pull Request重新打开时触发
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest # 使用的运行环境
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 # 检出代码到工作目录
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11' # 根据你的项目需要选择合适的Java版本
+
+      - name: Build and Package with Maven
+        run: |
+          mvn package  # 执行打包命令，跳过测试以加速
+          if [ $? -ne 0 ]; then
+            echo "Packaging Backend failed, exiting with error code 1"
+            exit 1
+          fi
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Change Directory to Mixi-UI
+        run: cd Mixi-ui
+      - name: Install Dependencies
+        working-directory: Mixi-ui
+        run: pnpm install
+      - name: Build Frontend
+        working-directory: Mixi-ui
+        run: |
+          pnpm build
+          if [ $? -ne 0 ]; then
+              echo "Packaging Frontend failed, exiting with error code 1"
+              exit 1
+          fi
