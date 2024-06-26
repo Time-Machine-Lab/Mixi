@@ -51,7 +51,6 @@
     <modules>
         <module>Mixi-server</module>
         <module>Mixi-common</module>
-        <module>Mixi-server</module>
         <module>Mixi-user</module>
         <module>Mixi-webRoom</module>
         <module>Mixi-audoVideo</module>
@@ -111,12 +110,6 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redision.version}</version> <!-- 请根据实际情况选择版本 -->
-            </dependency>
-            <!--springBoot-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${boot.version}</version>
             </dependency>
             <!--springBoot-test-->
             <dependency>
@@ -178,13 +171,6 @@
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <!--配置文件加密-->
-            <dependency>
-                <groupId>com.github.ulisesbocchio</groupId>
-                <artifactId>jasypt-spring-boot-starter</artifactId>
-                <version>3.0.3</version> <!-- 使用最新版本 -->
             </dependency>
 
             <!--Assistant-->
