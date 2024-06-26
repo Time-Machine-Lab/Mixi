@@ -15,4 +15,6 @@ public class UserLoginVo {
     private String password;
 
     private String email;
+
+    private String code;
 }
