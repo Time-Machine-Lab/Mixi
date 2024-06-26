@@ -2,7 +2,9 @@ package com.mixi.user.aspect;
 
 import com.alibaba.fastjson.JSON;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mixi.user.aspect.annotation.SystemLog;
+import com.mixi.user.utils.logUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -50,6 +52,7 @@ public class LogAspect {
     private void handleBefore(ProceedingJoinPoint joinPoint) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
+        int maxSize = 100;
 
         //获取被增强方法上的注解对象
         SystemLog systemLog = getSystemLog(joinPoint);
@@ -65,7 +68,7 @@ public class LogAspect {
         // 打印请求的 IP
         log.info("IP             : {}",request.getRemoteHost());
         // 打印请求入参
-        log.info("Request Args   : {}", JSON.toJSONString(joinPoint.getArgs()));
+        log.info("Response       : {}", toSafeJsonString(joinPoint.getArgs()));
         // 结束后换行
         log.info("=================" + System.lineSeparator());
 
@@ -78,11 +81,24 @@ public class LogAspect {
     }
 
     private void handleAfter(Object ret) {
-        //对出参进行限制
-        int maxSize = 100;
-        // 打印出参
-        String response = JSON.toJSONString(ret);
-        log.info("Response       : {}", response.length() > maxSize ? response.substring(0, maxSize) + "..." : response);
+
+        log.info("Response       : {}",  toSafeJsonString(new Object[]{ret}));
     }
 
+    public static String toSafeJsonString(Object[] args) {
+        // 使用 SerializerFeature 控制序列化行为
+
+        String jsonString = JSON.toJSONString(args,
+                SerializerFeature.WriteSlashAsSpecial,  // 将斜杠'/'转义为 '\/' 形式
+                SerializerFeature.DisableCircularReferenceDetect);
+
+
+        // 使用流操作截取前 100 个字符，并返回截取后的字符串
+        String res = logUtils.cleanMsg(jsonString).chars()
+                .limit(100)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return res;
+    }
 }
