@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: mixi-user-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL:127.0.0.1}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:051111}
