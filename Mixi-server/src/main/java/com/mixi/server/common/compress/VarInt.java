@@ -11,54 +11,25 @@ import io.netty.handler.codec.CorruptedFrameException;
 public class VarInt {
 
     public static int readVarInt32(ByteBuf buffer) {
-        if(!buffer.isReadable()){
-            buffer.resetReaderIndex();
+        if (!buffer.isReadable()) {
             return 0;
         }
         buffer.markReaderIndex();
-        byte cur = buffer.readByte();
-        int res;
-        if(cur>=0){
-            return cur;
-        }else{
-            res = cur & 127;
+        byte res = 0;
+        int shift = 0;
+        for(int i=0;i<5;i++){
             if(!buffer.isReadable()){
                 buffer.resetReaderIndex();
                 return 0;
             }
-            if((cur=buffer.readByte())>=0){
-                res|=cur<<7;
-            }else{
-                res|=(cur&127)<<7;
-                if(!buffer.isReadable()){
-                    buffer.resetReaderIndex();
-                    return 0;
-                }
-                if((cur=buffer.readByte())>=0){
-                    res|=cur<<14;
-                }else{
-                    res|=(cur&127)<<14;
-                    if(!buffer.isReadable()){
-                        buffer.resetReaderIndex();
-                        return 0;
-                    }
-                    if((cur=buffer.readByte())>=0){
-                        res|=cur<<21;
-                    }else{
-                        res|=(cur&127)<<21;
-                        if(!buffer.isReadable()){
-                            buffer.resetReaderIndex();
-                            return 0;
-                        }
-                        res |= (cur = buffer.readByte()) << 28;
-                        if (cur < 0) {
-                            throw new CorruptedFrameException("malformed varint.");
-                        }
-                    }
-                }
+            byte tmp = buffer.readByte();
+            res |= (tmp & 127) << shift;
+            if (tmp >= 0) {
+                return res;
             }
+            shift += 7;
         }
-        return res;
+        return 0;
     }
 
     public static void writeVarInt32(ByteBuf out, int value) {
@@ -74,17 +45,10 @@ public class VarInt {
     }
 
     public static int computeVarInt32Size(final int value) {
-        if ((value & (0xffffffff << 7)) == 0) {
-            return 1;
-        }
-        if ((value & (0xffffffff << 14)) == 0) {
-            return 2;
-        }
-        if ((value & (0xffffffff << 21)) == 0) {
-            return 3;
-        }
-        if ((value & (0xffffffff << 28)) == 0) {
-            return 4;
+        for(int i=1;i<5;i++){
+            if((value & (0xffffffff << 7*i)) == 0){
+                return i;
+            }
         }
         return 5;
     }
