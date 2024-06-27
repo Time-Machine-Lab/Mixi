@@ -1,8 +1,8 @@
-package com.mixiserver;
+package com.mixi.server;
 
-import com.mixiserver.config.ServerProperties;
-import com.mixiserver.netty.NettyFactory;
-import com.mixiserver.netty.NettyServerInitializer;
+import com.mixi.server.config.ServerProperties;
+import com.mixi.server.netty.NettyFactory;
+import com.mixi.server.netty.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * @Author welsir
  * @Date 2024/6/23 15:57
  */
-@Resource
+@Component
 public class NettyServerBoot implements ApplicationListener<ContextClosedEvent> {
 
     private Logger log = LoggerFactory.getLogger(NettyServerBoot.class);
