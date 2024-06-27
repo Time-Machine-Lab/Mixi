@@ -1,8 +1,15 @@
 package com.mixi.webroom.service.Impl;
 
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
+import com.mixi.webroom.utils.UserUtil;
 import io.github.common.web.Result;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -11,10 +18,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class WebRoomServiceImpl implements WebRoomService {
-    @Override
-    public Result createRoom() {
-//        1、用户状态校验 判断目前用户是否在
+    @Resource
+    StringRedisTemplate redisTemplate;
 
+    @Resource
+    UserUtil userUtil;
+
+    @Override
+    public Result createRoom(CreateRoomDTO createRoomDTO) {
+        //1、用户状态校验 判断目前用户是否在房间内
+        if(userUtil.userState(createRoomDTO)){
+//            return Result.error();
+        }
         return Result.success();
     }
 

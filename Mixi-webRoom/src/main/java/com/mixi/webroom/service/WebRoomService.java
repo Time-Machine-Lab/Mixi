@@ -1,5 +1,6 @@
 package com.mixi.webroom.service;
 
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import io.github.common.web.Result;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface WebRoomService {
-    Result createRoom();
+    Result createRoom(CreateRoomDTO createRoomDTO);
 
     Result shareRoom();
 
