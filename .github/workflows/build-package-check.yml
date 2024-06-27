@@ -41,12 +41,10 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
-      - name: cd Mixi-ui
+      - name: Change Directory to Mixi-UI
         run: cd Mixi-ui
       - name: Install pnpm
         run: npm install -g pnpm
-      - name: Change Directory to Mixi-UI
-        run: cd Mixi-ui
       - name: Install Dependencies
         working-directory: Mixi-ui
         run: pnpm install
