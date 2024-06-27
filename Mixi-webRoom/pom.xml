@@ -11,6 +11,7 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <assistant.version>1.1.1</assistant.version>
         <spring-boot.version>2.4.2</spring-boot.version>
     </properties>
     <dependencies>
@@ -28,6 +29,36 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--        genius-->
+        <dependency>
+            <groupId>io.github.geniusay</groupId>
+            <artifactId>assistant-boot-start</artifactId>
+            <version>${assistant.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.geniusay</groupId>
+            <artifactId>assistant-service</artifactId>
+            <version>${assistant.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.geniusay</groupId>
+            <artifactId>assistant-cache</artifactId>
+            <version>${assistant.version}</version>
+        </dependency>
+
+        <!--加密-->
+        <!--配置文件加密-->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.3</version> <!-- 使用最新版本 -->
         </dependency>
 
     </dependencies>

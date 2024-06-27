@@ -4,6 +4,7 @@ import com.mixi.webroom.service.WebRoomService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.github.common.web.Result;
 
 import javax.annotation.Resource;
 
@@ -14,26 +15,27 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/webRoom")
 public class WebRoomController {
+
     @Resource
     WebRoomService webRoomService;
 
     @PostMapping("/create")
-    public String createRoom() {
+    public Result createRoom() {
         return webRoomService.createRoom();
     }
 
     @PostMapping("/share")
-    public String shareRoom() {
+    public Result shareRoom() {
         return webRoomService.shareRoom();
     }
 
     @PostMapping("/join")
-    public String joinRoom() {
+    public Result joinRoom() {
         return webRoomService.joinRoom();
     }
 
     @PostMapping("/quit")
-    public String quitRoom() {
+    public Result quitRoom() {
         return webRoomService.quitRoom();
     }
 }

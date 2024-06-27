@@ -1,6 +1,8 @@
 package com.mixi.webroom.service;
 
+import io.github.common.web.Result;
 import org.springframework.stereotype.Component;
+
 
 /**
  * @Author：XiaoChun
@@ -8,12 +10,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface WebRoomService {
-    String createRoom();
+    Result createRoom();
 
-    String shareRoom();
+    Result shareRoom();
 
-    String joinRoom();
+    Result joinRoom();
 
-    String quitRoom();
+    Result quitRoom();
 
 }

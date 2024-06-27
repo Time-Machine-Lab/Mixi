@@ -1,7 +1,9 @@
 package com.mixi.webroom.service.Impl;
 
 import com.mixi.webroom.service.WebRoomService;
+import io.github.common.web.Result;
 import org.springframework.stereotype.Service;
+
 
 /**
  * @Author：XiaoChun
@@ -10,22 +12,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class WebRoomServiceImpl implements WebRoomService {
     @Override
-    public String createRoom() {
-        return "test";
+    public Result createRoom() {
+//        1、用户状态校验 判断目前用户是否在
+
+        return Result.success();
     }
 
     @Override
-    public String shareRoom() {
-        return "";
+    public Result shareRoom() {
+        return Result.success();
     }
 
     @Override
-    public String joinRoom() {
-        return "";
+    public Result joinRoom() {
+        return Result.success();
     }
 
     @Override
-    public String quitRoom() {
-        return "";
+    public Result quitRoom() {
+        return Result.success();
     }
 }
