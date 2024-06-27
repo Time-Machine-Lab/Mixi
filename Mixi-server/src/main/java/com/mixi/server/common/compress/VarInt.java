@@ -45,12 +45,13 @@ public class VarInt {
     }
 
     public static int computeVarInt32Size(final int value) {
-        for(int i=1;i<5;i++){
+        int i;
+        for(i=1;i<5;i++){
             if((value & (0xffffffff << 7*i)) == 0){
                 return i;
             }
         }
-        return 5;
+        return i;
     }
 
 }
