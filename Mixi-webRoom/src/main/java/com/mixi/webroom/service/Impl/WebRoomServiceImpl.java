@@ -1,5 +1,7 @@
 package com.mixi.webroom.service.Impl;
 
+import com.mixi.webroom.common.ResultUtil;
+import com.mixi.webroom.common.enums.ResultEnums;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import com.mixi.webroom.utils.UserUtil;
@@ -26,10 +28,12 @@ public class WebRoomServiceImpl implements WebRoomService {
 
     @Override
     public Result createRoom(CreateRoomDTO createRoomDTO) {
-        //1、用户状态校验 判断目前用户是否在房间内
-        if(userUtil.userState(createRoomDTO)){
-//            return Result.error();
+        //1、用户状态校验 判断目前用户是否在房间内 在房间内则返回错误
+        if(!userUtil.userState(createRoomDTO)){
+            return ResultUtil.error(ResultEnums.USER_IN_ROOM);
         }
+        //2、
+
         return Result.success();
     }
 

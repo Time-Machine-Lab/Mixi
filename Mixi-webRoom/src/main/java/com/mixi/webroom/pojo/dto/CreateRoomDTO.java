@@ -8,9 +8,9 @@ import lombok.Data;
  */
 @Data
 public class CreateRoomDTO {
-    private String deviceId;  //设备名
+    private String roomName;    //房间名称
 
-    private String ip;  //ip 地址
+    private Integer limit;      //人数上限
 
-    private String uid; //用户id
+    private Boolean anonymityFlag;  //匿名用户是否准入
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserUtil {
     public boolean userState(CreateRoomDTO createRoomDTO){
+
         return true;
     }
 }

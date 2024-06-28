@@ -2,10 +2,7 @@ package com.mixi.webroom.controller;
 
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.github.common.web.Result;
 
 import javax.annotation.Resource;
@@ -21,8 +18,12 @@ public class WebRoomController {
     @Resource
     WebRoomService webRoomService;
 
+    //uid ，ip和deviceId其中一个
     @PostMapping("/create")
-    public Result createRoom(@RequestBody CreateRoomDTO createRoomDTO) {
+    public Result createRoom(@RequestBody CreateRoomDTO createRoomDTO,
+                             @RequestHeader String uid,
+                             @RequestHeader String ip,
+                             @RequestHeader String deviceId) {
         return webRoomService.createRoom(createRoomDTO);
     }
 
