@@ -6,12 +6,6 @@ export const useSnackbarStore = defineStore({
     message: "",
     type: "",
   }),
-
-  persist: {
-    enabled: true,
-    strategies: [{ storage: localStorage, paths: [""] }],
-  },
-
   getters: {},
   actions: {
     showMessage(message: string) {
