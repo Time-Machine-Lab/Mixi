@@ -10,6 +10,7 @@ import com.mixi.user.domain.vo.UserLoginVo;
 * @createDate 2024-06-25 16:18:03
 */
 public interface UserService extends IService<User> {
-
     Object linkLogin(UserLoginVo userLoginVo);
+
+    Object linkVerify(String email,String uid);
 }

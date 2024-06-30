@@ -52,7 +52,7 @@ public class LogAspect {
     private void handleBefore(ProceedingJoinPoint joinPoint) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
-        int maxSize = 100;
+
 
         //获取被增强方法上的注解对象
         SystemLog systemLog = getSystemLog(joinPoint);
@@ -81,7 +81,6 @@ public class LogAspect {
     }
 
     private void handleAfter(Object ret) {
-
         log.info("Response       : {}",  toSafeJsonString(new Object[]{ret}));
     }
 

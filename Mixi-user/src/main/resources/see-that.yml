@@ -1,0 +1,10 @@
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    password: yrBNTpMecWqC0OD0WSTi/Y7lKVkcHblW
+assistant:
+  token:
+    access-token-expire-time: 3600
+    access-token-time-unit: SECONDS
+    enable-refresh: true
