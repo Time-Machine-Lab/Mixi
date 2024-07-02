@@ -34,6 +34,12 @@ public class UserController {
         return Result.success(userService.linkLogin(userLoginVo));
     }
 
+    @GetMapping(value = "/link/verify")
+    @SystemLog(businessName = "用户链接登录认证")
+    public Result linkVerify(String email,String uid){
+        return Result.success(userService.linkVerify(email,uid));
+    }
+
 
 
 }
