@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface WebRoomService {
-    Result createRoom(CreateRoomDTO createRoomDTO);
+    Result createRoom(CreateRoomDTO createRoomDTO, String uid);
 
     Result shareRoom();
 

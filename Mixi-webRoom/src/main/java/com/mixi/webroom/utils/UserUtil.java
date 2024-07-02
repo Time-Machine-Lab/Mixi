@@ -1,7 +1,11 @@
 package com.mixi.webroom.utils;
 
+import com.mixi.webroom.config.RedisKeyConfig;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @Author：XiaoChun
@@ -9,8 +13,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserUtil {
-    public boolean userState(CreateRoomDTO createRoomDTO){
 
-        return true;
+    @Resource
+    RedisUtil redisUtil;
+    public boolean userState(String uid){
+        return Boolean.valueOf(redisUtil.getCacheObject(RedisKeyConfig.USER_STATE + uid));
     }
 }

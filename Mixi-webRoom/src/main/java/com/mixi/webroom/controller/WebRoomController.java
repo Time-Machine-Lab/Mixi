@@ -18,13 +18,11 @@ public class WebRoomController {
     @Resource
     WebRoomService webRoomService;
 
-    //uid ，ip和deviceId其中一个
+    //uid 标识用户
     @PostMapping("/create")
     public Result createRoom(@RequestBody CreateRoomDTO createRoomDTO,
-                             @RequestHeader String uid,
-                             @RequestHeader String ip,
-                             @RequestHeader String deviceId) {
-        return webRoomService.createRoom(createRoomDTO);
+                             @RequestHeader String uid) {
+        return webRoomService.createRoom(createRoomDTO, uid);
     }
 
     @PostMapping("/share")
