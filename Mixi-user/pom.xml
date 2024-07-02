@@ -7,6 +7,12 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Mixi-user</name>
     <description>Mixi-user</description>
+
+    <parent>
+        <groupId>com</groupId>
+        <artifactId>Mixi</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,7 +55,7 @@
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>3.0.3</version> <!-- 使用最新版本 -->
+<!--            <version>3.0.3</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;-->
         </dependency>
 
         <!--        mysql-->
@@ -62,7 +68,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
+<!--            <version>${mybatis-plus.version}</version>-->
         </dependency>
 <!--aop-->
         <dependency>
@@ -97,7 +103,7 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>3.8.0</version> <!-- 替换为最新版本 -->
+<!--            <version>3.8.0</version> &lt;!&ndash; 替换为最新版本 &ndash;&gt;-->
         </dependency>
         <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
         <dependency>
