@@ -1,13 +1,15 @@
-package com.mixiserver.netty;
+package com.mixi.server.netty;
 
-import com.mixiserver.netty.codec.ServerMessageWebSocketDecoder;
-import com.mixiserver.netty.codec.ServerMessageWebSocketEncoder;
+import com.mixi.server.netty.codec.ServerMessageWebSocketDecoder;
+import com.mixi.server.netty.codec.ServerMessageWebSocketEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
  * @Description
@@ -22,13 +24,14 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
     private static final ServerMessageWebSocketEncoder WEBSOCKET_ENCODER = new ServerMessageWebSocketEncoder();
 
     private static final ServerMessageWebSocketDecoder WEBSOCKET_DECODER = new ServerMessageWebSocketDecoder();
+
     @Override
     protected void initChannel(SocketChannel socketChannel) {
         ChannelPipeline pipeline = socketChannel.pipeline();
-
         pipeline.addLast("httpServerCodec", new HttpServerCodec());
         pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(2048));
-        pipeline.addLast("webSocketServerProtocolHandler", new WebSocketServerProtocolHandler("/ws"));
+        pipeline.addLast("webSocketServerProtocolHandler", new WebSocketServerProtocolHandler("/chat"));
+        pipeline.addLast("chunkedWriteHandler",new ChunkedWriteHandler());
         pipeline.addLast("encoder", WEBSOCKET_ENCODER);
         pipeline.addLast("decoder", WEBSOCKET_DECODER);
         pipeline.addLast("handler", NETTY_SERVER_HANDLER);

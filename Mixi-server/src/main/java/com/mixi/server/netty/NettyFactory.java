@@ -1,4 +1,4 @@
-package com.mixiserver.netty;
+package com.mixi.server.netty;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
