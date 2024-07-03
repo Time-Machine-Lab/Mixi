@@ -2,7 +2,6 @@ package com.mixi.webroom.service.Impl;
 
 import com.mixi.webroom.common.ResultUtil;
 import com.mixi.webroom.common.enums.ResultEnums;
-import com.mixi.webroom.common.rpc.NettyService;
 import com.mixi.webroom.common.rpc.VideoService;
 import com.mixi.webroom.config.RedisKeyConfig;
 import com.mixi.webroom.pojo.DO.WebRoom;
@@ -11,6 +10,7 @@ import com.mixi.webroom.service.WebRoomService;
 import com.mixi.webroom.utils.RedisUtil;
 import com.mixi.webroom.utils.UserUtil;
 import io.github.common.web.Result;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,33 +25,28 @@ import java.util.Map;
 @Service
 public class WebRoomServiceImpl implements WebRoomService {
     @Resource
-    RedisUtil redisUtil;
+    private RedisUtil redisUtil;
 
     @Resource
-    UserUtil userUtil;
+    private VideoService videoService;
 
-    @Resource
-    VideoService videoService;
-
-    @Resource
-    NettyService nettyService;
+    @Value("${netty.socket-ip}")
+    private String socketIp;
 
     @Override
     public Result createRoom(CreateRoomDTO createRoomDTO, String uid) {
-        //1、用户状态校验 判断目前用户是否在房间内 在房间内则返回错误
-        if(userUtil.userState(uid)){
-            return ResultUtil.error(ResultEnums.USER_IN_ROOM);
-        }
-        //2、调用rpc接口创建音视频房间和心跳房间
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("video", videoService.createRoom().getData());
-        resultMap.put("netty", nettyService.createRoom().getData());
-        //3、保存房间信息和用户状态到redis
         WebRoom webRoom = new WebRoom(createRoomDTO);
-
-        redisUtil.setCacheObject(RedisKeyConfig.WEB_ROOM + webRoom.getRoomId(), webRoom);
-
-        return Result.success(resultMap);
+        Map<String, Object> resultMap = new HashMap<>();
+        //调用redis原子性操作 如果目前有房间则返回房间
+        if(redisUtil.setNxObject(RedisKeyConfig.WEB_ROOM + uid, webRoom)){
+            // rpc 接口创建音视频流房间
+            resultMap.put("video", videoService.createRoom().getData());
+            resultMap.put("socketIp", socketIp);    //是否需要给出令牌保证用户操作的正确性
+            return Result.success(resultMap);
+        } else {
+            resultMap.put("", ((WebRoom)redisUtil.getCacheObject(RedisKeyConfig.WEB_ROOM + uid)).getRoomId());
+            return ResultUtil.error(ResultEnums.USER_HAS_ROOM, resultMap);
+        }
     }
 
     @Override

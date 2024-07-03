@@ -21,6 +21,14 @@ public class RedisUtil {
 
     private static final Integer defaultExpire = 120;
 
+    public <T> Boolean setNxObject(String key, T value, Integer timeout, TimeUnit timeUnit) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, timeUnit);
+    }
+
+    public <T> Boolean setNxObject(String key, T value) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, defaultExpire, defaultTimeUnit);
+    }
+
     /**
      * 缓存基本的对象，Integer、String、实体类等
      * @param key 缓存的键值
@@ -28,6 +36,7 @@ public class RedisUtil {
      * @return 缓存的对象
      */
     public <T> void setCacheObject(String key, T value) {
+
         setCacheObject(key, value, defaultExpire, defaultTimeUnit);
     }
 

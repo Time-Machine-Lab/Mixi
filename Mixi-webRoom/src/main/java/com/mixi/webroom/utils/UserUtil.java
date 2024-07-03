@@ -11,12 +11,9 @@ import javax.annotation.Resource;
  * @Author：XiaoChun
  * @Date：2024/6/27 下午3:55
  */
-@Component
-public class UserUtil {
 
-    @Resource
-    RedisUtil redisUtil;
-    public boolean userState(String uid){
-        return Boolean.valueOf(redisUtil.getCacheObject(RedisKeyConfig.USER_STATE + uid));
+public class UserUtil {
+    public static String createTicket(String msg){
+        return null;
     }
 }
