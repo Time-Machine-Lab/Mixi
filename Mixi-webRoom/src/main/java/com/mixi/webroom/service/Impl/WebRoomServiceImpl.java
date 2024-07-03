@@ -42,6 +42,7 @@ public class WebRoomServiceImpl implements WebRoomService {
             // rpc 接口创建音视频流房间
             resultMap.put("video", videoService.createRoom().getData());
             resultMap.put("socketIp", socketIp);    //是否需要给出令牌保证用户操作的正确性
+
             return Result.success(resultMap);
         } else {
             resultMap.put("", ((WebRoom)redisUtil.getCacheObject(RedisKeyConfig.WEB_ROOM + uid)).getRoomId());

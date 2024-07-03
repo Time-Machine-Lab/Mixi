@@ -33,3 +33,4 @@ build/
 .vscode/
 
 you-cant-see-that.yml
+/Mixi-webRoom/src/main/resources/application-dev.yml

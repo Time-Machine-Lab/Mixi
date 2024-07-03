@@ -1,6 +1,5 @@
 package com.mixi.webroom.utils;
 
-import io.lettuce.core.dynamic.annotation.Value;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisUtil {
     @Resource
-    public RedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
     private static final TimeUnit defaultTimeUnit = TimeUnit.MINUTES;
 
