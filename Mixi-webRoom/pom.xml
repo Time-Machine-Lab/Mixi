@@ -7,13 +7,20 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Mixi-webRoom</name>
     <description>Mixi-webRoom</description>
+
+    <parent>
+        <artifactId>Mixi</artifactId>
+        <groupId>com</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <assistant.version>1.1.1</assistant.version>
         <spring-boot.version>2.4.2</spring-boot.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -40,17 +47,17 @@
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-boot-start</artifactId>
-            <version>${assistant.version}</version>
+            <version>${assistant-boot-start.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-service</artifactId>
-            <version>${assistant.version}</version>
+            <version>${assistant-service.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-cache</artifactId>
-            <version>${assistant.version}</version>
+            <version>${assistant-cache.version}</version>
         </dependency>
 
         <dependency>
