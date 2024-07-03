@@ -15,22 +15,20 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static com.mixi.user.constants.RedisConstant.REDIS_PRE;
 
 /**
-* @author yuech
-* @description 针对表【mixi_user】的数据库操作Service实现
-* @createDate 2024-06-25 16:18:03
-*/
+ * @author yuech
+ * @description 针对表【mixi_user】的数据库操作Service实现
+ * @createDate 2024-06-25 16:18:03
+ */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService{
+        implements UserService {
 
     private final RedisTemplate redisTemplate;
     private final UserMapper userMapper;
@@ -43,35 +41,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Object linkLogin(UserLoginVo userLoginVo) {
-        String email = userLoginVo.getEmail();
-        emailCheckApproveChain.setNext(email,lastStepApproveChain);
+        String email = userLoginVo.getEmail(), uuid = UuidUtils.getUuid(), link = new LinkFactory().getLink(email, uuid), uKey = REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", tKey = REDIS_PRE + userLoginVo.getEmail() + ":" + "times";
+        emailCheckApproveChain.setNext(email, lastStepApproveChain);
         emailCheckApproveChain.approve();
-        String uuid = UuidUtils.getUuid();
-        String link =  new LinkFactory().getLink(email,uuid);
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        if(ops.setIfAbsent(REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", String.valueOf(uuid))){
-            redisTemplate.expire(REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", 5, TimeUnit.MINUTES);
+        if (ops.setIfAbsent(uKey, String.valueOf(uuid))) {
+            redisTemplate.expire(uKey, 5, TimeUnit.MINUTES);
             threadService.sendEmail(userLoginVo.getEmail(), link);
-            return ops.increment(REDIS_PRE + userLoginVo.getEmail() + ":" + "times");
+            ops.increment(tKey);
+            redisTemplate.expire(tKey, 5, TimeUnit.MINUTES);
+            return "ok";
         }
-        if(ops.increment(REDIS_PRE + userLoginVo.getEmail() + ":" + "times") <= 5){
+        if (ops.increment(REDIS_PRE + userLoginVo.getEmail() + ":" + "times") <= 5) {
             threadService.sendEmail(userLoginVo.getEmail(), link);
+            Long ttl = redisTemplate.getExpire(uKey, TimeUnit.SECONDS);
             ops.set(REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", String.valueOf(uuid));
-            return "";
+            redisTemplate.expire(uKey, ttl, TimeUnit.SECONDS);
+            return "ok";
         }
         return "无效链接";
     }
 
     @Override
-    public Object linkVerify(String email,String uid) {
-        Map<String, String> redisDataMap = (Map<String, String>) redisTemplate.opsForValue().get(email);
-        if (Objects.isNull(redisDataMap) || !Objects.equals(uid, redisDataMap.get("uuid"))){
+    public Object linkVerify(String email, String uid) {
+        String redisDataMap = (String) redisTemplate.opsForValue().get(REDIS_PRE + email + ":" + "uid");
+        if (Objects.isNull(redisDataMap) || !Objects.equals(uid, redisDataMap)) {
             return "链接出错！";
         }
-        redisTemplate.delete(email); // 删除指定键的数据
+        redisTemplate.delete(REDIS_PRE + email + ":" + "uid"); // 删除指定键的数据
+        redisTemplate.delete(REDIS_PRE + email + ":" + "times");
         return MapUtils.build()
-                .set("token",TokenUtil.getToken(email))
-                .set("transTo","www.baidu.com")
+                .set("token", TokenUtil.getToken(email))
+                .set("transTo", "www.baidu.com")
                 .buildMap();
     }
 }
