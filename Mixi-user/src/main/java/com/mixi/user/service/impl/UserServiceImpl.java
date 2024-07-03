@@ -12,6 +12,7 @@ import com.mixi.user.mapper.UserMapper;
 import com.mixi.user.utils.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -43,52 +44,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Object linkLogin(UserLoginVo userLoginVo) {
         String email = userLoginVo.getEmail();
-        emailCheckApproveChain.setNext(email,redisKeyCheckApproveChain);
-        redisKeyCheckApproveChain.setNext(email,lastStepApproveChain);
+        emailCheckApproveChain.setNext(email,lastStepApproveChain);
         emailCheckApproveChain.approve();
         String uuid = UuidUtils.getUuid();
         String link =  new LinkFactory().getLink(email,uuid);
-        // 设置链接的有效期为5分钟 存入redis
-        Map o = (Map<String, String> ) redisTemplate.opsForValue().get(REDIS_PRE + userLoginVo.getEmail());
-        //第一次
-        if (Objects.isNull(o)){
-            Map<String, String> redisDataMap = MapUtils.build()
-                    .set("uuid",String.valueOf(uuid))
-                    .set("times","1")
-                    .buildMap();
-            redisTemplate.opsForValue().set(REDIS_PRE + userLoginVo.getEmail(),redisDataMap);
-            redisTemplate.expire(userLoginVo.getEmail(), 5, TimeUnit.MINUTES); // 设置过期时间为5分钟
-//        发送链接
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        if(ops.setIfAbsent(REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", String.valueOf(uuid))){
+            redisTemplate.expire(REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", 5, TimeUnit.MINUTES);
             threadService.sendEmail(userLoginVo.getEmail(), link);
-        }else{
-            Integer times =  Integer.valueOf((String) o.get("times"));
-            if(times >=5){
-                throw new RuntimeException("请不要重复发送");
-            }
-            Map<String, String> redisDataMap = MapUtils.build()
-                    .set("uuid",String.valueOf(uuid))
-                    .set("times",times + 1 + "")
-                    .buildMap();
-            redisTemplate.opsForValue().set(REDIS_PRE + userLoginVo.getEmail(),redisDataMap);
-//        发送链接
-            threadService.sendEmail(userLoginVo.getEmail(), link);
+            return ops.increment(REDIS_PRE + userLoginVo.getEmail() + ":" + "times");
         }
-        return null;
+        if(ops.increment(REDIS_PRE + userLoginVo.getEmail() + ":" + "times") <= 5){
+            threadService.sendEmail(userLoginVo.getEmail(), link);
+            ops.set(REDIS_PRE + userLoginVo.getEmail() + ":" + "uid", String.valueOf(uuid));
+            return "";
+        }
+        return "无效链接";
     }
 
     @Override
     public Object linkVerify(String email,String uid) {
-        //对时间和id做校验
         Map<String, String> redisDataMap = (Map<String, String>) redisTemplate.opsForValue().get(email);
         if (Objects.isNull(redisDataMap) || !Objects.equals(uid, redisDataMap.get("uuid"))){
             return "链接出错！";
         }
         redisTemplate.delete(email); // 删除指定键的数据
-        String token = TokenUtil.getToken(email);
-        redisTemplate.opsForValue().set(REDIS_PRE + token,email);
-        redisTemplate.expire(token, 5, TimeUnit.MINUTES); // 设置过期时间为5分钟
         return MapUtils.build()
-                .set("token",token)
+                .set("token",TokenUtil.getToken(email))
                 .set("transTo","www.baidu.com")
                 .buildMap();
     }
