@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import io.github.common.web.Result;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 /**
 *@Author：XiaoChun
@@ -20,8 +22,8 @@ public class WebRoomController {
 
     //uid 标识用户
     @PostMapping("/create")
-    public Result createRoom(@RequestBody CreateRoomDTO createRoomDTO,
-                             @RequestHeader String uid) {
+    public Result createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO,
+                             @RequestHeader @NotBlank String uid) {
         return webRoomService.createRoom(createRoomDTO, uid);
     }
 

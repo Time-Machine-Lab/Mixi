@@ -23,6 +23,7 @@
       <module name="Mixi-gateway-config" options="-parameters" />
       <module name="Mixi-gateway-infrastructure" options="-parameters" />
       <module name="Mixi-server" options="-parameters" />
+      <module name="Mixi-webRoom" options="-parameters" />
     </option>
   </component>
 </project>
