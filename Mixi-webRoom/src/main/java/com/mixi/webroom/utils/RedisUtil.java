@@ -28,6 +28,14 @@ public class RedisUtil {
         return redisTemplate.opsForValue().setIfAbsent(key, value, defaultExpire, defaultTimeUnit);
     }
 
+    public <T> Boolean setNnObject(String key, T value, Integer timeout, TimeUnit timeUnit) {
+        return redisTemplate.opsForValue().setIfPresent(key, value, timeout, timeUnit);
+    }
+
+    public <T> Boolean setNnObject(String key, T value) {
+        return redisTemplate.opsForValue().setIfPresent(key, value, defaultExpire, defaultTimeUnit);
+    }
+
     /**
      * 缓存基本的对象，Integer、String、实体类等
      * @param key 缓存的键值

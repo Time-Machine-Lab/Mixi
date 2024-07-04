@@ -1,5 +1,7 @@
 package com.mixi.webroom.utils;
 
+import com.mixi.common.constant.enums.UserStateEnum;
+import com.mixi.webroom.common.enums.ResultEnums;
 import com.mixi.webroom.config.RedisKeyConfig;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +13,13 @@ import javax.annotation.Resource;
  * @Author：XiaoChun
  * @Date：2024/6/27 下午3:55
  */
-
+@Component
 public class UserUtil {
-    public static String createTicket(String msg){
-        return null;
+    @Resource
+    private RedisUtil redisUtil;
+
+    public boolean setUserState(String uid, UserStateEnum userStateEnum){
+        return redisUtil.setNnObject(RedisKeyConfig.userNettyState(uid), userStateEnum.getUserState()) &
+                redisUtil.setNnObject(RedisKeyConfig.userVideoState(uid), userStateEnum.getUserState());
     }
 }
