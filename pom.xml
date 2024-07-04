@@ -8,6 +8,7 @@
     <name>Mixi</name>
     <description>Mixi</description>
     <packaging>pom</packaging>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -28,7 +29,7 @@
         <commons-pool2.version>2.9.0</commons-pool2.version>
         <fastjson.version>1.2.75</fastjson.version>
         <junit.version>4.12</junit.version>
-        <Mixi-common.version>1.0-SNAPSHOT</Mixi-common.version>
+        <Mixi-common.version>0.0.1-SNAPSHOT</Mixi-common.version>
 
         <assistant-mysql.verison>1.1.2</assistant-mysql.verison>
         <assistant-common.version>1.1.2</assistant-common.version>
@@ -220,6 +221,12 @@
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt.version}</version> <!-- 使用最新版本 -->
+            </dependency>
+
+            <dependency>
+                <groupId>com</groupId>
+                <artifactId>Mixi-common</artifactId>
+                <version>${Mixi-common.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
