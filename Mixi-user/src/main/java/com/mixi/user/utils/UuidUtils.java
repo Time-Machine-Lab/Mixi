@@ -55,7 +55,7 @@ public class UuidUtils {
     }
 
     //测试
-    public static String getUuid() {
+    public static String creatUuid() {
         return new String(String.valueOf((getInstance().snowflakeId())));
         //1277896081711169536
     }

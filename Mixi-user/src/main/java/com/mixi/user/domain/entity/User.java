@@ -2,6 +2,7 @@ package com.mixi.user.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mixi.user.domain.vo.InfoVo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -69,4 +70,13 @@ public class User implements Serializable {
         return user;
     }
 
+    public static User InfoTo(InfoVo infoVo) {
+        User user = new User();
+        user.setId(infoVo.getId());
+        user.setAvatar(infoVo.getAvatar());
+        user.setNickname(infoVo.getNickname());
+        user.setSex(infoVo.getSex());
+        user.setResume(infoVo.getResume());
+        return user;
+    }
 }
