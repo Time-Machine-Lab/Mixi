@@ -21,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -48,17 +49,13 @@ public class UserStateAspect {
     @Before("pointCut()")
     public void before(JoinPoint joinPoint) {
         try {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            String uid  = request.getHeader("uid");
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            Method method = signature.getMethod();
-            UserState annotation = AnnotationUtils.findAnnotation(method, UserState.class);
-            UserStateEnum userStateEnum = annotation.value();
+            String uid  = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest().getHeader("uid");
+            UserStateEnum userStateEnum = Objects.requireNonNull(AnnotationUtils.findAnnotation(((MethodSignature) joinPoint.getSignature()).getMethod(), UserState.class)).value();
             if(userStateEnum.getUserState() == redisUtil.getCacheObject(RedisKeyConfig.userNettyState(uid))){
                 throw new ServerException(ResultEnums.USER_STATE_ERROR);
             }
         } catch (Exception e){
-            logger.warning("用户状态切片异常");
+            logger.warning("UserStateAspect before error");
             e.printStackTrace();
         }
     }
