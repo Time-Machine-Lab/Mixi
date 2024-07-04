@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/link/verify")
-    @SystemLog(businessName = "用户链接登录认证")
+    @SystemLog(businessName = "用户链接认证")
     public Result linkVerify(String email,String uid,String type){
         return Result.success(userService.linkVerify(email,uid,type));
     }
@@ -50,11 +50,6 @@ public class UserController {
         return Result.success(userService.updateInfo(uid,infoVo));
     }
 
-//    @PostMapping(value = "/link/register")
-//    @SystemLog(businessName = "用户链接注册")
-//    public Result linkRegister(@RequestBody  @Valid UserLoginVo userLoginVo){
-//        return Result.success(userService.linkRegister(userLoginVo));
-//    }
     @PostMapping(value = "/common/register")
     @SystemLog(businessName = "用户常规注册")
     public Result commonRegister(@RequestBody  @Valid UserRegisterVo userRegisterVo){
