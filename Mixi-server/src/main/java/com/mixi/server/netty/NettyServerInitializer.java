@@ -19,7 +19,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     //Netty事件统一处理器
-    private static final NettyServerHandler NETTY_SERVER_HANDLER = new NettyServerHandler();
+    private static final NettyServerHandler NETTY_SERVER_HANDLER = new NettyServerHandler(null);
 
     private static final ServerMessageWebSocketEncoder WEBSOCKET_ENCODER = new ServerMessageWebSocketEncoder();
 
