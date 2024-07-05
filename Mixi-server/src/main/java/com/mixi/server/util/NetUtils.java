@@ -41,7 +41,7 @@ public class NetUtils {
                 }
             }
         } catch (Exception e) {
-            log.error("IP地址获取失败 {}", e.toString());
+            throw new IllegalStateException("IP地址获取失败 {}", e);
         }
         return "";
     }

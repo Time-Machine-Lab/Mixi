@@ -3,6 +3,7 @@ package com.mixi.server.netty.channel.support;
 import com.mixi.server.util.NetUtils;
 
 import java.net.InetSocketAddress;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -20,16 +21,12 @@ public class ChannelIdGenerator {
     }
 
     public static String generateChannelId(InetSocketAddress remoteAddr, long timestamp) {
-        StringBuilder sb = new StringBuilder(96);
-        sb.append(NetUtils.LOCAL_IP_ADDR);
-        sb.append(CH_ID_SEPARATOR);
-        sb.append(remoteAddr.getAddress().getHostAddress());
-        sb.append(CH_ID_SEPARATOR);
-        sb.append(remoteAddr.getPort());
-        sb.append(CH_ID_SEPARATOR);
-        sb.append(timestamp);
-        sb.append(CH_ID_SEPARATOR);
-        sb.append(Integer.toHexString(SEQ.getAndIncrement()));
-        return sb.toString();
+        return new StringJoiner(CH_ID_SEPARATOR)
+                .add(NetUtils.LOCAL_IP_ADDR)
+                .add(remoteAddr.getAddress().getHostAddress())
+                .add(String.valueOf(remoteAddr.getPort()))
+                .add(String.valueOf(timestamp))
+                .add(Integer.toHexString(SEQ.getAndIncrement()))
+                .toString();
     }
 }
