@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mixi.user.domain.vo.InfoVo;
 import com.mixi.user.domain.vo.UserLoginVo;
 import com.mixi.user.domain.vo.UserRegisterVo;
+import io.github.common.web.Result;
 
 /**
 * @author yuech
@@ -12,13 +13,13 @@ import com.mixi.user.domain.vo.UserRegisterVo;
 * @createDate 2024-06-25 16:18:03
 */
 public interface UserService extends IService<User> {
-    Object linkLogin(String email, String type);
+    Result link(String email, String type);
 
-    Object linkVerify(String email,String uid,String type);
+    Result linkVerify(String email, String uid, String type);
 
-    Object updateInfo(String uid, InfoVo infoVo);
+    Result updateInfo(String uid, InfoVo infoVo);
 
-//    Object linkRegister(UserLoginVo userLoginVo);
+    Result commonRegister(UserRegisterVo userRegisterVo);
 
-    Object commonRegister(UserRegisterVo userRegisterVo);
+    Result login(UserLoginVo userLoginVo);
 }

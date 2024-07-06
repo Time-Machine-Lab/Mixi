@@ -3,7 +3,9 @@ package com.mixi.user.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.mixi.user.domain.vo.InfoVo;
+import com.mixi.user.utils.UuidUtils;
 import lombok.Data;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 
@@ -24,6 +26,8 @@ public class User implements Serializable {
      * 账号
      */
 //    从2000000000开始自增
+    //不可修改
+    @Transient
     private String username;
 
     /**
@@ -63,6 +67,7 @@ public class User implements Serializable {
 
     public static User baseBuild(String email){
         User user = new User();
+        user.setId(UuidUtils.creatUuid());
         user.setEmail(email);
         user.setAvatar("默认头像");
         user.setNickname("默认账号");

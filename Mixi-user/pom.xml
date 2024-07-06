@@ -83,11 +83,11 @@
         </dependency>
 
 <!--        mixi-common-->
-        <dependency>
-            <groupId>com</groupId>
-            <artifactId>Mixi-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com</groupId>-->
+<!--            <artifactId>Mixi-common</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
 <!--hutool-->
         <dependency>
             <groupId>cn.hutool</groupId>

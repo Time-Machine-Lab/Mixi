@@ -27,34 +27,32 @@ public class UserController {
     @PostMapping(value = "/common/login")
     @SystemLog(businessName = "用户常规登录")
     public Result commonLogin(@RequestBody  @Valid UserLoginVo userLoginVo){
-        return Result.success("接口暂未开发");
+        return userService.login(userLoginVo);
     }
 
     @GetMapping(value = "/link")
     @SystemLog(businessName = "用户链接操作")
-    public Result linkLogin(String email,String type){
-        return Result.success(userService.linkLogin(email,type));
+    public Result link(String email,String type){
+        return userService.link(email,type);
     }
 
     @GetMapping(value = "/link/verify")
     @SystemLog(businessName = "用户链接认证")
     public Result linkVerify(String email,String uid,String type){
-        return Result.success(userService.linkVerify(email,uid,type));
+        return userService.linkVerify(email,uid,type);
     }
 
 
-    @GetMapping(value = "/update/info")
+    @PostMapping(value = "/update/info")
     @SystemLog(businessName = "修改用户信息")
     public Result updateInfo(@RequestHeader String uid,
                              @RequestBody InfoVo infoVo){
-        return Result.success(userService.updateInfo(uid,infoVo));
+        return userService.updateInfo(uid,infoVo);
     }
 
     @PostMapping(value = "/common/register")
     @SystemLog(businessName = "用户常规注册")
     public Result commonRegister(@RequestBody  @Valid UserRegisterVo userRegisterVo){
-        return Result.success(userService.commonRegister(userRegisterVo));
+        return userService.commonRegister(userRegisterVo);
     }
-
-
 }

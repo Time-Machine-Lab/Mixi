@@ -8,4 +8,6 @@ package com.mixi.user.constants;
  */
 public class RedisConstant {
     public final static String REDIS_PRE = "mixi:user:link:";
+
+    public final static int REDIS_KEY_TIMEOUT = 5;
 }
