@@ -76,7 +76,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-<!--        mixi-common-->
         <dependency>
             <groupId>com</groupId>
             <artifactId>Mixi-common</artifactId>
@@ -89,6 +88,11 @@
             <version>5.7.7</version> <!-- 版本号可能需要根据实际情况调整 -->
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>

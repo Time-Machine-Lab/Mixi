@@ -20,6 +20,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Mixi-common" options="-parameters" />
       <module name="Mixi-gateway-app" options="-parameters" />
       <module name="Mixi-gateway-config" options="-parameters" />
       <module name="Mixi-gateway-infrastructure" options="-parameters" />

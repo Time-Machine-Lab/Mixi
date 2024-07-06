@@ -1,4 +1,4 @@
-package com.mixi.user.domain.entity;
+package com.mixi.common.pojo;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Builder
 @Data
 public class User implements Serializable {
+
     /**
      * 主键
      */
@@ -56,6 +57,4 @@ public class User implements Serializable {
      * 注销标记
      */
     private String delFlag;
-
-
 }

@@ -1,0 +1,7 @@
+mx:
+  auth:
+    excludePaths:
+      - /search/**
+      - /users/login
+      - /items/**
+      - /hi

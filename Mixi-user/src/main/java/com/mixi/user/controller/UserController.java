@@ -1,5 +1,6 @@
 package com.mixi.user.controller;
 
+import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.user.aspect.annotation.SystemLog;
 import com.mixi.user.domain.vo.UserLoginVo;
 import com.mixi.user.service.UserService;
@@ -33,7 +34,4 @@ public class UserController {
     public Result linkLogin(@RequestBody  @Valid UserLoginVo userLoginVo){
         return Result.success(userService.linkLogin(userLoginVo));
     }
-
-
-
 }
