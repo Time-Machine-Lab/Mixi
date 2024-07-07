@@ -8,9 +8,7 @@ public class logUtils {
         if (message == null) {
             return "";
         }
-        System.out.println(message);
         message = message.replace("\\n", "").replace("\\r", "").replace("\\t", "");
-        System.out.println(message);
         return message;
     }
 }
