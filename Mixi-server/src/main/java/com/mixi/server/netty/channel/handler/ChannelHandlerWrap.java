@@ -1,4 +1,4 @@
-package com.mixi.server.netty.handler;
+package com.mixi.server.netty.channel.handler;
 
 /**
  * @Description
@@ -16,6 +16,6 @@ public class ChannelHandlerWrap {
     }
 
     private ChannelHandler wrapHandler(ChannelHandler handler) {
-        return null;
+        return new IdleChannelHandler(handler);
     }
 }
