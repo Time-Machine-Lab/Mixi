@@ -1,9 +1,13 @@
 package com.mixi.user.domain.entity;
 
+
+import lombok.Builder;
+
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.mixi.user.domain.vo.InfoVo;
 import com.mixi.user.utils.UuidUtils;
+
 import lombok.Data;
 import org.springframework.data.annotation.Transient;
 

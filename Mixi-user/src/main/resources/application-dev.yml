@@ -3,6 +3,18 @@ spring:
     name: mixi-user-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+    url: ${MYSQL_URL:127.0.0.1}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:051111}
+
+  cloud:
+    nacos:
+      serverAddr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
+      password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
+      namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+
     url: ${MYSQP_URL:ENC(cKwWah5/eoPU3LqiZ42DKb93hn37V9BC118guCHwfFwcKkpdj69tJQCO0+h6kZpibt887ENhLI8=)}
     username: ${MYSQL_USERNAME:ENC(uKRMIxh1gV0iKm1iTmEx7A==)}
     password: ${MYSQL_PASSWORD:ENC(blcquWevQFa9Eif3xcgyoCU0P1F188dCsoD1eYbfwfY=)}
@@ -25,3 +37,4 @@ sa-token:
   is-share: true
   token-style: uuid
   is-log: true
+

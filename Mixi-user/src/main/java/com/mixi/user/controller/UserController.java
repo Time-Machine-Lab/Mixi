@@ -1,5 +1,6 @@
 package com.mixi.user.controller;
 
+import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.user.aspect.annotation.SystemLog;
 import com.mixi.user.domain.vo.InfoVo;
 import com.mixi.user.domain.vo.UserLoginVo;
@@ -41,7 +42,6 @@ public class UserController {
     public Result linkVerify(String email,String uid,String type){
         return userService.linkVerify(email,uid,type);
     }
-
 
     @PostMapping(value = "/update/info")
     @SystemLog(businessName = "修改用户信息")

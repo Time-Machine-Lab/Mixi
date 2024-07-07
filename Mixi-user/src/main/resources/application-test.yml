@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: mixi-user-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL:127.0.0.1}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:051111}
+
+  cloud:
+    nacos:
+      serverAddr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
+      password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
+      namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
