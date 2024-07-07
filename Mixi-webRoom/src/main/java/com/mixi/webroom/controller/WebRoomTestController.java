@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/webroom")
 @RequiredArgsConstructor
-//@ApiAuth
+@ApiAuth
 public class WebRoomTestController {
 
     @ApiAuth(AuthType.NOT)

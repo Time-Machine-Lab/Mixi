@@ -90,6 +90,7 @@ public class CloudApiConfigManager implements InitializingBean {
      */
     private void updateConfigCache(String configInfo) {
         try {
+            // TODO 考虑拷贝一个副本
             // 清理本地配置缓存
             apiInfos.clear();
 
