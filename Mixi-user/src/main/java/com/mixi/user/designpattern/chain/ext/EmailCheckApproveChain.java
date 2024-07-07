@@ -5,11 +5,14 @@ import com.mixi.user.designpattern.chain.ApproveChain;
 import com.mixi.user.domain.entity.User;
 import com.mixi.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Objects;
+
+import static com.mixi.user.constants.CommonConstant.COMMON_ERROR;
 
 /**
  * @NAME: EmailCheckApproveChain
@@ -20,6 +23,7 @@ import java.util.Objects;
 @Scope("prototype")
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class EmailCheckApproveChain extends ApproveChain {
 
     private final UserMapper userMapper;
@@ -29,6 +33,7 @@ public class EmailCheckApproveChain extends ApproveChain {
         if (!Objects.isNull(userMapper.selectOne(new QueryWrapper<User>().eq("email",getParams())))){
             return getNextChain().approve();
         }
-        throw new RuntimeException("邮箱未注册");
+        log.debug("邮箱未注册");
+        throw new RuntimeException(COMMON_ERROR);
     }
 }

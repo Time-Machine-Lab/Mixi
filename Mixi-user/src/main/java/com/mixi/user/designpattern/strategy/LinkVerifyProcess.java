@@ -18,6 +18,8 @@ import java.util.Map;
 public class LinkVerifyProcess {
     private final Map<String, LinkVerifyStrategy> strategyMap = new HashMap<>();
 
+
+    //todo 后续动态的添加实现类到map中
     @Autowired
     public LinkVerifyProcess(LoginLinkVerifyStrategy loginLinkVerifyStrategy, RegisterLinkVerifyStrategy registerLinkVerifyStrategy) {
         strategyMap.put("1" ,loginLinkVerifyStrategy);
