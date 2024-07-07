@@ -1,5 +1,6 @@
 package com.mixi.common.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * 
  * @TableName mixi_user
  */
+@AllArgsConstructor
 @Builder
 @Data
 public class User implements Serializable {

@@ -9,7 +9,6 @@ import java.io.Serializable;
  * 
  * @TableName mixi_user
  */
-@Builder
 @Data
 public class User implements Serializable {
     /**
