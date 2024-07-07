@@ -1,4 +1,4 @@
-package com.mixi.user.controller;
+package com.mixi.webroom.controller;
 
 import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.common.annotation.auth.AuthType;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
  * 日期: 2024/7/6
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/webroom")
 @RequiredArgsConstructor
-@ApiAuth(AuthType.NOT)
-public class TestController {
+@ApiAuth
+public class WebRoomTestController {
 
-    @ApiAuth(AuthType.NEED)
+    @ApiAuth(AuthType.NOT)
     @PostMapping(value = "/test1")
     public Result test1(){
         return Result.success("test1");
@@ -28,12 +28,12 @@ public class TestController {
         return Result.success("test2");
     }
 
+    @ApiAuth(AuthType.INNER)
     @PutMapping(value = "/test3")
     public Result test3(){
         return Result.success("test3");
     }
 
-    @ApiAuth(AuthType.INNER)
     @DeleteMapping(value = "/test4")
     public Result test4(){
         return Result.success("test4");

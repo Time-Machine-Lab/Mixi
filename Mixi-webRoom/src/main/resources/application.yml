@@ -4,9 +4,9 @@ server:
 spring:
   application:
     name: mixi-wenRoom-service
-#  config:
-#    import: classpath:you-cant-see-that.yml
+  config:
+    import: classpath:you-cant-see-that.yml
   profiles:
-    active: ${ACTIVE:dev}
+    active: ${ACTIVE:test}
 
 

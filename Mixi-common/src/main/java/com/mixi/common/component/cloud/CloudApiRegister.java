@@ -14,6 +14,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.mixi.common.config.CloudApiProperties.createConfigService;
 
@@ -58,7 +59,7 @@ public class CloudApiRegister implements InitializingBean {
         String existConfig = configService.getConfig(nacosDataId, cloudApiProperties.getGroup(), 5000);
 
         // 解析Json配置文件
-        Map<String, Object> jsonMap = parseJsonConfig(existConfig);
+        Map<String, List<ApiInfo>> jsonMap = parseJsonConfig(existConfig);
 
         // 构建新的配置文件
         String newConfig = buildApiConfig(jsonMap, apiInfoList);
@@ -67,35 +68,30 @@ public class CloudApiRegister implements InitializingBean {
         configService.publishConfig(nacosDataId, cloudApiProperties.getGroup(), newConfig, ConfigType.JSON.getType());
     }
 
-    private Map<String, Object> parseJsonConfig(String config) throws Exception {
+    private Map<String, List<ApiInfo>> parseJsonConfig(String config) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         return config == null ? new HashMap<>() : objectMapper.readValue(config, Map.class);
     }
 
-    private String buildApiConfig(Map<String, Object> jsonMap, List<ApiInfo> apiInfoList) throws Exception {
+    private String buildApiConfig(Map<String, List<ApiInfo>> jsonMap, List<ApiInfo> apiInfoList) throws Exception {
 
         // 获取当前模块名
         String currentModule = apiInfoList.get(0).getModule();
 
-        // 获取现有的API信息
-        Map<String, Map<String, List<ApiInfo>>> moduleApiMap =
-                Optional.ofNullable((Map<String, Map<String, List<ApiInfo>>>) jsonMap.get("api_list")).orElse(new HashMap<>());
-
         // 删除旧的模块配置
-        moduleApiMap.remove(currentModule);
+        jsonMap.remove(currentModule);
 
-        // 构建新的模块配置
-        Map<String, List<ApiInfo>> newModuleMap = new HashMap<>();
-        apiInfoList.forEach(apiInfo -> {
-            String apiName = apiInfo.getAuthType().toLowerCase();
-            newModuleMap.computeIfAbsent(apiName, k -> new ArrayList<>()).add(apiInfo);
+        // 将API信息按照模块名分组
+        Map<String, List<ApiInfo>> groupedByModule = apiInfoList.stream()
+                .collect(Collectors.groupingBy(ApiInfo::getModule));
+
+        // 对每个模块的API信息进行排序并更新
+        groupedByModule.forEach((module, apiInfos) -> {
+            List<ApiInfo> sortedApiInfos = apiInfos.stream()
+                    .sorted(Comparator.comparing(ApiInfo::getAuthType))
+                    .collect(Collectors.toList());
+            jsonMap.put(module, sortedApiInfos);
         });
-
-        // 更新模块配置
-        moduleApiMap.put(currentModule, newModuleMap);
-
-        // 更新总的配置
-        jsonMap.put("api_list", moduleApiMap);
 
         // 格式化并返回新的配置
         ObjectMapper objectMapper = new ObjectMapper();
