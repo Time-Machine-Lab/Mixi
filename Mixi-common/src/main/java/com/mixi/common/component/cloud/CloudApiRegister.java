@@ -2,8 +2,6 @@ package com.mixi.common.component.cloud;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.ConfigType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mixi.common.config.CloudApiProperties;
 import com.mixi.common.pojo.ApiInfo;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +12,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.mixi.common.config.CloudApiProperties.createConfigService;
 
@@ -33,6 +30,7 @@ public class CloudApiRegister implements InitializingBean {
 
     private final CloudApiCollector cloudApiCollector;
     private final CloudApiProperties cloudApiProperties;
+    private final CloudApiConfigBuilder cloudApiConfigBuilder;
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
@@ -58,44 +56,10 @@ public class CloudApiRegister implements InitializingBean {
         // 从Nacos拉取现有的接口配置文件
         String existConfig = configService.getConfig(nacosDataId, cloudApiProperties.getGroup(), 5000);
 
-        // 解析Json配置文件
-        Map<String, List<ApiInfo>> jsonMap = parseJsonConfig(existConfig);
-
         // 构建新的配置文件
-        String newConfig = buildApiConfig(jsonMap, apiInfoList);
+        String newConfig = cloudApiConfigBuilder.build(existConfig, apiInfoList);
 
         // 重新发布，更新云端配置文件
         configService.publishConfig(nacosDataId, cloudApiProperties.getGroup(), newConfig, ConfigType.JSON.getType());
-    }
-
-    private Map<String, List<ApiInfo>> parseJsonConfig(String config) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return config == null ? new HashMap<>() : objectMapper.readValue(config, Map.class);
-    }
-
-    private String buildApiConfig(Map<String, List<ApiInfo>> jsonMap, List<ApiInfo> apiInfoList) throws Exception {
-
-        // 获取当前模块名
-        String currentModule = apiInfoList.get(0).getModule();
-
-        // 删除旧的模块配置
-        jsonMap.remove(currentModule);
-
-        // 将API信息按照模块名分组
-        Map<String, List<ApiInfo>> groupedByModule = apiInfoList.stream()
-                .collect(Collectors.groupingBy(ApiInfo::getModule));
-
-        // 对每个模块的API信息进行排序并更新
-        groupedByModule.forEach((module, apiInfos) -> {
-            List<ApiInfo> sortedApiInfos = apiInfos.stream()
-                    .sorted(Comparator.comparing(ApiInfo::getAuthType))
-                    .collect(Collectors.toList());
-            jsonMap.put(module, sortedApiInfos);
-        });
-
-        // 格式化并返回新的配置
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
-        return writer.writeValueAsString(jsonMap);
     }
 }

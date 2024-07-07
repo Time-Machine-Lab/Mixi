@@ -1,7 +1,6 @@
 package com.mixi.common.component.cloud;
 
 import com.mixi.common.annotation.auth.ApiAuth;
-import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.pojo.ApiInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +61,7 @@ public class CloudApiCollector implements InitializingBean {
 
             // 没标ApiAuth注解的就不上云
             if (apiAuth != null) {
-                apiInfoList.add(ApiInfo.buildApiInfo(apiAuth, requestMappingInfo, method, beanType));
+                apiInfoList.add(ApiInfo.build(apiAuth, requestMappingInfo, method, beanType));
             }
         }
         return apiInfoList;

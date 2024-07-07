@@ -27,4 +27,16 @@ public @interface ApiAuth {
      */
 
     AuthType value() default AuthType.NEED;
+
+
+    /**
+     *  身份维度数组，主要针对NEED类型的接口
+     *  使用方式:
+     *  - 1. @ApiAuth(roles = 1001)
+     *  - 2. @ApiAuth(roles = {1002, 1003})
+     *  - 3. @ApiAuth(value = AuthType.NEED, roles = {1001, 1002})
+     *  - 4. 只要加了身份维度的，就一定会转成NEED类型
+     */
+
+    int[] roles() default {};
 }

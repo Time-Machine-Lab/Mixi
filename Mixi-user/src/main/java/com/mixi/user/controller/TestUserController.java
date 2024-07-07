@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 @ApiAuth(AuthType.NOT)
-public class TestController {
+public class TestUserController {
 
-    @ApiAuth(AuthType.NEED)
+    @ApiAuth(roles = {1001, 1002})
     @PostMapping(value = "/test1")
     public Result test1(){
         return Result.success("test1");
@@ -33,7 +33,6 @@ public class TestController {
         return Result.success("test3");
     }
 
-    @ApiAuth(AuthType.INNER)
     @DeleteMapping(value = "/test4")
     public Result test4(){
         return Result.success("test4");

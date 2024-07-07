@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/webroom")
 @RequiredArgsConstructor
-@ApiAuth
+//@ApiAuth
 public class WebRoomTestController {
 
     @ApiAuth(AuthType.NOT)
@@ -23,12 +23,12 @@ public class WebRoomTestController {
         return Result.success("test1");
     }
 
+    @ApiAuth(roles = {1005, 1008})
     @PostMapping(value = "/test2")
     public Result test21(){
         return Result.success("test2");
     }
 
-    @ApiAuth(AuthType.INNER)
     @PutMapping(value = "/test3")
     public Result test3(){
         return Result.success("test3");
