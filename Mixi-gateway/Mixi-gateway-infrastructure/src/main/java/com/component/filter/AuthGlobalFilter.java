@@ -1,8 +1,6 @@
-package com.app.filter;
+package com.component.filter;
 
-import com.app.config.AuthProperties;
-import com.mixi.common.annotation.auth.ApiAuth;
-import com.mixi.common.annotation.auth.AuthType;
+import com.component.config.AuthProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

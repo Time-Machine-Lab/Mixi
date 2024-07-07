@@ -23,7 +23,7 @@ public class CloudApiProperties {
 
     private String group = "DEFAULT_GROUP";
 
-    private String dataIdPattern = "auth-api-%s.json";
+    private String dataIdPattern = "cloud-api-%s.json";
 
     /**
      * 构建配置请求服务

@@ -6,3 +6,6 @@ spring:
     import: classpath:you-cant-see-that.yml
   profiles:
     active: ${ACTIVE:test}
+
+  cloud:
+    api: true

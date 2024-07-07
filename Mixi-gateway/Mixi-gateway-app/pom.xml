@@ -19,6 +19,15 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-gateway-config</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-gateway-infrastructure</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

@@ -3,7 +3,6 @@ package com.mixi.common.component.cloud;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.pojo.ApiInfo;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,7 @@ public class CloudApiConfigBuilder {
     public String build(String existConfig, List<ApiInfo> apiInfoList) throws Exception {
 
         // 解析原始的配置文件
-        Map<String, List<ApiInfo>> jsonMap = parseJsonConfig(existConfig);
+        Map<String, List<ApiInfo>> jsonMap = parseJsonConfigToMap(existConfig);
 
         // 获取当前模块名
         String currentModule = apiInfoList.get(0).getModule();
@@ -60,7 +59,7 @@ public class CloudApiConfigBuilder {
     /**
      *  解析原始的JSON配置文件
      */
-    private Map<String, List<ApiInfo>> parseJsonConfig(String config) throws Exception {
+    private Map<String, List<ApiInfo>> parseJsonConfigToMap(String config) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         return config == null ? new HashMap<>() : objectMapper.readValue(config, Map.class);
     }

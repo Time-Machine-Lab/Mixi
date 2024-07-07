@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -31,8 +32,12 @@ public class CloudApiCollector implements InitializingBean {
     private List<ApiInfo> apiInfoList;
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
+    @Value("${spring.cloud.api:false}")
+    private boolean OPEN_FLAG;
+
     @Override
     public void afterPropertiesSet() {
+        if (!OPEN_FLAG) return;
         try {
             if (requestMappingHandlerMapping == null) {
                 log.error("RequestMappingHandlerMapping is null");
