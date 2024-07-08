@@ -9,7 +9,7 @@
         123
     </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import MixiWebSocket from '@/util/webSocket'
 let webSocket = new MixiWebSocket("ws://localhost:8001/websocket-server")
 webSocket.init()
