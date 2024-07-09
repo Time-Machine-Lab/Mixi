@@ -1,8 +1,7 @@
-package com.mixi.webroom.common;
+package com.mixi.webroom.utils;
 
 
-import com.mixi.webroom.common.enums.ResultEnums;
-import io.github.common.Status;
+import com.mixi.webroom.core.enums.ResultEnums;
 import io.github.common.web.Result;
 
 /**

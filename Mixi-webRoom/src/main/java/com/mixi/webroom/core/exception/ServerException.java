@@ -1,11 +1,11 @@
-package com.mixi.webroom.common.exception;
+package com.mixi.webroom.core.exception;
 
 /**
  * @Author：XiaoChun
  * @Date：2024/7/4 下午5:32
  */
 
-import com.mixi.webroom.common.enums.ResultEnums;
+import com.mixi.webroom.core.enums.ResultEnums;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

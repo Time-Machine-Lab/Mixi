@@ -1,10 +1,11 @@
 package com.mixi.webroom.service.Impl;
 
 import com.mixi.common.constant.enums.UserStateEnum;
-import com.mixi.webroom.common.ResultUtil;
-import com.mixi.webroom.common.enums.ResultEnums;
-import com.mixi.webroom.common.exception.ServerException;
-import com.mixi.webroom.common.rpc.VideoService;
+import com.mixi.webroom.core.worker.SnowFlakeIdWorker;
+import com.mixi.webroom.utils.ResultUtil;
+import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.core.exception.ServerException;
+import com.mixi.webroom.core.rpc.VideoService;
 import com.mixi.webroom.config.RedisKeyConfig;
 import com.mixi.webroom.pojo.DO.WebRoom;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
@@ -35,6 +36,9 @@ public class WebRoomServiceImpl implements WebRoomService {
     private VideoService videoService;
 
     @Resource
+    SnowFlakeIdWorker snowFlakeIdWorker;
+
+    @Resource
     private UserUtil userUtil;
 
     @Resource
@@ -45,21 +49,25 @@ public class WebRoomServiceImpl implements WebRoomService {
 
     @Override
     public Result<?> createRoom(CreateRoomDTO createRoomDTO, String uid) {
-        WebRoom webRoom = new WebRoom(createRoomDTO, uid);
+        String roomId = String.valueOf(snowFlakeIdWorker.nextId());
         Map<String, Object> resultMap = new HashMap<>();
-
-        if(redisUtil.setNxObject(RedisKeyConfig.roomOwner(uid), webRoom.getRoomId())){
+        String roomLink = null;
+        // 判断当前用户状态
+        if(redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), roomId)){
+            WebRoom webRoom = new WebRoom(createRoomDTO, roomId);
+            roomLink = webRoomUtil.link(webRoom);
+            videoService.createRoom().getData();
+            redisUtil.setCacheObject(RedisKeyConfig.roomOwner(webRoom.getRoomId()), uid);
             redisUtil.setCacheObject(RedisKeyConfig.roomInfo(webRoom.getRoomId()), webRoom);
-            redisUtil.setCacheObject(RedisKeyConfig.roomLimit(webRoom.getRoomId()), webRoom.getLimit());
-            resultMap.put("video", videoService.createRoom().getData());
-            resultMap.put("socketIp", socketIp);
-            userUtil.setUserState(uid, UserStateEnum.READY);
-            return Result.success(resultMap);
+            redisUtil.setCacheObject(RedisKeyConfig.roomNumber(webRoom.getRoomId()), Integer.MAX_VALUE - webRoom.getLimit());
+            redisUtil.setCacheObject(RedisKeyConfig.roomLink(webRoom.getRoomId()), roomLink);
         } else {
-            resultMap.put("link", webRoomUtil.link(redisUtil.getCacheObject(RedisKeyConfig.WEB_ROOM + uid)));
-            userUtil.setUserState(uid, UserStateEnum.READY);
-            return ResultUtil.error(ResultEnums.USER_HAS_ROOM, resultMap);
+            roomLink = redisUtil.getCacheObject(RedisKeyConfig.roomLink(
+                    redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid))
+            ));
         }
+        resultMap.put("link", roomLink);
+        return Result.success(resultMap);
     }
 
     @Override
@@ -68,8 +76,10 @@ public class WebRoomServiceImpl implements WebRoomService {
         if(roomId == null){
             throw new ServerException(ResultEnums.ONLY_HOMEOWNER);
         }
-        WebRoom webRoom = redisUtil.getCacheObject(RedisKeyConfig.roomInfo(roomId));
-        return Result.success(webRoomUtil.link(webRoom));
+        String roomLink = redisUtil.getCacheObject(RedisKeyConfig.roomLink(
+                redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid))
+        ));
+        return Result.success();
     }
 
     @Override

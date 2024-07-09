@@ -1,9 +1,6 @@
-package com.mixi.webroom.common.enums;
+package com.mixi.webroom.core.enums;
 
-import io.github.common.Status;
 import lombok.Getter;
-
-import java.io.Serializable;
 
 /**
  * @Author：XiaoChun

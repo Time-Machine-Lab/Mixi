@@ -1,9 +1,9 @@
-package com.mixi.webroom.common.aop;
+package com.mixi.webroom.core.aop;
 
 import com.mixi.common.constant.enums.UserStateEnum;
-import com.mixi.webroom.common.annotation.UserState;
-import com.mixi.webroom.common.enums.ResultEnums;
-import com.mixi.webroom.common.exception.ServerException;
+import com.mixi.webroom.core.annotation.UserState;
+import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.core.exception.ServerException;
 import com.mixi.webroom.config.RedisKeyConfig;
 import com.mixi.webroom.utils.RedisUtil;
 import org.aspectj.lang.JoinPoint;
@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -37,7 +34,7 @@ public class UserStateAspect {
     @Resource
     RedisUtil redisUtil;
 
-    @Pointcut(value = "@annotation(com.mixi.webroom.common.annotation.UserState)")
+    @Pointcut(value = "@annotation(com.mixi.webroom.core.annotation.UserState)")
     public void pointCut() {
 
     }
