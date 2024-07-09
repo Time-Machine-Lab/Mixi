@@ -4,6 +4,8 @@ import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import io.github.common.web.Result;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 /**
  * @Author：XiaoChun
@@ -11,12 +13,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface WebRoomService {
-    Result createRoom(CreateRoomDTO createRoomDTO, String uid);
+    Result<?> createRoom(CreateRoomDTO createRoomDTO, String uid);
 
-    Result shareRoom();
+    Result<?> linkShare(String uid);
 
-    Result joinRoom();
+    Result<?> pull(String uid, List<String> ids);
 
-    Result quitRoom();
+    Result<?> linkJoin(String key);
+
+    Result<?> quitRoom();
 
 }

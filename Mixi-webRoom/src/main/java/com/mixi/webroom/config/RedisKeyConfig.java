@@ -16,4 +16,16 @@ public class RedisKeyConfig {
     public static String userVideoState(String uid){
         return WEB_ROOM + uid + ":VideoState";
     }
+
+    public static String roomLimit(String roomId){
+        return WEB_ROOM + roomId + ":Limit";
+    }
+
+    public static String roomInfo(String roomId){
+        return WEB_ROOM + roomId + ":Info";
+    }
+
+    public static String roomOwner(String uid){
+        return WEB_ROOM + uid + ":Owner";
+    }
 }

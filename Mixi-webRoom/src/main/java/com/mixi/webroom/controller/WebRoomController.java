@@ -4,13 +4,13 @@ import com.mixi.common.constant.enums.UserStateEnum;
 import com.mixi.webroom.common.annotation.UserState;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
-import org.apache.coyote.http11.upgrade.UpgradeServletOutputStream;
 import org.springframework.web.bind.annotation.*;
 import io.github.common.web.Result;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
 *@Author：XiaoChun
@@ -23,26 +23,50 @@ public class WebRoomController {
     @Resource
     WebRoomService webRoomService;
 
-    //uid 标识用户
     @PostMapping("/create")
     @UserState(value = UserStateEnum.NORMAL)
-    public Result createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO,
-                             @RequestHeader @NotBlank String uid) {
+    public Result<?> createRoom(@RequestBody
+                                    @Valid
+                                    CreateRoomDTO createRoomDTO,
+                                    @RequestHeader
+                                    @Valid
+                                    @NotBlank
+                                    String uid) {
         return webRoomService.createRoom(createRoomDTO, uid);
     }
 
-    @PostMapping("/share")
-    public Result shareRoom() {
-        return webRoomService.shareRoom();
+    @GetMapping("/linkShare")
+    public Result<?> linkShare(@RequestHeader
+                                   @Valid
+                                   @NotBlank
+                                   String uid) {
+        return webRoomService.linkShare(uid);
     }
 
-    @PostMapping("/join")
-    public Result joinRoom() {
-        return webRoomService.joinRoom();
+    @PostMapping("/pull")
+    public Result<?> pull(@RequestHeader
+                               @Valid
+                               @NotBlank
+                               String uid,
+                          @RequestBody
+                          List<String> ids) {
+        return webRoomService.pull(uid, ids);
+    }
+
+    @GetMapping("/linkJoin")
+    public Result<?> linkJoin(@RequestHeader
+                                  @Valid
+                                  @NotBlank
+                                  String uid,
+                                  @RequestParam
+                                  @Valid
+                                  @NotBlank
+                                  String key) {
+        return webRoomService.linkJoin(key);
     }
 
     @PostMapping("/quit")
-    public Result quitRoom() {
+    public Result<?> quitRoom() {
         return webRoomService.quitRoom();
     }
 }

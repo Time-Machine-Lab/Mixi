@@ -15,7 +15,8 @@ public enum ResultEnums{
     SERVER_ERROR("500", "服务器错误"),
     USER_HAS_ROOM("420", "用户已有房间"),
     USER_IN_ROOM("421", "用户已在房间中"),
-    USER_STATE_ERROR("422", "用户状态错误");
+    USER_STATE_ERROR("422", "用户状态错误"),
+    ONLY_HOMEOWNER("423", "只有房主可以分享房间");
 
     private final String code;
 

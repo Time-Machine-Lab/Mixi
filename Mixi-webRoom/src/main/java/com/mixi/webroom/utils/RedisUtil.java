@@ -43,7 +43,6 @@ public class RedisUtil {
      * @return 缓存的对象
      */
     public <T> void setCacheObject(String key, T value) {
-
         setCacheObject(key, value, defaultExpire, defaultTimeUnit);
     }
 
@@ -166,5 +165,9 @@ public class RedisUtil {
      */
     public Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    public Boolean exist(String key){
+        return redisTemplate.hasKey(key);
     }
 }
