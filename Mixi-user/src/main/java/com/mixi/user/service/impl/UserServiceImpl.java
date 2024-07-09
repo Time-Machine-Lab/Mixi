@@ -1,5 +1,6 @@
 package com.mixi.user.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mixi.user.designpattern.chain.ext.CodeCheckApproveChain;
 import com.mixi.user.designpattern.chain.ext.EmailCheckApproveChain;
@@ -18,6 +19,7 @@ import com.mixi.user.mapper.UserMapper;
 import com.mixi.user.utils.*;
 import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -39,6 +41,7 @@ import static com.mixi.user.constants.RedisConstant.REDIS_PRE;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
@@ -100,10 +103,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Result commonRegister(UserRegisterVo userRegisterVo) {
         String email = userRegisterVo.getEmail(),code = userRegisterVo.getCode();
-        emailCheckApproveChain.setNext(email, codeCheckApproveChain);
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
+        if (!Objects.isNull(user)){
+            log.info("邮箱以被注册！");
+            throw new RuntimeException(COMMON_ERROR);
+        }
         codeCheckApproveChain.setNext(code,lastStepApproveChain);
-        emailCheckApproveChain.approve();
-        User user = User.baseBuild(email);
+        codeCheckApproveChain.approve();
+        user = User.baseBuild(email);
         userMapper.insert(user);
         return Result.success(TokenUtil.getToken(user.getId(),email));
     }
@@ -111,6 +118,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Result<?> login(UserLoginVo userLoginVo) {
         return null;
+    }
+
+    @Override
+    public Result userInfo() {
+        return Result.success(userMapper.selectById("1"));
     }
 }
 

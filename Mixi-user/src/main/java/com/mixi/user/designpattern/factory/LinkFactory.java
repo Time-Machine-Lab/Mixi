@@ -3,6 +3,7 @@ package com.mixi.user.designpattern.factory;
 import com.mixi.user.utils.UuidUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @NAME: LinkFactory
@@ -17,9 +18,18 @@ public class LinkFactory {
 
     @Value("${env.port}")
     private String port;
+    public String getLink(String email, String uuid, String type) {
 
-    public String  getLink(String email,String uuid,String type){
-        String link = "http://"+ ip + ":" + port + "/api/user/verify?" + "&email=" + email + "&uid=" + uuid + "&type=" + type;
-        return link;
+        UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host(ip)
+                .port(port)
+                .path("/api/user/verify");
+
+        builder.queryParam("email", email)
+                .queryParam("uid", uuid)
+                .queryParam("type", type);
+
+        return builder.toUriString();
     }
 }

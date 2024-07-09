@@ -30,7 +30,7 @@ public class CodeCheckApproveChain  extends ApproveChain {
         if (Objects.equals(getCode(),getParams())){
             return getNextChain().approve();
         }
-        log.debug("验证码错误");
+        log.info("验证码错误");
         throw new RuntimeException(COMMON_ERROR);
     }
     public static String getCode(){
