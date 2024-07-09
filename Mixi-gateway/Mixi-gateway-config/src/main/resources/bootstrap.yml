@@ -7,6 +7,6 @@ spring:
   config:
     import: classpath:you-cant-see-that.yml
   profiles:
-    active: ${ACTIVE:dev}
+    active: ${ACTIVE:test}
   application:
     name: mixi-gateway-${UNIQUE_ID:0}-service

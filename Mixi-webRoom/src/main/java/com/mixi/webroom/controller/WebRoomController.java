@@ -1,5 +1,7 @@
 package com.mixi.webroom.controller;
 
+import com.mixi.common.annotation.auth.ApiAuth;
+import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.constant.enums.UserStateEnum;
 import com.mixi.webroom.common.annotation.UserState;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;

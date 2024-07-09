@@ -20,13 +20,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.geniusay</groupId>
-            <artifactId>assistant-boot-start</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.geniusay</groupId>
-            <artifactId>assistant-service</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
         </dependency>
     </dependencies>
 </project>
