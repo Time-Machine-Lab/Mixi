@@ -2,16 +2,9 @@ import { defineStore } from "pinia";
 
 import router from "../router";
 import {storage} from "@/util/storage";
+import type {Profile} from "@/api/user/userType";
 
-interface Profile {
-  username: string;
-  email: string;
-  password: string;
-  avatar: string;
-  nickname: string;
-  sex: string;
-  resume: string;
-}
+
 export const useAuthStore = defineStore({
   id: "auth",
   state: () => ({
