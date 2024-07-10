@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: Mixi-server
+  config:
+    import: classpath:application-test.yml
+  profiles:
+    active: dev
+

@@ -1,6 +1,8 @@
-package com.mixi.server.netty.handler;
+package com.mixi.server.netty.channel.handler;
 
 import com.mixi.server.netty.channel.MixiNettyChannel;
+
+import java.rmi.RemoteException;
 
 /**
  * @Description
@@ -14,4 +16,5 @@ public interface ChannelHandler {
     void send(MixiNettyChannel channel,Object msg);
     void receive(MixiNettyChannel channel,Object msg);
     void caught(MixiNettyChannel channel,Throwable throwable);
+
 }

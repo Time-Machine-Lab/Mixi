@@ -1,0 +1,3 @@
+mixi:
+  netty:
+    channelIdleSeconds: 180
