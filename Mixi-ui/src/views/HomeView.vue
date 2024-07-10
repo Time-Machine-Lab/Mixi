@@ -10,6 +10,7 @@
 -->
 <script setup lang="ts">
 import { ref } from 'vue'
+import router from "@/router";
 
 let members = ref([
   { name: 'Weisir', slogan: 'weisir', description: 'weisir', avatar: '' },
@@ -28,7 +29,7 @@ let members = ref([
       <div class="create-box flex">
         <h1>Mixi</h1>
         <p>便捷实时通讯网站</p>
-        <button class="M-btn" style="width: 200px; height: 40px">+创建房间</button>
+        <button @click="router.push('/creat')" class="M-btn" style="width: 200px; height: 40px">+创建房间</button>
       </div>
     </div>
     <div class="team">
@@ -53,12 +54,6 @@ let members = ref([
   </div>
 </template>
 <style scoped>
-.main {
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  margin-top: 50px;
-}
 .create {
   position: relative;
   width: 100%;

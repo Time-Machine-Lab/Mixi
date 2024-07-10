@@ -9,6 +9,13 @@
   width:calc(100vw - 15px);
 }
 
+.main {
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  margin-top: 50px;
+}
+
 h1{
   font-size: 60px;
 }
