@@ -10,8 +10,8 @@
 -->
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import Head from "@/components/head.vue";
-import Foot from "@/components/foot.vue";
+import Head from "@/components/Head.vue";
+import Foot from "@/components/Foot.vue";
 </script>
 
 <template>
