@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ public class MixiHandlerRouter {
 
     private static Logger log = LoggerFactory.getLogger(MixiHandlerRouter.class);
 
-    private static Map<String,MixiHandler> mixiHandlerMap;
+    private static final Map<Integer,MixiHandler> MIXI_HANDLER_MAP = new HashMap<>();
     private ApplicationContext applicationContext;
     @Autowired
     public MixiHandlerRouter(ApplicationContext applicationContext){
@@ -27,9 +28,16 @@ public class MixiHandlerRouter {
     }
     @PostConstruct
     private void init(){
-        mixiHandlerMap = applicationContext.getBeansOfType(MixiHandler.class);
-        log.info(mixiHandlerMap.size()+"beans of MixiHandler to be load...");
+        Map<String, MixiHandler> map = applicationContext.getBeansOfType(MixiHandler.class);
+        map.forEach((k,v)->{
+            int mark = v.getMark();
+            MIXI_HANDLER_MAP.put(mark,v);
+        });
+        log.info(MIXI_HANDLER_MAP.size()+"beans of MixiHandler to be load...");
+        log.info(MIXI_HANDLER_MAP.toString());
     }
 
-
+    public static MixiHandler route(int cmd){
+        return MIXI_HANDLER_MAP.get(cmd);
+    }
 }

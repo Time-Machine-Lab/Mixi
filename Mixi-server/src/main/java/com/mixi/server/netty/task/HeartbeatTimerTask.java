@@ -28,7 +28,7 @@ public class HeartbeatTimerTask extends AbstractTimerTask{
             long now = System.currentTimeMillis();
             boolean isReadTimeout = isReadTimeout(channel, now);
             boolean isWriteTimeout = isWriteTimeout(channel, now);
-            if (isReadTimeout || isWriteTimeout) {
+            if (isReadTimeout && isWriteTimeout) {
                 channel.close();
             }
         } catch (Throwable t) {

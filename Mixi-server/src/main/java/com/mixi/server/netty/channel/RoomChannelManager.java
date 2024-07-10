@@ -17,46 +17,34 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RoomChannelManager {
 
-    private final Map<String, RoomInfo> roomInfoMap = new ConcurrentHashMap<>();
+    private static final Map<String, RoomInfo> ROOM_INFO_MAP = new ConcurrentHashMap<>();
     @Data
     public static class RoomInfo {
         private final String name;
         private final Set<MixiNettyChannel> channels;
-        private final Map<String, Set<MixiNettyChannel>> memberChannelsMap;
-
+        private final Map<String, MixiNettyChannel> memberChannelsMap;
         public RoomInfo(String name) {
             this.name = name;
             this.channels = new ConcurrentHashSet<>();
             this.memberChannelsMap = new ConcurrentHashMap<>();
         }
 
-        public boolean registerUid(String uid, MixiNettyChannel channel) {
-            return memberChannelsMap.computeIfAbsent(uid, k -> new ConcurrentHashSet<>(1)).add(channel);
+        public MixiNettyChannel registerUid(String uid, MixiNettyChannel channel) {
+            return memberChannelsMap.putIfAbsent(uid,channel);
         }
 
         public boolean deregisterUid(MixiNettyChannel channel) {
-            String oldUid = channel.getAttrs().getUid();
-            if (StringUtils.isBlank(oldUid)) {
+            String memberUid = channel.getAttrs().getUid();
+            if (StringUtils.isBlank(memberUid)) {
                 return false;
             }
-            Set<MixiNettyChannel> channels = memberChannelsMap.get(oldUid);
-            if (channels != null && channels.remove(channel)) {
-                if (channels.isEmpty()) {
-                    // destroy if empty
-                    memberChannelsMap.computeIfPresent(oldUid, (k, v) -> v.isEmpty() ? null : v);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public Set<MixiNettyChannel> getChannelsByMember(String member) {
-            return member == null ? Collections.emptySet() : memberChannelsMap.getOrDefault(member, Collections.emptySet());
+            memberChannelsMap.remove(memberUid);
+            return true;
         }
     }
 
-    public boolean addChannel(String roomName, MixiNettyChannel channel, String uid) {
-        RoomInfo roomInfo = roomInfoMap.computeIfAbsent(roomName, RoomInfo::new);
+    public static boolean addChannel(String roomName, MixiNettyChannel channel, String uid) {
+        RoomInfo roomInfo = ROOM_INFO_MAP.computeIfAbsent(roomName, RoomInfo::new);
         if (StringUtils.isNotBlank(uid)) {
             roomInfo.registerUid(uid, channel);
         }
@@ -65,22 +53,21 @@ public class RoomChannelManager {
         return isNewAdded;
     }
 
-    public void removeChannel(String roomName, MixiNettyChannel channel) {
-        RoomInfo roomInfo = roomInfoMap.get(roomName);
+    public static void removeChannel(String roomName, MixiNettyChannel channel) {
+        RoomInfo roomInfo = ROOM_INFO_MAP.get(roomName);
         if (roomInfo != null) {
             Set<MixiNettyChannel> channels = roomInfo.getChannels();
             channels.remove(channel);
             if (channels.isEmpty()) {
-                // destroy room if empty
-                roomInfoMap.computeIfPresent(roomName, (k, v) -> v.getChannels().isEmpty() ? null : v);
+                ROOM_INFO_MAP.computeIfPresent(roomName, (k, v) -> v.getChannels().isEmpty() ? null : v);
             }
             roomInfo.deregisterUid(channel);
         }
         channel.getAttrs().setEnter(false);
     }
 
-    public void destroyRoom(String roomName) {
-        RoomInfo roomInfo = roomInfoMap.remove(roomName);
+    public static void destroyRoom(String roomName) {
+        RoomInfo roomInfo = ROOM_INFO_MAP.remove(roomName);
         if (roomInfo != null) {
             for (MixiNettyChannel channel : roomInfo.getChannels()) {
                 channel.getAttrs().setEnter(false);
@@ -88,11 +75,11 @@ public class RoomChannelManager {
         }
     }
 
-    public RoomInfo getRoomInfo(String roomName) {
-        return roomInfoMap.get(roomName);
+    public static RoomInfo getRoomInfo(String roomName) {
+        return ROOM_INFO_MAP.get(roomName);
     }
 
-    public Collection<RoomInfo> getAllRoomInfos() {
-        return roomInfoMap.values();
+    public static Collection<RoomInfo> getAllRoomInfos() {
+        return ROOM_INFO_MAP.values();
     }
 }

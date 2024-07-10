@@ -3,8 +3,6 @@ package com.mixi.server.netty.handler;
 import com.mixi.server.netty.channel.MixiNettyChannel;
 import com.mixi.server.netty.protocol.AccessMessage;
 
-import java.rmi.RemoteException;
-
 /**
  * @Description
  * @Author welsir
@@ -12,10 +10,11 @@ import java.rmi.RemoteException;
  */
 public interface MixiHandler {
 
-    Object handle(MixiNettyChannel channel, AccessMessage message) throws RemoteException;
+    Object handle(MixiNettyChannel channel, AccessMessage message);
 
-    default void processEvent(MixiNettyChannel channel, AccessMessage message) throws RemoteException {
+    default void processEvent(MixiNettyChannel channel, AccessMessage message) {
         handle(channel, message);
     }
 
+    int getMark();
 }
