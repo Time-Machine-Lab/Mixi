@@ -1,6 +1,6 @@
 class MixiWebSocket {
     private url: string = ''
-    private ws: WebSocket = null
+    private ws: WebSocket | undefined
     private onopenFunc: Function = () => {
         console.log("websocket open")
     }
@@ -13,7 +13,7 @@ class MixiWebSocket {
     private oncloseFunc: Function = () => {
         console.log("websocket closed")
     }
-    constructor(url) {
+    constructor(url:string) {
         this.url = url
     }
     // 成功连接后触发
@@ -21,7 +21,7 @@ class MixiWebSocket {
         this.onopenFunc = func
     }
     // 接收来自服务端的消息后触发
-    onmessage(func = (event) => {}) {
+    onmessage(func = (event:any) => {}) {
         this.onmessageFunc = func
     }
     // 发生错误时触发
@@ -49,13 +49,13 @@ class MixiWebSocket {
             this.oncloseFunc()
         };
     }
-    send(msg) {
-        if(this.ws.readyState == WebSocket.OPEN) {
-            this.ws.send(msg)
+    send(msg:string) {
+        if(this.ws!.readyState == WebSocket.OPEN) {
+            this.ws!.send(msg)
         }
     }
     close() {
-        this.ws.close()
+        this.ws!.close()
     }
 }
 export default MixiWebSocket
