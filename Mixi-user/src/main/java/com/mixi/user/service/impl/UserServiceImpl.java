@@ -2,14 +2,11 @@ package com.mixi.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mixi.user.designpattern.chain.ext.CodeCheckApproveChain;
-import com.mixi.user.designpattern.chain.ext.EmailCheckApproveChain;
-import com.mixi.user.designpattern.chain.ext.LastStepApproveChain;
+import com.mixi.common.exception.ServeException;
+import com.mixi.user.designpattern.chain.ApproveChain;
+import com.mixi.user.designpattern.chain.ApproveChainBuilder;
 import com.mixi.user.designpattern.factory.LinkFactory;
-import com.mixi.user.designpattern.strategy.LinkVerifyProcess;
-import com.mixi.user.designpattern.strategy.LinkVerifyStrategy;
-import com.mixi.user.designpattern.strategy.imp.LoginLinkVerifyStrategy;
-import com.mixi.user.designpattern.strategy.imp.RegisterLinkVerifyStrategy;
+import com.mixi.user.designpattern.strategy.LinkVerifyStrategyFactory;
 import com.mixi.user.domain.entity.User;
 import com.mixi.user.domain.vo.InfoVo;
 import com.mixi.user.domain.vo.UserLoginVo;
@@ -20,12 +17,11 @@ import com.mixi.user.utils.*;
 import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -45,16 +41,14 @@ import static com.mixi.user.constants.RedisConstant.REDIS_PRE;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
+    private final UserDaoService userDaoService;
     private final UserMapper userMapper;
-    private final RedisTemplate redisTemplate; // 使用<String, Object>指定RedisTemplate的泛型类型
+    private final RedisTemplate redisTemplate;
     private final ThreadService threadService;
     private final LinkFactory linkFactory;
 
-    private final LastStepApproveChain lastStepApproveChain;
-    private final CodeCheckApproveChain codeCheckApproveChain;
-    private final EmailCheckApproveChain emailCheckApproveChain;
-
-    private final LinkVerifyProcess linkVerifyProcess;
+    private final ApproveChainBuilder approveChainBuilder;
+    private final String HOME_URL = "www.baidu.com";
 
     @Override
     public Result link(String email, String type) {
@@ -80,13 +74,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Result linkVerify(String email, String uid, String type) {
-        String token = linkVerifyProcess.process(type, email, uid);
-        Map<String, String> stringStringMap = MapUtils.build()
-                .set("token",token)
-                .set("transTo", "www.baidu.com")
-                .buildMap();
-        return Result.success(stringStringMap);
+        return Result.success(MapUtils.build()
+                .set("token", LinkVerifyStrategyFactory.getInvokeStrategy(type).process(email, uid))
+                .set("transTo", HOME_URL)
+                .buildMap());
     }
+
 
     @Override
     public Result updateInfo(String uid, InfoVo infoVo) {
@@ -103,16 +96,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Result commonRegister(UserRegisterVo userRegisterVo) {
         String email = userRegisterVo.getEmail(),code = userRegisterVo.getCode();
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
-        if (!Objects.isNull(user)){
-            log.info("邮箱以被注册！");
-            throw new RuntimeException(COMMON_ERROR);
-        }
-        codeCheckApproveChain.setNext(code,lastStepApproveChain);
-        codeCheckApproveChain.approve();
-        user = User.baseBuild(email);
-        userMapper.insert(user);
-        return Result.success(TokenUtil.getToken(user.getId(),email));
+        approveChainBuilder.buildInstance()
+                .set("CodeCheckApproveChain","000000")
+                .Build()
+                .approve();
+        User user = User.baseBuild(email);
+        return Result.success(userDaoService.insert(user));
     }
 
     @Override
@@ -122,7 +111,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Result userInfo() {
-        return Result.success(userMapper.selectById("1"));
+        return Result.success();
     }
 }
 

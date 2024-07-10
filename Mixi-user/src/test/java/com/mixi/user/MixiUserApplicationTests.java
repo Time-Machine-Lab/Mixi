@@ -1,6 +1,5 @@
 package com.mixi.user;
 
-import com.mixi.user.utils.logUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;

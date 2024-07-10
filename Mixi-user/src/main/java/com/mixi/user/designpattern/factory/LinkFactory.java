@@ -13,6 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Component
 public class LinkFactory {
+
+    private final String AGREEMENT = "http";
+    private final String PATH = "/api/user/verify";
+
     @Value("${env.ip}")
     private String ip;
 
@@ -21,14 +25,14 @@ public class LinkFactory {
     public String getLink(String email, String uuid, String type) {
 
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("http")
+                .scheme(AGREEMENT)
                 .host(ip)
                 .port(port)
-                .path("/api/user/verify");
+                .path(PATH);
 
         builder.queryParam("email", email)
-                .queryParam("uid", uuid)
-                .queryParam("type", type);
+                .queryParam("type", type)
+                .queryParam("uid", uuid);
 
         return builder.toUriString();
     }
