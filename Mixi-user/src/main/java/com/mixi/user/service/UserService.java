@@ -22,4 +22,6 @@ public interface UserService extends IService<User> {
     Result commonRegister(UserRegisterVo userRegisterVo);
 
     Result login(UserLoginVo userLoginVo);
+
+    Result userInfo();
 }

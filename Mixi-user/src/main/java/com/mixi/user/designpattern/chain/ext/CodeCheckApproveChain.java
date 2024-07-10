@@ -1,13 +1,12 @@
 package com.mixi.user.designpattern.chain.ext;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mixi.user.designpattern.chain.ApproveChain;
-import com.mixi.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static com.mixi.user.constants.CommonConstant.COMMON_ERROR;
@@ -19,18 +18,25 @@ import static com.mixi.user.constants.CommonConstant.COMMON_ERROR;
  * @DATE: 2024/7/4
  */
 @Scope("prototype")
-@Component
+@Component("CodeCheckApproveChain")
 @RequiredArgsConstructor
 @Slf4j
 public class CodeCheckApproveChain  extends ApproveChain {
 
+    private final String NAME = "CodeCheckApproveChain";
+
     //todo 补充验证码校验方式
     @Override
     public boolean approve() {
-        if (Objects.equals(getCode(),getParams())){
+        if (getCode().equals(getParams()[0])){
+            Map map = checkRes();
+            map.put(NAME,getCode());
+            if (Objects.isNull(getNextChain())){
+                return true;
+            }
             return getNextChain().approve();
         }
-        log.debug("验证码错误");
+        log.info("验证码错误");
         throw new RuntimeException(COMMON_ERROR);
     }
     public static String getCode(){

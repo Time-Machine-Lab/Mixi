@@ -49,10 +49,14 @@ public class UserController {
                              @RequestBody InfoVo infoVo){
         return userService.updateInfo(uid,infoVo);
     }
-
     @PostMapping(value = "/common/register")
     @SystemLog(businessName = "用户常规注册")
     public Result commonRegister(@RequestBody  @Valid UserRegisterVo userRegisterVo){
         return userService.commonRegister(userRegisterVo);
+    }
+
+    @GetMapping()
+    public Result info(){
+        return userService.userInfo();
     }
 }

@@ -48,7 +48,7 @@ public class EmailUtil {
 		Properties props = new Properties();
 
 		// 开启debug调试
-		props.setProperty("mail.debug", "true");
+//		props.setProperty("mail.debug", "true");
 
 		// 发送服务器需要身份验证
 		props.setProperty("mail.smtp.auth", "true");

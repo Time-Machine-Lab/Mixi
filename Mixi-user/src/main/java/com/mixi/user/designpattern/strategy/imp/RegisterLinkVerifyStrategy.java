@@ -1,8 +1,13 @@
 package com.mixi.user.designpattern.strategy.imp;
 
+import com.mixi.user.designpattern.chain.ApproveChain;
+import com.mixi.user.designpattern.chain.ApproveChainBuilder;
 import com.mixi.user.designpattern.strategy.LinkVerifyStrategy;
+import com.mixi.user.designpattern.strategy.LinkVerifyStrategyFactory;
 import com.mixi.user.domain.entity.User;
 import com.mixi.user.mapper.UserMapper;
+import com.mixi.user.service.impl.RedisDaoService;
+import com.mixi.user.service.impl.UserDaoService;
 import com.mixi.user.utils.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,25 +28,24 @@ import static com.mixi.user.constants.RedisConstant.REDIS_PRE;
 @Slf4j
 public class RegisterLinkVerifyStrategy implements LinkVerifyStrategy {
 
-    private final RedisTemplate redisTemplate;
-    private final UserMapper userMapper;
-
+    private final String NAME = "RegisterLinkVerifyStrategy";
+    private final RedisDaoService redisDaoService;
+    private final UserDaoService userDaoService;
+    private final ApproveChainBuilder approveChainBuilder;
     @Override
     public String process(String email, String uid) {
-        String redisDataMap = (String) redisTemplate.opsForValue().get(REDIS_PRE + email + ":" + "uid");
-        if (Objects.isNull(redisDataMap) || !Objects.equals(uid, redisDataMap)) {
-            log.debug("链接出错！");
-            throw new RuntimeException(COMMON_ERROR);
-        }
-        redisTemplate.delete(REDIS_PRE + email + ":" + "uid"); // 删除指定键的数据
-        redisTemplate.delete(REDIS_PRE + email + ":" + "times");
+        approveChainBuilder.buildInstance()
+                .set("RedisQueryExistCheck", REDIS_PRE + email + ":" + "uid", uid)
+                .Build()
+                .approve();
+        redisDaoService.deleteKeys(REDIS_PRE + email + ":" + "uid",REDIS_PRE + email + ":" + "times");
         User user = User.baseBuild(email);
-        try {
-            userMapper.insert(user);
-        }catch (Exception e){
-            log.debug("该邮箱已经被注册！");
-            throw new RuntimeException(COMMON_ERROR);
-        }
-        return  TokenUtil.getToken(user.getId(),email);
+        userDaoService.insert(user);
+        return TokenUtil.getToken(user.getId(),email);
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        LinkVerifyStrategyFactory.register(NAME,this);
     }
 }
