@@ -1,6 +1,6 @@
-package com.mixi.webroom.pojo.DO;
+package com.mixi.webroom.domain.entity;
 
-import com.mixi.webroom.pojo.dto.CreateRoomDTO;
+import com.mixi.webroom.domain.dto.CreateRoomDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

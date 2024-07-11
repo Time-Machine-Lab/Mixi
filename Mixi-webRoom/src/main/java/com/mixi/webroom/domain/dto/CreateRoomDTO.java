@@ -1,7 +1,6 @@
-package com.mixi.webroom.pojo.dto;
+package com.mixi.webroom.domain.dto;
 
 import lombok.Data;
-import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;

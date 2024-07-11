@@ -7,14 +7,12 @@ import com.mixi.webroom.core.enums.ResultEnums;
 import com.mixi.webroom.core.exception.ServerException;
 import com.mixi.webroom.core.rpc.VideoService;
 import com.mixi.webroom.config.RedisKeyConfig;
-import com.mixi.webroom.pojo.DO.WebRoom;
-import com.mixi.webroom.pojo.dto.CreateRoomDTO;
+import com.mixi.webroom.domain.entity.WebRoom;
+import com.mixi.webroom.domain.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import com.mixi.webroom.utils.*;
 import io.github.common.web.Result;
 import io.github.servicechain.ServiceChainFactory;
-import io.github.servicechain.bootstrap.FailCallback;
-import io.github.servicechain.bootstrap.ServiceChainBootstrap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +65,6 @@ public class WebRoomServiceImpl implements WebRoomService {
         if(redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), roomId)){
             WebRoom webRoom = new WebRoom(createRoomDTO, roomId);
             roomLink = webRoomUtil.link(webRoom);
-            Map<String, Object> map = new HashMap<>();
 
             videoService.createRoom().getData();
             redisUtil.setCacheObject(RedisKeyConfig.roomOwner(webRoom.getRoomId()), uid);
