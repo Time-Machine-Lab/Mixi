@@ -2,8 +2,7 @@ package com.mixi.server.netty;
 
 import com.mixi.server.netty.channel.MixiNettyChannel;
 import com.mixi.server.netty.channel.support.ChannelAttrs;
-import com.mixi.server.netty.handler.ChannelHandler;
-import com.mixi.server.netty.protocol.AccessMessage;
+import com.mixi.server.netty.channel.handler.ChannelHandler;
 import com.mixi.server.util.NetUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.UUID;
 
 /**
  * @Description

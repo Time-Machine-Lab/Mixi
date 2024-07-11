@@ -17,6 +17,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.mixi.user.constants.CommonConstant.LOG_LIMIT_NUM;
+
 
 /**
  * 日志打印
@@ -86,18 +88,14 @@ public class LogAspect {
 
     public static String toSafeJsonString(Object[] args) {
         // 使用 SerializerFeature 控制序列化行为
-
         String jsonString = JSON.toJSONString(args,
                 SerializerFeature.WriteSlashAsSpecial,  // 将斜杠'/'转义为 '\/' 形式
                 SerializerFeature.DisableCircularReferenceDetect);
-
-
         // 使用流操作截取前 100 个字符，并返回截取后的字符串
         String res = logUtils.cleanMsg(jsonString).chars()
-                .limit(100)
+                .limit(LOG_LIMIT_NUM)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
         return res;
     }
 }

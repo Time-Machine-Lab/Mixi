@@ -11,24 +11,13 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConfigurationProperties("mixi.netty")
+@Data
 public class ServerProperties {
 
     private Integer maxPipelineNum=2048;
     private Integer wsPort=8090;
-
-    public Integer getMaxPipelineNum() {
-        return maxPipelineNum;
-    }
-
-    public void setMaxPipelineNum(Integer maxPipelineNum) {
-        this.maxPipelineNum = maxPipelineNum;
-    }
-
-    public Integer getWsPort() {
-        return wsPort;
-    }
-
-    public void setWsPort(Integer wsPort) {
-        this.wsPort = wsPort;
-    }
+    private Integer channelIdleSeconds=180;
+    private Integer probeIdleSeconds=120;
+    private Integer probeWaitSeconds=5;
+    private Integer handshakeWaitSeconds=5;
 }
