@@ -1,7 +1,6 @@
 package com.mixi.webroom.core.chain;
 
 import com.mixi.webroom.config.RedisKeyConfig;
-import com.mixi.webroom.core.chain.tasks.ShareTaskDO;
 import com.mixi.webroom.utils.RedisUtil;
 import io.github.servicechain.annotation.Chain;
 import io.github.servicechain.chain.AbstractFilterChain;
