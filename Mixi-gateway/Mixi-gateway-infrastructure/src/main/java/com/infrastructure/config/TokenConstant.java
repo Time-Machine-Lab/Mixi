@@ -1,4 +1,4 @@
-package com.component.config;
+package com.infrastructure.config;
 
 /**
  * 描述: JWT操作常量

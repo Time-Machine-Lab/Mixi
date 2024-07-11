@@ -10,3 +10,5 @@ spring:
     active: ${ACTIVE:test}
   application:
     name: mixi-gateway-${UNIQUE_ID:0}-service
+
+

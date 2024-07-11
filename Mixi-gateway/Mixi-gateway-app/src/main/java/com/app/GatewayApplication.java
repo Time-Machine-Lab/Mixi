@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableDiscoveryClient
 @EnableScheduling
 @EnableAsync
-@ComponentScan(basePackages = {"com.app", "com.component", "com.mixi.common.config"})
+@ComponentScan(basePackages = {"com.app", "com.infrastructure", "com.mixi.common.config"})
 public class GatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
