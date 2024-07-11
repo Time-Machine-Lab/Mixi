@@ -29,8 +29,6 @@ public class TokenUtils {
      * @return boolean 是否有效
      */
     public static boolean isTokenValid(String token) {
-        // 这里需要实现 Token 验证逻辑，比如解码 Token 并检查其有效性
-        // 这是一个示例，具体实现需要根据实际情况编写
         return token != null && !token.isEmpty(); // 示例验证逻辑
     }
 
