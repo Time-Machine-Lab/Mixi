@@ -1,35 +1,58 @@
-@import './base.css';
+*{
+  margin:0;
+  top:0;
+  left:0;
+  font-size: 16px;
+}
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+  width:calc(100vw - 15px);
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+.main {
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  margin-top: 50px;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+h1{
+  font-size: 60px;
 }
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+h2{
+  font-size: 50px;
+}
+h3{
+  font-size: 40px;
+}
+h4{
+  font-size: 30px;
+}
+h5{
+  font-size: 20px;
+}
+.flex{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.border{
+  border: solid 1px #3a3a3a;
+}
+.M-btn{
+  background-color: #181818;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.M-btn:hover{
+  background-color: #3a3a3a;
+}
+.M-card{
+  border: #d7d7d7 1px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto auto;
 }

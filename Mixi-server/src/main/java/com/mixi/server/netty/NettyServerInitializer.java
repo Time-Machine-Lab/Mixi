@@ -2,10 +2,11 @@ package com.mixi.server.netty;
 
 import com.mixi.server.netty.codec.ServerMessageWebSocketDecoder;
 import com.mixi.server.netty.codec.ServerMessageWebSocketEncoder;
+import com.mixi.server.netty.channel.handler.ChannelHandlerWrap;
+import com.mixi.server.netty.channel.handler.CenterHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
@@ -19,7 +20,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     //Netty事件统一处理器
-    private static final NettyServerHandler NETTY_SERVER_HANDLER = new NettyServerHandler();
+    private static final NettyServerHandler NETTY_SERVER_HANDLER = new NettyServerHandler(ChannelHandlerWrap.wrap(new CenterHandler()));
 
     private static final ServerMessageWebSocketEncoder WEBSOCKET_ENCODER = new ServerMessageWebSocketEncoder();
 
