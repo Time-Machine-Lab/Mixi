@@ -1,7 +1,6 @@
 package com.mixi.webroom.service.Impl;
 
 import com.mixi.common.constant.enums.UserStateEnum;
-import com.mixi.webroom.core.chain.tasks.ShareTaskDO;
 import com.mixi.webroom.core.worker.SnowFlakeIdWorker;
 import com.mixi.webroom.core.enums.ResultEnums;
 import com.mixi.webroom.core.exception.ServerException;
