@@ -1,5 +1,6 @@
-package com.infrastructure.core;
+package com.infrastructure.core.manager;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mixi.common.pojo.ApiInfo;
 import lombok.RequiredArgsConstructor;
@@ -103,8 +104,13 @@ public class CloudApiConfigManager {
     /**
      * 解析JSON配置文件
      */
+//    private Map<String, List<ApiInfo>> parseJsonConfigToMap(String config) throws Exception {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        return config == null ? new HashMap<>() : objectMapper.readValue(config, Map.class);
+//    }
+
     private Map<String, List<ApiInfo>> parseJsonConfigToMap(String config) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        return config == null ? new HashMap<>() : objectMapper.readValue(config, Map.class);
+        return config == null ? new HashMap<>() : objectMapper.readValue(config, new TypeReference<Map<String, List<ApiInfo>>>() {});
     }
 }

@@ -1,4 +1,4 @@
-package com.infrastructure.dto;
+package com.infrastructure.pojo;
 
 import lombok.AllArgsConstructor;
 

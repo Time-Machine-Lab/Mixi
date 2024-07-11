@@ -1,13 +1,13 @@
 package com.infrastructure.core;
 
 import com.alibaba.nacos.api.config.ConfigService;
+import com.infrastructure.core.manager.GateWayManager;
 import com.mixi.common.config.CloudApiProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.util.List;
 import static com.mixi.common.config.CloudApiProperties.createConfigService;
 
 /**
@@ -29,7 +29,7 @@ public class GatewayInitializer implements InitializingBean {
     private String activeProfile;
 
     // 网关所支持的模块，supportModules: user,admin,webroom
-    @Value("${spring.gateway.supportModules:}")
+    @Value("${spring.cloud.gateway.supportModules:}")
     private String supportModules;
 
     @Override

@@ -5,8 +5,9 @@ import com.mixi.common.constant.enums.UserStateEnum;
 import com.mixi.webroom.common.annotation.UserState;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
-import org.springframework.web.bind.annotation.*;
 import io.github.common.web.Result;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -17,31 +18,37 @@ import javax.validation.constraints.NotBlank;
 */
 @RestController
 @RequestMapping("/webRoom")
-public class WebRoomController {
+@ApiAuth
+public class WebRoomTestController {
 
     @Resource
     WebRoomService webRoomService;
 
     //uid 标识用户
-    @PostMapping("/create")
+    @PostMapping("/create1")
     @UserState(value = UserStateEnum.NORMAL)
     public Result createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO,
                              @RequestHeader @NotBlank String uid) {
         return webRoomService.createRoom(createRoomDTO, uid);
     }
 
-    @PostMapping("/share")
+    @PostMapping("/share1")
     public Result shareRoom() {
         return webRoomService.shareRoom();
     }
 
-    @PostMapping("/join")
+    @PostMapping("/join1")
     public Result joinRoom() {
         return webRoomService.joinRoom();
     }
 
-    @PostMapping("/quit")
+    @PostMapping("/quit1")
     public Result quitRoom() {
         return webRoomService.quitRoom();
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "123123";
     }
 }

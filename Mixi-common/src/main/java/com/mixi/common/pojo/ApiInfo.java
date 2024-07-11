@@ -1,5 +1,6 @@
 package com.mixi.common.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.common.annotation.auth.AuthType;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Set;
  * @author suifeng
  * 日期: 2024/7/6
  */
+@JsonDeserialize(using = ApiInfoDeserializer.class)
 @AllArgsConstructor
 @Data
 public class ApiInfo {

@@ -1,4 +1,4 @@
-package com.infrastructure.core;
+package com.infrastructure.core.manager;
 
 import cn.hutool.core.text.AntPathMatcher;
 import com.mixi.common.pojo.ApiInfo;

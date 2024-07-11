@@ -3,6 +3,7 @@ package com.infrastructure.core;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.infrastructure.core.manager.GateWayManager;
 import com.mixi.common.config.CloudApiProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
