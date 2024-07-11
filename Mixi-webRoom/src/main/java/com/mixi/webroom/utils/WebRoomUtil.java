@@ -25,4 +25,8 @@ public class WebRoomUtil {
     public String link(WebRoom webRoom){
         return ip + ":" + port + "/linkJoin/?key=" + encryptor.encrypt(webRoom.getRoomId());
     }
+
+    public String decryptLink(String key){
+        return encryptor.decrypt(key);
+    }
 }

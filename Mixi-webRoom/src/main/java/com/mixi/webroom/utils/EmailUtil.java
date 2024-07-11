@@ -22,7 +22,7 @@ public class EmailUtil {
     public EmailUtil() {
     }
 
-    public void sendCode(String to, String code) {
+    public void sendLink(String to, String link) {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
@@ -32,7 +32,7 @@ public class EmailUtil {
             // 邮件主题
             String subject = "这是一条验证码";
             helper.setSubject(subject);
-            helper.setText(htmlContent.replace("CODE", code), true);
+            helper.setText(htmlContent.replace("JOIN_URL", link), true);
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);

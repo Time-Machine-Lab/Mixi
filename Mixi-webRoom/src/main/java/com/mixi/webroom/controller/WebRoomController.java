@@ -62,7 +62,7 @@ public class WebRoomController {
                                   @Valid
                                   @NotBlank
                                   String key) {
-        return webRoomService.linkJoin(key);
+        return webRoomService.linkJoin(uid, key);
     }
 
     @PostMapping("/quit")

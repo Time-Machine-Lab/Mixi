@@ -19,7 +19,7 @@ public interface WebRoomService {
 
     Result<?> pull(String uid, List<String> ids);
 
-    Result<?> linkJoin(String key);
+    Result<?> linkJoin(String uid, String key);
 
     Result<?> quitRoom();
 
