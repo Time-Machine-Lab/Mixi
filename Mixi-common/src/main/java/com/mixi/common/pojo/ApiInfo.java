@@ -83,4 +83,11 @@ public class ApiInfo {
         }
         return apiAuth.value().name();
     }
+
+    /**
+     * 生成用于存储到哈希表中的键
+     */
+    public String generateHashKey() {
+        return url + "#" + requestMethod;
+    }
 }

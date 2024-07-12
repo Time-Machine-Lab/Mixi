@@ -58,9 +58,8 @@ public class GateWayManager extends CloudApiConfigManager {
     /**
      * 根据请求URI获取对应的ApiInfo
      */
-    public Optional<ApiInfo> getApiInfo(String requestUri) {
-        return getConfig().stream()
-                .filter(apiInfo -> pathMatcher.match(apiInfo.getUrl(), requestUri))
-                .findFirst();
+    public Optional<ApiInfo> getApiInfo(String requestUri, String requestMethod) {
+        String key = requestUri + "#" + requestMethod.toUpperCase();
+        return Optional.ofNullable(getConfig().get(key));
     }
 }

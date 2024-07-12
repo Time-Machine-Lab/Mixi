@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -25,10 +24,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CloudApiConfigManager {
 
     // 当前生效的配置缓存
-    private volatile List<ApiInfo> currentApiInfos = new CopyOnWriteArrayList<>();
+    private volatile Map<String, ApiInfo> currentApiInfos = new HashMap<>();
 
     // 临时缓存，用于存储新拉取的配置
-    private List<ApiInfo> tempApiInfos = new CopyOnWriteArrayList<>();
+    private Map<String, ApiInfo> tempApiInfos = new HashMap<>();
 
     // 读写锁，确保缓存读写操作的线程安全性
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -67,7 +66,9 @@ public class CloudApiConfigManager {
             tempApiInfos.clear();
             Map<String, List<ApiInfo>> stringListMap = parseJsonConfigToMap(configInfo);
             for (Map.Entry<String, List<ApiInfo>> stringListEntry : stringListMap.entrySet()) {
-                tempApiInfos.addAll(stringListEntry.getValue());
+                for (ApiInfo apiInfo : stringListEntry.getValue()) {
+                    tempApiInfos.put(apiInfo.generateHashKey(), apiInfo);
+                }
             }
         } catch (Exception e) {
             log.error("Error update temp cache: ", e);
@@ -82,7 +83,7 @@ public class CloudApiConfigManager {
     private void switchCache() {
         try {
             lock.writeLock().lock();
-            currentApiInfos = new CopyOnWriteArrayList<>(tempApiInfos);
+            currentApiInfos = new HashMap<>(tempApiInfos);
         } finally {
             lock.writeLock().unlock();
         }
@@ -91,23 +92,14 @@ public class CloudApiConfigManager {
     /**
      * 获取当前生效的配置
      */
-    public List<ApiInfo> getConfig() {
+    public Map<String, ApiInfo> getConfig() {
         try {
             lock.readLock().lock();
-            return new CopyOnWriteArrayList<>(currentApiInfos);
+            return new HashMap<>(currentApiInfos);
         } finally {
             lock.readLock().unlock();
         }
     }
-
-
-    /**
-     * 解析JSON配置文件
-     */
-//    private Map<String, List<ApiInfo>> parseJsonConfigToMap(String config) throws Exception {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        return config == null ? new HashMap<>() : objectMapper.readValue(config, Map.class);
-//    }
 
     private Map<String, List<ApiInfo>> parseJsonConfigToMap(String config) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();

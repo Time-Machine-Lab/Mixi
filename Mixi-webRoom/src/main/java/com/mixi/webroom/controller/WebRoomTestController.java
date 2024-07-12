@@ -1,6 +1,7 @@
 package com.mixi.webroom.controller;
 
 import com.mixi.common.annotation.auth.ApiAuth;
+import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.constant.enums.UserStateEnum;
 import com.mixi.webroom.common.annotation.UserState;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotBlank;
 */
 @RestController
 @RequestMapping("/webRoom")
-@ApiAuth
+@ApiAuth(AuthType.NOT)
 public class WebRoomTestController {
 
     @Resource
@@ -48,7 +49,17 @@ public class WebRoomTestController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test1() {
+        return "123123";
+    }
+
+    @DeleteMapping("/test")
+    public String test2() {
+        return "123123";
+    }
+
+    @PostMapping("/test")
+    public String test3() {
         return "123123";
     }
 }

@@ -19,5 +19,5 @@ public class RequestContext {
 
     private String url;
 
-    private String token;
+    private UserInfo userInfo;
 }
