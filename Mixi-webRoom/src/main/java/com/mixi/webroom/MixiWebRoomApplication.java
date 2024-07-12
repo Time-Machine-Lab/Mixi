@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-@ComponentScan(basePackages = {"com.mixi.common", "com.mixi.rpc","com.mixi.webroom"})
+//@ComponentScan(basePackages = {"com.mixi.common", "com.mixi.rpc","com.mixi.webroom", "org.springframework.mail"})
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = {"com.mixi.rpc.client"})
