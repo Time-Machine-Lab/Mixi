@@ -30,7 +30,7 @@
         <fastjson.version>1.2.75</fastjson.version>
         <junit.version>4.12</junit.version>
         <Mixi-common.version>0.0.1-SNAPSHOT</Mixi-common.version>
-        <Mixi-rpc.version>0.0.1-SNAPSHOT</Mixi-rpc.version>
+        <Mixi-rpc.version>0.0.1</Mixi-rpc.version>
 
         <assistant-mysql.verison>1.1.2</assistant-mysql.verison>
         <assistant-common.version>1.1.2</assistant-common.version>
