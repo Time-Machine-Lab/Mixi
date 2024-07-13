@@ -1,8 +1,10 @@
 package com.mixi.user.service.impl;
 
+import com.alibaba.nacos.api.utils.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mixi.common.exception.ServeException;
+import com.mixi.user.constants.RedisConstant;
 import com.mixi.user.designpattern.chain.ApproveChain;
 import com.mixi.user.designpattern.chain.ApproveChainBuilder;
 import com.mixi.user.designpattern.factory.LinkFactory;
@@ -17,6 +19,7 @@ import com.mixi.user.utils.*;
 import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -106,7 +109,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Result<?> login(UserLoginVo userLoginVo) {
-        return null;
+        String pwd = userLoginVo.getPassword();
+        try {
+            String cacheCode = (String) redisTemplate.opsForValue().get(RedisConstant.loginCodeKey.getKey(userLoginVo.getUsername()));
+            if(!StringUtils.equals(cacheCode,userLoginVo.getCode())){
+                throw new RuntimeException(COMMON_ERROR);
+            }
+            String encipherPwd = DigestUtils.md5Hex(pwd);
+
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("username", userLoginVo.getUsername())
+                    .eq("password", encipherPwd);
+            User userEntity = userMapper.selectOne(queryWrapper);
+
+            if(Objects.isNull(userEntity)){
+                log.error("{} username or password error",userLoginVo.getUsername());
+                throw new RuntimeException(COMMON_ERROR);
+            }
+
+            String token = TokenUtil.getToken(userEntity.getId(), userEntity.getUsername());
+            return Result.success(token);
+        } catch (Exception e) {
+            log.error("login verify system error:{}",e.getMessage());
+            throw new RuntimeException(COMMON_ERROR);
+        }
     }
 
     @Override

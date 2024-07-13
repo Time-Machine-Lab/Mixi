@@ -23,16 +23,14 @@ import java.util.*;
 @Scope("prototype")
 @Component
 public abstract class ApproveChain{
-    String[] params;
 
+    String NAME;
+    String[] params;
     ApproveChain nextChain;
 
     public static ThreadLocal<Map> res = new ThreadLocal<>();
-
-    /**
-     * 后续扩展使用策略模式
-     */
-    public abstract boolean approve();
+    public abstract Object process();
+    public abstract void setNAME();
 
     public Map checkRes(){
         Map map = res.get();
@@ -43,13 +41,17 @@ public abstract class ApproveChain{
         return map;
     }
 
+    public boolean approve(){
+        Object data = process();
+        if (Objects.isNull(getNextChain())){
+            return true;
+        }
+        checkRes().put(NAME,data);
+        ApproveChain nextChain = getNextChain();
+        return nextChain.approve();
+    }
+
     public void setNext(ApproveChain nextChain){
         this.nextChain = nextChain;
     }
-
-
-
-
-
-
 }

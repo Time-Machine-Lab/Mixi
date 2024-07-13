@@ -44,6 +44,8 @@ public class RegisterLinkVerifyStrategy implements LinkVerifyStrategy {
         return TokenUtil.getToken(user.getId(),email);
     }
 
+
+    //todo 向外抽象 模板方法
     @Override
     public void afterPropertiesSet() throws Exception {
         LinkVerifyStrategyFactory.register(NAME,this);

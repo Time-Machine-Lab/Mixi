@@ -13,4 +13,13 @@ public class RedisConstant {
 
     //redis key超时时间（min）
     public final static int REDIS_KEY_TIMEOUT = 5;
+
+    private static final String REDIS_KEY_PREFIX = "LOGIN_CODE:";
+
+    public static class loginCodeKey {
+        public static String getKey(String username) {
+            // 这里可以根据具体的业务逻辑生成一个唯一的 Redis 键名
+            return REDIS_KEY_PREFIX + username;
+        }
+    }
 }
