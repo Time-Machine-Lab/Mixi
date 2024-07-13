@@ -1,4 +1,4 @@
-package com.mixi.webroom.common.exception;
+package com.mixi.webroom.core.exception;
 
 import io.github.common.web.Result;
 import lombok.extern.slf4j.Slf4j;
