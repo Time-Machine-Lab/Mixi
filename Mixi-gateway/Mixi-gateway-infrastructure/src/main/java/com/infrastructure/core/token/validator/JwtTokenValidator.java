@@ -1,7 +1,7 @@
 package com.infrastructure.core.token.validator;
 
 import com.infrastructure.core.token.AbstractTokenValidator;
-import com.infrastructure.pojo.UserInfo;
+import com.mixi.common.pojo.TokenUserInfo;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,13 +14,11 @@ public class JwtTokenValidator extends AbstractTokenValidator {
 
     @Override
     public boolean isTokenValid(String token) {
-        // 使用JWT的逻辑验证Token
-        return token != null && !token.isEmpty(); // 示例验证逻辑
+        return tokenService.isTokenValid(token);
     }
 
     @Override
-    public UserInfo extractUserInfoFromToken(String token) {
-        // 使用JWT的逻辑从Token中提取用户信息
-        return new UserInfo("userId123", "username123", new int[]{1001, 1002});
+    public TokenUserInfo extractUserInfoFromToken(String token) {
+        return tokenService.extractUserInfoFromToken(token);
     }
 }

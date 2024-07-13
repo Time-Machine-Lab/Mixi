@@ -13,7 +13,3 @@ spring:
         uri: lb://webRoom-service
         predicates:
           - Path=/webRoom/**
-
-#logging:
-#  level:
-#    root: debug

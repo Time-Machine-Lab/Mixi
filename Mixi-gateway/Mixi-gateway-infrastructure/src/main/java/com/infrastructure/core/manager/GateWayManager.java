@@ -59,7 +59,7 @@ public class GateWayManager extends CloudApiConfigManager {
      * 根据请求URI获取对应的ApiInfo
      */
     public Optional<ApiInfo> getApiInfo(String requestUri, String requestMethod) {
-        String key = requestUri + "#" + requestMethod.toUpperCase();
+        String key = ApiInfo.generateHashKey(requestUri, requestMethod.toUpperCase());
         return Optional.ofNullable(getConfig().get(key));
     }
 }

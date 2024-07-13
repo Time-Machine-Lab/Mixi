@@ -1,4 +1,4 @@
-package com.infrastructure.pojo;
+package com.mixi.common.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserInfo {
+public class TokenUserInfo {
 
     private String userId;
 

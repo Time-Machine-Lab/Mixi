@@ -90,4 +90,8 @@ public class ApiInfo {
     public String generateHashKey() {
         return url + "#" + requestMethod;
     }
+
+    public static String generateHashKey(String url, String requestMethod) {
+        return url + "#" + requestMethod;
+    }
 }

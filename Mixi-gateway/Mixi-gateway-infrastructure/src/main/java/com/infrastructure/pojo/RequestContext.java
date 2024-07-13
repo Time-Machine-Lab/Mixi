@@ -1,6 +1,7 @@
 package com.infrastructure.pojo;
 
 import com.mixi.common.pojo.ApiInfo;
+import com.mixi.common.pojo.TokenUserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,5 @@ public class RequestContext {
 
     private String url;
 
-    private UserInfo userInfo;
+    private TokenUserInfo tokenUserInfo;
 }

@@ -1,7 +1,7 @@
 package com.infrastructure.core.token;
 
-import com.mixi.common.pojo.ApiInfo;
-import com.infrastructure.pojo.UserInfo;
+import com.mixi.common.component.token.TokenService;
+import com.mixi.common.pojo.TokenUserInfo;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
@@ -11,6 +11,10 @@ import org.springframework.web.server.ServerWebExchange;
  */
 public interface TokenValidator {
 
+    /**
+     * 设置Token服务。
+     */
+    void setTokenService(TokenService tokenService);
 
     /**
      * 从请求头中提取Token。
@@ -25,7 +29,7 @@ public interface TokenValidator {
     /**
      * 从Token中提取用户信息。
      */
-    UserInfo extractUserInfoFromToken(String token);
+    TokenUserInfo extractUserInfoFromToken(String token);
 
     /**
      * 检查用户是否具有所需的角色权限。
