@@ -2,6 +2,7 @@ package com.mixi.server.netty.channel;
 
 import java.net.InetSocketAddress;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mixi.server.netty.channel.support.ChannelAttrs;
@@ -45,6 +46,10 @@ public class MixiNettyChannel implements MixiChannelManager{
         MixiNettyChannel nettyChannel = CHANNEL_MAP.remove(ChannelAttrs.getChannelId(channel));
     }
 
+    public static Collection<MixiNettyChannel> getAllChannels() {
+        return CHANNEL_MAP.values();
+    }
+
     public String getChannelId() {
         return ChannelAttrs.getAttrs(channel).getChannelId();
     }
@@ -65,7 +70,7 @@ public class MixiNettyChannel implements MixiChannelManager{
     }
 
     @Override
-    public void send(Object message) throws RemoteException {
+    public void send(Object message){
         if(!this.isConnected()){
             log.error("Netty channel is close :[channelId:"+attributes);
         }
@@ -87,6 +92,10 @@ public class MixiNettyChannel implements MixiChannelManager{
         return false;
     }
 
+    public <T> T getAttribute(String key, Class<T> type) {
+        return type.cast(getAttribute(key));
+    }
+
     @Override
     public Object getAttribute(String key) {
         return null;
@@ -96,9 +105,32 @@ public class MixiNettyChannel implements MixiChannelManager{
     public void setAttribute(String key, Object value) {
 
     }
-
+    public <T> T removeAttribute(String key, Class<T> type) {
+        return type.cast(removeAttribute(key));
+    }
     @Override
     public Object removeAttribute(String key) {
         return null;
+    }
+    public ChannelAttrs getAttrsIfExists() {
+        return ChannelAttrs.getAttrsIfExists(channel);
+    }
+    public ChannelAttrs getAttrs() {
+        return ChannelAttrs.getAttrs(channel);
+    }
+    @Override
+    public final int hashCode() {
+        return channel.id().hashCode();
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MixiNettyChannel)) {
+            return false;
+        }
+        return ((MixiNettyChannel) o).channel.id().asLongText().equals(this.channel.id().asLongText());
     }
 }

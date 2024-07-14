@@ -24,7 +24,7 @@ public class ChannelAttrs {
     private String deviceId;
     private String uid;
     private boolean isVisitor = false;
-
+    private boolean isEnter = false;
     public ChannelAttrs(InetSocketAddress remoteAddr){
         this.createTime = System.currentTimeMillis();
         this.channelId = ChannelIdGenerator.generateChannelId(remoteAddr, createTime);
@@ -48,5 +48,8 @@ public class ChannelAttrs {
         ChannelAttrs channelAttrs = ch.attr(MIXI_ATTRS).get();
         Assert.notNull(channelAttrs,"MIXI_ATTRS is null! ch="+ch);
         return channelAttrs;
+    }
+    public static ChannelAttrs getAttrsIfExists(io.netty.channel.Channel ch) {
+        return ch.attr(MIXI_ATTRS).get();
     }
 }
