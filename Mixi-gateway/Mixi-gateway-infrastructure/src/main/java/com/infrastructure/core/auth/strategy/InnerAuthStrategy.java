@@ -1,6 +1,9 @@
-package com.infrastructure.core.auth;
+package com.infrastructure.core.auth.strategy;
 
+import com.infrastructure.core.auth.AuthStrategy;
+import com.infrastructure.core.auth.AuthStrategyType;
 import com.infrastructure.utils.ResponseUtils;
+import com.mixi.common.annotation.auth.AuthType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -13,6 +16,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
  * @author suifeng
  * 日期: 2024/7/12
  */
+@AuthStrategyType(AuthType.INNER)
 @Component
 @Slf4j
 public class InnerAuthStrategy implements AuthStrategy {

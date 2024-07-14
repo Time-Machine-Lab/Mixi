@@ -2,13 +2,13 @@ package com.infrastructure.core.auth;
 
 import com.mixi.common.annotation.auth.AuthType;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
 import java.util.EnumMap;
 import java.util.Map;
 
-import static com.mixi.common.annotation.auth.AuthType.*;
 
 /**
  * 描述: 权限策略工厂
@@ -17,15 +17,17 @@ import static com.mixi.common.annotation.auth.AuthType.*;
  */
 @Component
 @Slf4j
-public class AuthStrategyFactory {
+public class AuthStrategyFactory implements ApplicationContextAware {
 
     private final Map<AuthType, AuthStrategy> authStrategyMap = new EnumMap<>(AuthType.class);
 
-    @Autowired
-    public AuthStrategyFactory(InnerAuthStrategy innerAuthStrategy, NotAuthStrategy notAuthStrategy, NeedAuthStrategy needAuthStrategy) {
-        authStrategyMap.put(INNER, innerAuthStrategy);
-        authStrategyMap.put(NOT, notAuthStrategy);
-        authStrategyMap.put(NEED, needAuthStrategy);
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(AuthStrategyType.class);
+        for (Object bean : beansWithAnnotation.values()) {
+            AuthStrategyType annotation = bean.getClass().getAnnotation(AuthStrategyType.class);
+            authStrategyMap.put(annotation.value(), (AuthStrategy) bean);
+        }
         log.info("AuthStrategyFactory initialized with strategies: {}", authStrategyMap.keySet());
     }
 

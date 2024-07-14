@@ -1,7 +1,10 @@
-package com.infrastructure.core.auth;
+package com.infrastructure.core.auth.strategy;
 
+import com.infrastructure.core.auth.AuthStrategy;
+import com.infrastructure.core.auth.AuthStrategyType;
 import com.infrastructure.core.token.TokenValidator;
 import com.infrastructure.pojo.RequestContext;
+import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.pojo.TokenUserInfo;
 import com.infrastructure.utils.ResponseUtils;
 import com.mixi.common.pojo.ApiInfo;
@@ -20,6 +23,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
  * @author suifeng
  * 日期: 2024/7/12
  */
+@AuthStrategyType(AuthType.NEED)
 @RequiredArgsConstructor
 @Component
 @Slf4j

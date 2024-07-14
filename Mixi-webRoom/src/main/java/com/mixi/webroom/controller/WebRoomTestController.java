@@ -18,8 +18,8 @@ import javax.validation.constraints.NotBlank;
 *@Date：2024/6/25  17:18
 */
 @RestController
-@RequestMapping("/webRoom")
-@ApiAuth(AuthType.NOT)
+@RequestMapping("/test")
+@ApiAuth
 public class WebRoomTestController {
 
     @Resource
@@ -33,11 +33,13 @@ public class WebRoomTestController {
         return webRoomService.createRoom(createRoomDTO, uid);
     }
 
+    @ApiAuth(roles = 1001)
     @PostMapping("/share1")
     public Result shareRoom() {
         return webRoomService.shareRoom();
     }
 
+    @ApiAuth(AuthType.NOT)
     @PostMapping("/join1")
     public Result joinRoom() {
         return webRoomService.joinRoom();
@@ -46,20 +48,5 @@ public class WebRoomTestController {
     @PostMapping("/quit1")
     public Result quitRoom() {
         return webRoomService.quitRoom();
-    }
-
-    @GetMapping("/test")
-    public String test1() {
-        return "123123";
-    }
-
-    @DeleteMapping("/test")
-    public String test2() {
-        return "123123";
-    }
-
-    @PostMapping("/test")
-    public String test3() {
-        return "123123";
     }
 }

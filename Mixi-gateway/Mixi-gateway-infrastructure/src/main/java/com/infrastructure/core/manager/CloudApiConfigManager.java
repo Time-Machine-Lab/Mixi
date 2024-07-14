@@ -26,64 +26,35 @@ public class CloudApiConfigManager {
     // 当前生效的配置缓存
     private volatile Map<String, ApiInfo> currentApiInfos = new HashMap<>();
 
-    // 临时缓存，用于存储新拉取的配置
-    private Map<String, ApiInfo> tempApiInfos = new HashMap<>();
-
     // 读写锁，确保缓存读写操作的线程安全性
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
-     * 初始化配置文件
+     * 刷新配置文件
      */
-    public void initConfig(String configInfo) {
+    public void reFreshConfig(String configInfo) {
         try {
-            updateTempCache(configInfo);
-            switchCache();
-        } catch (Exception e) {
-            log.error("Error init config: ", e);
-        }
-    }
-
-    /**
-     * 异步处理新的配置
-     */
-    @Async
-    public void updateConfig(String configInfo) {
-        try {
-            updateTempCache(configInfo);
-            switchCache();
+            updateConfigInternal(configInfo);
         } catch (Exception e) {
             log.error("Error update new config: ", e);
         }
     }
 
     /**
-     * 更新临时缓存
+     * 更新配置的内部方法
      */
-    private void updateTempCache(String configInfo) {
-        try {
-            lock.writeLock().lock();
-            tempApiInfos.clear();
-            Map<String, List<ApiInfo>> stringListMap = parseJsonConfigToMap(configInfo);
-            for (Map.Entry<String, List<ApiInfo>> stringListEntry : stringListMap.entrySet()) {
-                for (ApiInfo apiInfo : stringListEntry.getValue()) {
-                    tempApiInfos.put(apiInfo.generateHashKey(), apiInfo);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error update temp cache: ", e);
-        } finally {
-            lock.writeLock().unlock();
-        }
+    private void updateConfigInternal(String configInfo) {
+        Map<String, ApiInfo> newApiInfos = parseJsonConfigToMap(configInfo);
+        switchCache(newApiInfos);
     }
 
     /**
      * 切换缓存
      */
-    private void switchCache() {
+    private void switchCache(Map<String, ApiInfo> newApiInfos) {
         try {
             lock.writeLock().lock();
-            currentApiInfos = new HashMap<>(tempApiInfos);
+            currentApiInfos = newApiInfos;
         } finally {
             lock.writeLock().unlock();
         }
@@ -101,8 +72,20 @@ public class CloudApiConfigManager {
         }
     }
 
-    private Map<String, List<ApiInfo>> parseJsonConfigToMap(String config) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return config == null ? new HashMap<>() : objectMapper.readValue(config, new TypeReference<Map<String, List<ApiInfo>>>() {});
+    private Map<String, ApiInfo> parseJsonConfigToMap(String config) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, List<ApiInfo>> stringListMap = config == null ? new HashMap<>() : objectMapper.readValue(config, new TypeReference<Map<String, List<ApiInfo>>>() {});
+            Map<String, ApiInfo> apiInfos = new HashMap<>();
+            for (Map.Entry<String, List<ApiInfo>> entry : stringListMap.entrySet()) {
+                for (ApiInfo apiInfo : entry.getValue()) {
+                    apiInfos.put(apiInfo.generateHashKey(), apiInfo);
+                }
+            }
+            return apiInfos;
+        } catch (Exception e) {
+            log.error("Error parsing JSON config: ", e);
+            return new HashMap<>();
+        }
     }
 }

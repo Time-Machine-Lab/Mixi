@@ -46,7 +46,7 @@ public class GatewayInitializer implements InitializingBean {
 
             // 初始化配置
             gatewayManager.initSupportModules(supportModules);
-            gatewayManager.initConfig(existConfig);
+            gatewayManager.reFreshConfig(existConfig);
             log.info("Initial config: {}", existConfig);
 
             // 添加监听器

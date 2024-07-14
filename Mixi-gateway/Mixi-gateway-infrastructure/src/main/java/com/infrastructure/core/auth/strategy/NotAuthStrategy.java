@@ -1,5 +1,8 @@
-package com.infrastructure.core.auth;
+package com.infrastructure.core.auth.strategy;
 
+import com.infrastructure.core.auth.AuthStrategy;
+import com.infrastructure.core.auth.AuthStrategyType;
+import com.mixi.common.annotation.auth.AuthType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -10,6 +13,7 @@ import reactor.core.publisher.Mono;
  * @author suifeng
  * 日期: 2024/7/12
  */
+@AuthStrategyType(AuthType.NOT)
 @Component
 @Slf4j
 public class NotAuthStrategy implements AuthStrategy {

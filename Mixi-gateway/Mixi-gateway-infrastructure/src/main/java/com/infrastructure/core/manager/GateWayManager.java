@@ -1,6 +1,5 @@
 package com.infrastructure.core.manager;
 
-import cn.hutool.core.text.AntPathMatcher;
 import com.mixi.common.pojo.ApiInfo;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +20,6 @@ import java.util.stream.Collectors;
 @Getter
 @Slf4j
 public class GateWayManager extends CloudApiConfigManager {
-
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     private List<String> supportModules;
 

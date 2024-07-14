@@ -35,7 +35,7 @@ public class CloudApiConfigListener {
                 log.info("Received new configuration: {}", nacosDataId);
 
                 // 更新配置文件
-                gateWayManager.updateConfig(configInfo);
+                gateWayManager.reFreshConfig(configInfo);
             }
 
             @Override
