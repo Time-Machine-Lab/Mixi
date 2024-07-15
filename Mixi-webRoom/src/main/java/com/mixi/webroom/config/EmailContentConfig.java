@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-public class HtmlContentConfig {
-
+public class EmailContentConfig {
     @Bean
-    public String htmlContent() throws IOException {
-        ClassPathResource resource = new ClassPathResource("email-template.html");
+    public String linkTemplate() throws IOException {
+        ClassPathResource resource = new ClassPathResource("link-template.html");
         byte[] fileData = FileCopyUtils.copyToByteArray(resource.getInputStream());
         return new String(fileData, StandardCharsets.UTF_8);
     }
-
 }

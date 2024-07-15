@@ -2,6 +2,8 @@ package com.mixi.webroom.core.factory;
 
 import com.mixi.webroom.core.enums.ResultEnums;
 import com.mixi.webroom.core.exception.ServerException;
+import com.mixi.webroom.utils.WebRoomUtil;
+import lombok.Getter;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +19,13 @@ public class TicketFactory {
         return encryptor.encrypt(mapToString(params));
     }
 
+    public String createTicket(Builder builder) {
+        return encryptor.encrypt(mapToString(builder.getParams()));
+    }
+
     public Map<String, String> decryptTicket(String ticket) {
         return stringToMap(encryptor.decrypt(ticket));
     }
-
 
     private String mapToString(Map<String, String> map) {
         return map.entrySet().stream()
@@ -46,5 +51,23 @@ public class TicketFactory {
             }
         }
         return map;
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    @Getter
+    public static class Builder{
+        private final Map<String, String> params = new HashMap<>();
+
+        public Builder put(String key, String value){
+            params.put(key, value);
+            return this;
+        }
+
+        public Builder done(){
+            return this;
+        }
     }
 }

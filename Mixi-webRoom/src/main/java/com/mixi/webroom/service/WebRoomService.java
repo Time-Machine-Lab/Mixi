@@ -17,7 +17,7 @@ public interface WebRoomService {
 
     Result<?> linkShare(String uid);
 
-    Result<?> pull(String uid, List<String> ids);
+    Result<?> pull(String uid, List<String> emails);
 
     Result<?> linkJoin(String uid, String key);
 

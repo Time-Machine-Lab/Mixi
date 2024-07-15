@@ -11,12 +11,13 @@ public enum ResultEnums{
     SUCCESS("200", "操作成功"),
     SERVER_ERROR("500", "服务器错误"),
     USER_HAS_ROOM("420", "用户已有房间"),
-    USER_IN_ROOM("421", "用户已在房间中"),
+    USER_CONNECTED("421", "用户已加入房间"),
     USER_STATE_ERROR("422", "用户状态错误"),
     ONLY_HOMEOWNER("423", "只有房主可以分享房间"),
     ROOM_FULLED("424", "房间已满"),
     QUIT_ROOM_ERROR("425", "退出房间错误"),
-    TRANSCODE_ERROR("426", "转码错误");
+    PULL_HAS_NOT_COOLED_DOWN("436", "拉人还未冷却"),
+    TRANSCODE_ERROR("427", "转码错误");
 
     private final String code;
 

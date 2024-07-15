@@ -10,6 +10,7 @@ import io.github.common.web.Result;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -48,8 +49,9 @@ public class WebRoomController {
                               @NotBlank
                               String uid,
                               @RequestBody
-                              List<String> ids) {
-        return webRoomService.pull(uid, ids);
+                              @Size(max = 20, message = "The maximum limit for email list is 20")
+                              List<String> emails) {
+        return webRoomService.pull(uid, emails);
     }
 
     @GetMapping("/linkJoin")
@@ -74,5 +76,14 @@ public class WebRoomController {
                                   @NotBlank
                                   String roomId) {
         return webRoomService.quitRoom(uid, roomId);
+    }
+
+    @PostMapping("/transferOwner")
+    public Result<?> transferOwner(@RequestHeader
+                                   @Valid
+                                   @NotBlank
+                                   String uid
+                                   ){
+        return null;
     }
 }
