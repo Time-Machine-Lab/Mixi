@@ -14,8 +14,10 @@ import javax.mail.internet.MimeMessage;
 public class EmailUtil {
     @Value("${spring.mail.username}")
     private String from;
+
     @Resource
     private String htmlContent;  // HTML模板内容
+
     @Resource
     private JavaMailSender mailSender;
 

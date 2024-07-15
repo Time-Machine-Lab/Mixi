@@ -173,4 +173,12 @@ public class RedisUtil {
     public Boolean exist(String key){
         return redisTemplate.hasKey(key);
     }
+
+    public void increment(String key, long delta) {
+        redisTemplate.opsForValue().increment(key, delta);
+    }
+
+    public void increment(String key) {
+        increment(key, 1);
+    }
 }

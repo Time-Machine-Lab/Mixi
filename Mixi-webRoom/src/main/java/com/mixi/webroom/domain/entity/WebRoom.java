@@ -26,6 +26,10 @@ public class WebRoom implements Serializable {
 
     private LocalDateTime createTime;   //房间创建时间
 
+    private String socketIp;
+
+    private String videoIp;
+
 //    private String createId;    //创建者id
 
     public WebRoom(CreateRoomDTO createRoomDTO, String roomId) {

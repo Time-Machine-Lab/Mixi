@@ -21,6 +21,6 @@ public interface WebRoomService {
 
     Result<?> linkJoin(String uid, String key);
 
-    Result<?> quitRoom();
+    Result<?> quitRoom(String uid, String roomId);
 
 }

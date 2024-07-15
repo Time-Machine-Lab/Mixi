@@ -38,6 +38,12 @@
             <artifactId>spring-cloud-loadbalancer</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

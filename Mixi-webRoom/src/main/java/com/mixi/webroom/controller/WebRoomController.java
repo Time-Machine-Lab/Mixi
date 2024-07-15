@@ -24,7 +24,6 @@ public class WebRoomController {
     WebRoomService webRoomService;
 
     @PostMapping("/create")
-    @UserState(value = UserStateEnum.NORMAL)
     public Result<?> createRoom(@RequestBody
                                     @Valid
                                     CreateRoomDTO createRoomDTO,
@@ -45,11 +44,11 @@ public class WebRoomController {
 
     @PostMapping("/pull")
     public Result<?> pull(@RequestHeader
-                               @Valid
-                               @NotBlank
-                               String uid,
-                          @RequestBody
-                          List<String> ids) {
+                              @Valid
+                              @NotBlank
+                              String uid,
+                              @RequestBody
+                              List<String> ids) {
         return webRoomService.pull(uid, ids);
     }
 
@@ -66,7 +65,14 @@ public class WebRoomController {
     }
 
     @PostMapping("/quit")
-    public Result<?> quitRoom() {
-        return webRoomService.quitRoom();
+    public Result<?> quitRoom(@RequestHeader
+                                  @Valid
+                                  @NotBlank
+                                  String uid,
+                                  @RequestPart
+                                  @Valid
+                                  @NotBlank
+                                  String roomId) {
+        return webRoomService.quitRoom(uid, roomId);
     }
 }

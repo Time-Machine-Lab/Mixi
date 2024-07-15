@@ -19,9 +19,9 @@ public class RedisKeyConfig {
         return WEB_ROOM + uid + ":VideoState";
     }
 
-    public static String roomLimit(@NotBlank String roomId){
-        return WEB_ROOM + roomId + ":Limit";
-    }
+//    public static String roomLimit(@NotBlank String roomId){
+//        return WEB_ROOM + roomId + ":Limit";
+//    }
 
     public static String roomNumber(@NotBlank String roomId){
         return WEB_ROOM + roomId + ":Number";
@@ -37,6 +37,10 @@ public class RedisKeyConfig {
 
     public static String roomLink(@NotBlank String roomId){
         return WEB_ROOM + roomId + ":RoomLink";
+    }
+
+    public static String userTicket(@NotBlank String uid){
+        return USER + uid;
     }
 
     public static String userOwn(@NotBlank String uid){
