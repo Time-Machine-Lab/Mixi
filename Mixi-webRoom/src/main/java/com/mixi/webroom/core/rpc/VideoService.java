@@ -1,4 +1,4 @@
-package com.mixi.webroom.common.rpc;
+package com.mixi.webroom.core.rpc;
 
 import io.github.common.web.Result;
 import org.springframework.stereotype.Component;

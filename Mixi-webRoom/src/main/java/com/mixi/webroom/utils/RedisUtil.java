@@ -1,5 +1,6 @@
 package com.mixi.webroom.utils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +17,11 @@ public class RedisUtil {
     @Resource
     private RedisTemplate redisTemplate;
 
-    private static final TimeUnit defaultTimeUnit = TimeUnit.MINUTES;
+    private static final TimeUnit defaultTimeUnit = TimeUnit.SECONDS;
 
-    private static final Integer defaultExpire = 120;
+
+    @Value("${spring.redis.defaultExpire}")
+    private Integer defaultExpire;
 
     public <T> Boolean setNxObject(String key, T value, Integer timeout, TimeUnit timeUnit) {
         return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, timeUnit);
@@ -43,7 +46,6 @@ public class RedisUtil {
      * @return 缓存的对象
      */
     public <T> void setCacheObject(String key, T value) {
-
         setCacheObject(key, value, defaultExpire, defaultTimeUnit);
     }
 
@@ -166,5 +168,9 @@ public class RedisUtil {
      */
     public Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    public Boolean exist(String key){
+        return redisTemplate.hasKey(key);
     }
 }

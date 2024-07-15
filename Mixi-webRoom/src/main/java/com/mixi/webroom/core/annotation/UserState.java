@@ -1,7 +1,6 @@
-package com.mixi.webroom.common.annotation;
+package com.mixi.webroom.core.annotation;
 
 import com.mixi.common.constant.enums.UserStateEnum;
-import org.springframework.core.annotation.Order;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

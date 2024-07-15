@@ -1,13 +1,12 @@
-package com.mixi.webroom.pojo.DO;
+package com.mixi.webroom.domain.entity;
 
-import com.mixi.webroom.pojo.dto.CreateRoomDTO;
+import com.mixi.webroom.domain.dto.CreateRoomDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * @Author：XiaoChun
@@ -29,8 +28,8 @@ public class WebRoom implements Serializable {
 
 //    private String createId;    //创建者id
 
-    public WebRoom(CreateRoomDTO createRoomDTO) {
-        this.roomId = UUID.randomUUID().toString(); //重复问题 编写自动生成注解 在写入redis时自动生成uuid并判断查重
+    public WebRoom(CreateRoomDTO createRoomDTO, String roomId) {
+        this.roomId = roomId;
         this.createTime = LocalDateTime.now();
         this.roomName = createRoomDTO.getRoomName();
         this.limit = createRoomDTO.getLimit();
