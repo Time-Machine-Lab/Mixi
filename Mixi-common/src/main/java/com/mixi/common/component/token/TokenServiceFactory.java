@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * 日期: 2024/7/13
  */
 @RequiredArgsConstructor
+@SuppressWarnings("all")
 @Configuration
 public class TokenServiceFactory {
 
@@ -30,10 +31,13 @@ public class TokenServiceFactory {
             tokenServiceType = DEFAULT_TOKEN_SERVICE;
         }
 
-        return switch (tokenServiceType.toLowerCase()) {
-            case "jwt" -> jwtTokenService;
-            case "sa-token" -> saTokenService;
-            default -> throw new IllegalArgumentException("Unsupported token service type: " + tokenServiceType);
-        };
+        switch (tokenServiceType.toLowerCase()) {
+            case "jwt" :
+                return jwtTokenService;
+            case "sa-token" :
+                return saTokenService;
+            default:
+                throw new IllegalArgumentException("Unsupported token service type: " + tokenServiceType);
+        }
     }
 }
