@@ -1,6 +1,5 @@
 package com.mixi.user.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mixi.user.domain.entity.User;
 import com.mixi.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;

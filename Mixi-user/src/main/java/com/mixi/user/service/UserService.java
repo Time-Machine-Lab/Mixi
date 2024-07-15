@@ -2,10 +2,10 @@ package com.mixi.user.service;
 
 import com.mixi.user.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mixi.user.domain.vo.InfoVo;
-import com.mixi.user.domain.vo.UserLoginVo;
-import com.mixi.user.domain.vo.UserRegisterVo;
+import com.mixi.user.domain.vo.*;
 import io.github.common.web.Result;
+
+import java.util.Map;
 
 /**
 * @author yuech
@@ -21,7 +21,16 @@ public interface UserService extends IService<User> {
 
     Result commonRegister(UserRegisterVo userRegisterVo);
 
-    Result login(UserLoginVo userLoginVo);
+    Result login(UsernameLoginVo userLoginVo);
 
-    Result userInfo();
+    Result userInfo(String uid);
+
+    Map<String, String> preCode();
+
+    void sendCode(String email, String code, String uuid, int type);
+
+    Result passwordUpdate(PasswordUpdateVo passwordUpdateVo);
+
+    Result emailUpdate(EmailUpdateVo emailUpdateVo);
+
 }

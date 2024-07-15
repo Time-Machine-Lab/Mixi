@@ -1,15 +1,10 @@
 package com.mixi.user.designpattern.chain;
 
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.mixi.user.utils.MapUtils;
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -32,21 +27,22 @@ public abstract class ApproveChain{
     public abstract Object process();
     public abstract void setNAME();
 
-    public Map checkRes(){
+    public void checkRes(String NAME, Object data){
         Map map = res.get();
         if (Objects.isNull(map)){
             map = new HashMap();
             res.set(map);
         }
-        return map;
+        map.put(NAME,data);
     }
 
     public boolean approve(){
+        setNAME();
         Object data = process();
+        checkRes(NAME,data);
         if (Objects.isNull(getNextChain())){
             return true;
         }
-        checkRes().put(NAME,data);
         ApproveChain nextChain = getNextChain();
         return nextChain.approve();
     }

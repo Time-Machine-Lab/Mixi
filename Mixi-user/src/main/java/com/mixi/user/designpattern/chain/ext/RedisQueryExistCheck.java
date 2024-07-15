@@ -1,6 +1,7 @@
 package com.mixi.user.designpattern.chain.ext;
 
 import com.mixi.user.designpattern.chain.ApproveChain;
+import com.mixi.user.handler.SystemException;
 import com.mixi.user.service.impl.RedisDaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.mixi.user.constants.CommonConstant.COMMON_ERROR;
+import static com.mixi.user.constants.CommonConstant.NOT_FIND_OBJECT;
 
 /**
  * @NAME: RedisQueryExistCheck
@@ -33,7 +35,7 @@ public class RedisQueryExistCheck extends ApproveChain {
         String redisDataMap = (String) redisDaoService.query(getParams()[0]);
         if (Objects.isNull(redisDataMap) || !Objects.equals(getParams()[1], redisDataMap)) {
             log.info("无匹配对象");
-            throw new RuntimeException(COMMON_ERROR);
+            throw new SystemException(NOT_FIND_OBJECT);
         }
         return redisDataMap;
     }

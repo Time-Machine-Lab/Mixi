@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mixi.common.constant.enums.AppHttpCodeEnum;
 import com.mixi.common.exception.ServeException;
 import com.mixi.user.designpattern.chain.ApproveChain;
+import com.mixi.user.handler.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -39,7 +40,7 @@ public class MysqlQueryExistCheck<ENTITY,MAPPER extends BaseMapper<ENTITY>>  ext
         ENTITY user = mapper.selectOne(new QueryWrapper<ENTITY>().eq(getParams()[0], getParams()[1]));
         if (Objects.isNull(user)){
             log.info("无匹配对象");
-            throw new RuntimeException(NOT_FIND_OBJECT);
+            throw new SystemException(NOT_FIND_OBJECT);
         }
         return user;
     }

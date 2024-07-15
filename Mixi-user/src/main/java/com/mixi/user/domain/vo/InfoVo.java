@@ -21,4 +21,6 @@ public class InfoVo {
     private String nickname;
     private String sex;
     private String resume;
+
+
 }

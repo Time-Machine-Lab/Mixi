@@ -2,6 +2,7 @@ package com.mixi.user.designpattern.strategy;
 
 import com.google.common.collect.Maps;
 import com.mixi.user.constants.enums.LinkVerifyStrategyEnum;
+import com.mixi.user.designpattern.strategy.LinkVerifyStrategy;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.Map;
  * @DATE: 2024/7/9
  */
 public class LinkVerifyStrategyFactory {
-    private static Map<String,LinkVerifyStrategy> map = Maps.newHashMap();
+    private static Map<String, LinkVerifyStrategy> map = Maps.newHashMap();
     public static LinkVerifyStrategy getInvokeStrategy(String type){
         return map.get(LinkVerifyStrategyEnum.getSecondValue(type));
     }

@@ -1,6 +1,5 @@
 package com.mixi.user.designpattern.strategy.imp;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mixi.user.designpattern.chain.ApproveChain;
 import com.mixi.user.designpattern.chain.ApproveChainBuilder;
 import com.mixi.user.designpattern.strategy.LinkVerifyStrategy;
@@ -11,14 +10,8 @@ import com.mixi.user.service.impl.RedisDaoService;
 import com.mixi.user.utils.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import static com.mixi.user.constants.CommonConstant.COMMON_ERROR;
 import static com.mixi.user.constants.RedisConstant.REDIS_PRE;
 
 /**

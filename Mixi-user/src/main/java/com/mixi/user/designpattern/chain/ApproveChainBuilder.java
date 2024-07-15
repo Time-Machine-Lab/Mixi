@@ -1,14 +1,10 @@
 package com.mixi.user.designpattern.chain;
 
-import com.google.common.collect.Maps;
 import com.mixi.user.utils.BeanUtil;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**

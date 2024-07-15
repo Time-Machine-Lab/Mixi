@@ -5,17 +5,15 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * @NAME: UserRegisterVo
+ * @NAME: UserEmailLoginVo
  * @USER: yuech
  * @Description:
- * @DATE: 2024/7/4
+ * @DATE: 2024/7/15
  */
 @Data
-public class UserRegisterVo {
+public class UserEmailLoginVo {
     @NotNull(message = "email 不能为空")
     private String email;
     @NotNull(message = "code 不能为空")
     private String code;
-    @NotNull(message = "password 不能为空")
-    private String password;
 }
