@@ -19,10 +19,29 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.3.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
         </dependency>
+
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-gateway-config</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-common</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
