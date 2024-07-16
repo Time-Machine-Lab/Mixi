@@ -9,18 +9,11 @@
     <description>Mixi-user</description>
 
     <parent>
-        <groupId>com</groupId>
         <artifactId>Mixi</artifactId>
+        <groupId>com</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-<!--    <properties>-->
-<!--        <java.version>11</java.version>-->
-<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
-<!--        <spring-boot.version>2.4.2</spring-boot.version>-->
-<!--        <assistant.version>1.1.1</assistant.version>-->
-<!--        <mybatis-plus.version>3.4.1</mybatis-plus.version>-->
-<!--    </properties>-->
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -36,7 +29,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+<!--            <version>1.18.24</version>-->
         </dependency>
 
         <!--        genius-->
@@ -119,19 +112,20 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>Mixi-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+<!--            <version>0.0.1-SNAPSHOT</version>-->
         </dependency>
         <!--        mixi-RPC-->
         <dependency>
             <groupId>com</groupId>
             <artifactId>Mixi-rpc</artifactId>
+<!--            <version>0.0.1</version>-->
         </dependency>
 
 <!--hutool-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.7.7</version> <!-- 版本号可能需要根据实际情况调整 -->
+<!--            <version>5.7.7</version> &lt;!&ndash; 版本号可能需要根据实际情况调整 &ndash;&gt;-->
         </dependency>
 <!--mail-->
         <dependency>

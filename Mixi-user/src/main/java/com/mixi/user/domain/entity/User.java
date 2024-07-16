@@ -69,19 +69,20 @@ public class User implements Serializable {
      */
     private String delFlag;
 
-    public static User baseBuild(String email){
+    public static User baseBuild(String email,String password){
         User user = new User();
         user.setId(UuidUtils.creatUuid());
         user.setEmail(email);
         user.setAvatar("默认头像");
         user.setNickname("默认账号");
         user.setResume("这里什么都没有发送");
+        user.setPassword(password);
         return user;
     }
 
-    public static User InfoTo(InfoVo infoVo) {
+    public static User InfoTo(InfoVo infoVo,String uid) {
         User user = new User();
-        user.setId(infoVo.getId());
+        user.setId(uid);
         user.setAvatar(infoVo.getAvatar());
         user.setNickname(infoVo.getNickname());
         user.setSex(infoVo.getSex());

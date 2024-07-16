@@ -48,12 +48,14 @@ public class UserController {
 
     @GetMapping(value = "/link/verify")
     @SystemLog(businessName = "用户链接认证")
-    public Result linkVerify(@RequestHeader String uid,
-                             @RequestParam
-                             @Valid
-                             @NotNull(message = "email 不能为空") String email, @RequestParam
-                             @Valid
-                             @NotNull(message = "type 不能为空") String type) {
+    public Result linkVerify(
+            @RequestParam
+            @Valid
+            @NotNull(message = "email 不能为空") String email,
+            @Valid
+            @NotNull(message = "type 不能为空") String type,
+            @Valid
+            @NotNull(message = "uid 不能为空") String uid) {
         return userService.linkVerify(email, uid, type);
     }
 

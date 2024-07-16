@@ -35,7 +35,7 @@ public class RegisterLinkVerifyStrategy implements LinkVerifyStrategy {
                 .Build()
                 .approve();
         redisDaoService.deleteKeys(REDIS_PRE + email + ":" + "uid",REDIS_PRE + email + ":" + "times");
-        User user = User.baseBuild(email);
+        User user = User.baseBuild(email,"");
         userDaoService.insert(user);
         return TokenUtil.getToken(user.getId(),email);
     }

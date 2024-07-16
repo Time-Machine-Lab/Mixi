@@ -19,6 +19,7 @@ import com.mixi.user.utils.*;
 import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -79,17 +80,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Result updateInfo(String uid, InfoVo infoVo) {
-        infoVo.setId(uid);
-        User user = new User();
+        User user = User.InfoTo(infoVo, uid);
         //密码为空必须设置密码
-        if (Objects.isNull(userMapper.selectById(uid).getPassword())){
+        if (Strings.isBlank(userMapper.selectById(uid).getPassword())){
             if (Objects.isNull(infoVo.getPassword())){
                 log.error("password must");
                 throw new SystemException(PASSWORD_MUST);
             }
             user.setPassword(infoVo.getPassword());
         }
-        user.InfoTo(infoVo);
         return Result.success(userMapper.updateById(user));
     }
 
@@ -100,7 +99,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .set(CODECHECKAPPROVECHAIN,"register",userRegisterVo.getCode(),email)
                 .Build()
                 .approve();
-        User user = User.baseBuild(email);
+        //todo 添加密码
+        User user = User.baseBuild(email,userRegisterVo.getPassword());
         return Result.success(userDaoService.insert(user));
     }
 
@@ -121,7 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
 //            String encipherPwd = DigestUtils.md5Hex(pwd);
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("username", userLoginVo.getUsername())
+            queryWrapper.eq("email", email)
                     .eq("password", userLoginVo.getPassword());
             User userEntity = userMapper.selectOne(queryWrapper);
 
@@ -196,7 +196,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //标记邮箱通过第一轮
         redisTemplate.delete(RedisConstant.REDIS_KEY_CAPTCHA + "register:" + emailUpdateVo.getEmail());
         redisTemplate.opsForValue().set("mixi:captcha:dealWithOldPassword:" + emailUpdateVo.getEmail() ,"1");
-
+        redisTemplate.expire("mixi:captcha:dealWithOldPassword:" + emailUpdateVo.getEmail(), REDIS_KEY_TIMEOUT, TimeUnit.MINUTES);
     }
 
     public void dealWithNewPassword(EmailUpdateVo emailUpdateVo){
@@ -213,6 +213,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.error("code err");
             throw new SystemException(CODE_ERR);
         }
+        redisTemplate.delete("mixi:captcha:dealWithOldPassword:" + emailUpdateVo.getEmail());
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("email",emailUpdateVo.getEmail());
         User user = userMapper.selectOne(userQueryWrapper);

@@ -14,7 +14,7 @@ public class RedisConstant {
     //redis key超时时间（min）
     public final static int REDIS_KEY_TIMEOUT = 5;
 
-    private static final String REDIS_KEY_PREFIX = "LOGIN_CODE:";
+//    private static final String REDIS_KEY_PREFIX = "LOGIN_CODE:";
 
     public static final String REDIS_KEY_CAPTCHA = "mixi:captcha:";
 
