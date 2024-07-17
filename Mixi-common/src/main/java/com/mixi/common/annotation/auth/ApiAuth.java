@@ -15,10 +15,11 @@ import java.lang.annotation.Target;
 public @interface ApiAuth {
 
     /**
-     *  权限注解分为3种:
+     *  权限注解分为4种:
      *  - NEED: 需要进行TOKEN验证的接口
      *  - NOT:  不需要进行TOKEN验证的接口
      *  - INNER: 服务内部调用的接口, 网关外部无法调用
+     *  - OPTIONAL: 选填TOKEN，有TOKEN就会提取出来
      *  -----------------------------------------
      *  使用方式:
      *  - 1. 添加在类上，将会应用到类的所有方法上

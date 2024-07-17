@@ -1,29 +1,34 @@
-package com.mixi.common.component.interceptors;
+package com.mixi.common.component.transfer;
 
-import cn.hutool.core.util.StrUtil;
+import com.mixi.common.pojo.TokenUserInfo;
 import com.mixi.common.utils.UserThread;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
 
 /**
  * 描述: 用户信息拦截器
  * @author suifeng
  * 日期: 2024/7/5
  */
+@RequiredArgsConstructor
+@SuppressWarnings("all")
 public class UserInfoInterceptor implements HandlerInterceptor {
+
+    private final UserInfoTransferHandler userInfoTransferHandler;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        // 从请求体中拿到用户信息
-        String userInfo = request.getHeader(USER_INFO);
+        // 从请求中提取用户信息
+        TokenUserInfo tokenUserInfo = userInfoTransferHandler.extractUserInfo(request);
 
-        // 如果拿到了用户信息，就加入用户线程中
-        if (StrUtil.isNotBlank(userInfo)) UserThread.setUser(userInfo);
+        // 如果提取到了用户信息，就加入用户线程中
+        if (tokenUserInfo != null) {
+            UserThread.setUser(tokenUserInfo);
+        }
 
         return true;
     }

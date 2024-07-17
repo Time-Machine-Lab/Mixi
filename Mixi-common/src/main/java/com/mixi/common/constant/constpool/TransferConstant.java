@@ -7,6 +7,6 @@ package com.mixi.common.constant.constpool;
  */
 public class TransferConstant {
 
-    // 用户信息传递(id+username)
+    // 用户信息传递
     public final static String USER_INFO = "user-info";
 }

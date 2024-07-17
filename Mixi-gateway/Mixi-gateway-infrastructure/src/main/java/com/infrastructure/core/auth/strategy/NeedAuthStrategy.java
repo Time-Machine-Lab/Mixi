@@ -56,6 +56,7 @@ public class NeedAuthStrategy implements AuthStrategy {
             return ResponseUtils.respondError(exchange, FORBIDDEN, "Forbidden: Insufficient permissions.");
         }
 
+        // 将用户信息存入请求上下文
         context.setTokenUserInfo(tokenUserInfo);
         log.info("Token validation successful for API: {}", exchange.getRequest().getURI());
         return Mono.empty();
