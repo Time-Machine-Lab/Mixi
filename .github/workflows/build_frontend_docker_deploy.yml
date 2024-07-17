@@ -15,7 +15,7 @@ jobs:
         steps:
           - name: Checkout
             uses: actions/checkout@v2
-    
+
           - name: Checkout builder Label
             run: |
                 if [[ "${{ github.event.pull_request.body }}" == *"<Auto-Frontend>"* ]]; then
@@ -46,13 +46,13 @@ jobs:
             run: pnpm build
           - name: Log in to Docker Hub
             run: docker login -u ${{ secrets.DOCKER_REPO }} -p ${{ secrets.DOCKER_PWD }}
-    
+
           - name: Build Docker image
             run: docker build -t ${{ secrets.DOCKER_REPO }}/mixi-ui .
-    
+
           - name: Push Docker image
             run: docker push ${{ secrets.DOCKER_REPO }}/mixi-ui
-    
+
           - name: SSH into server and deploy
             uses: appleboy/ssh-action@master
             with:
@@ -67,4 +67,3 @@ jobs:
                 sleep 3
                 docker pull ${{ secrets.DOCKER_REPO }}/mixi-ui
                 docker run --name MixiUiContainer -d -p 0.0.0.0:3000:3000 ${{ secrets.DOCKER_REPO }}/mixi-ui
-    
