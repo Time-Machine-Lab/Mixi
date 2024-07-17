@@ -49,6 +49,7 @@ jobs:
 
           - name: Build Docker image
             run: docker build -t ${{ secrets.DOCKER_REPO }}/mixi-ui .
+            working-directory: Mixi-ui
 
           - name: Push Docker image
             run: docker push ${{ secrets.DOCKER_REPO }}/mixi-ui
