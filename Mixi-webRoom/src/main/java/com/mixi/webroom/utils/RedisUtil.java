@@ -76,16 +76,16 @@ public class RedisUtil {
      * 删除单个对象
      * @param key
      */
-    public void deleteObject(String key) {
-        redisTemplate.delete(key);
+    public Boolean deleteObject(String key) {
+        return redisTemplate.delete(key);
     }
 
     /**
      * 删除集合对象
      * @param collection
      */
-    public void deleteObject(Collection collection) {
-        redisTemplate.delete(collection);
+    public Long deleteObject(Collection collection) {
+        return redisTemplate.delete(collection);
     }
 
     /**

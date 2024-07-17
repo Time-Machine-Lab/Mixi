@@ -115,7 +115,7 @@ public class WebRoomServiceImpl implements WebRoomService {
     @Override
     public Result<?> linkJoin(String uid, String key) {
         Map<String, String> res = webRoomUtil.decryptLink(key);
-        if(Objects.isNull(redisUtil.getCacheObject(RedisKeyConfig.userConnected(uid)))){
+        if(!Objects.isNull(redisUtil.getCacheObject(RedisKeyConfig.userConnected(uid)))){
             throw new ServerException(ResultEnums.USER_CONNECTED);
         }
         try {
@@ -133,20 +133,13 @@ public class WebRoomServiceImpl implements WebRoomService {
 
     @Override
     public Result<?> quitRoom(String uid, String roomId) {
-        try {
-            // 房主 or 成员
-            if(uid.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid)))) {
-                // 删除房间
-                redisUtil.deleteObject(RedisKeyConfig.roomInfo(roomId));
-//              redisUtil.deleteObject(RedisKeyConfig.roomLink(roomId));
-                redisUtil.deleteObject(RedisKeyConfig.roomNumber(roomId));
-                // 删除用户拥有房间和当前连接房间
-                redisUtil.deleteObject(RedisKeyConfig.userOwn(uid));
-            }
-            redisUtil.deleteObject(RedisKeyConfig.userConnected(uid));
-        } catch (Exception e) {
-            throw new ServerException(ResultEnums.QUIT_ROOM_ERROR);
+        // 房主 or 成员
+        if((uid.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid))))) {
+            redisUtil.deleteObject(RedisKeyConfig.roomInfo(roomId));
+            redisUtil.deleteObject(RedisKeyConfig.roomNumber(roomId));
+            redisUtil.deleteObject(RedisKeyConfig.userOwn(uid));
         }
+        redisUtil.deleteObject(RedisKeyConfig.userConnected(uid));
         return Result.success();
     }
 }

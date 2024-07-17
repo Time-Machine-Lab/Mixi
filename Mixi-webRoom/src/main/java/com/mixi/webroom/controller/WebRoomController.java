@@ -1,7 +1,5 @@
 package com.mixi.webroom.controller;
 
-import com.mixi.common.constant.enums.UserStateEnum;
-import com.mixi.webroom.core.annotation.UserState;
 import com.mixi.webroom.domain.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +47,7 @@ public class WebRoomController {
                               @NotBlank
                               String uid,
                               @RequestBody
+                              @Valid
                               @Size(max = 20, message = "The maximum limit for email list is 20")
                               List<String> emails) {
         return webRoomService.pull(uid, emails);
@@ -82,8 +81,11 @@ public class WebRoomController {
     public Result<?> transferOwner(@RequestHeader
                                    @Valid
                                    @NotBlank
-                                   String uid
-                                   ){
+                                   String uid,
+                                   @RequestPart
+                                   @Valid
+                                   @NotBlank
+                                   String owner){
         return null;
     }
 }
