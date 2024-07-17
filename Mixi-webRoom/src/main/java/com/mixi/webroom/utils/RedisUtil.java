@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @Date：2024/6/28 上午11:23
  */
 @Component
+@SuppressWarnings("unchecked")
 public class RedisUtil {
     @Resource
     private RedisTemplate redisTemplate;
@@ -184,5 +185,13 @@ public class RedisUtil {
 
     public void removeExpiration(String key){
         redisTemplate.persist(key);
+    }
+
+    public void multi(){
+        redisTemplate.multi();
+    }
+
+    public List<Boolean> exec(){
+        return redisTemplate.exec();
     }
 }

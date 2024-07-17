@@ -1,5 +1,6 @@
 package com.mixi.webroom.service;
 
+import com.mixi.webroom.domain.dto.CallBackDTO;
 import io.github.common.web.Result;
 import org.springframework.stereotype.Component;
 
@@ -9,5 +10,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface WebRoomRpcService {
-    Result<?> joinRoomCallBack(String uid, String roomId);
+    Result<?> callBack(CallBackDTO callBackDTO);
 }

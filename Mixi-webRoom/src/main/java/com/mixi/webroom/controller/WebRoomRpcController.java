@@ -1,11 +1,14 @@
 package com.mixi.webroom.controller;
 
+import com.mixi.webroom.domain.dto.CallBackDTO;
 import com.mixi.webroom.service.WebRoomRpcService;
 import com.mixi.webroom.service.WebRoomService;
 import io.github.common.web.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author XiaoChun
@@ -17,9 +20,10 @@ public class WebRoomRpcController {
     @Resource
     private WebRoomRpcService webRoomRpcService;
 
-    @PostMapping("/joinRoomCallBack")
-    public Result<?> joinRoomCallBack(@RequestPart String uid,
-                                        @RequestPart String roomId) {
-        return webRoomRpcService.joinRoomCallBack(uid, roomId);
+    @PostMapping("/callBack")
+    public Result<?> joinRoomCallBack(@RequestBody
+                                      @Valid
+                                      CallBackDTO callBackDTO) {
+        return webRoomRpcService.callBack(callBackDTO);
     }
 }

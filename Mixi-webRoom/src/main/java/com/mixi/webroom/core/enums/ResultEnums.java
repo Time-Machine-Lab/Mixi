@@ -16,8 +16,9 @@ public enum ResultEnums{
     ONLY_HOMEOWNER("423", "只有房主可以分享房间"),
     ROOM_FULLED("424", "房间已满"),
     QUIT_ROOM_ERROR("425", "退出房间错误"),
-    PULL_HAS_NOT_COOLED_DOWN("436", "拉人还未冷却"),
-    TRANSCODE_ERROR("427", "转码错误");
+    PULL_HAS_NOT_COOLED_DOWN("426", "拉人还未冷却"),
+    CALLBACK_EXECUTE_ERROR("427", "回调执行错误"),
+    TRANSCODE_ERROR("428", "转码错误");
 
     private final String code;
 

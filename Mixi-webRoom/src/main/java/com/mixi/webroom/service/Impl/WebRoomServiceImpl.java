@@ -36,7 +36,7 @@ public class WebRoomServiceImpl implements WebRoomService {
     private VideoService videoService;
 
     @Resource
-    SnowFlakeIdWorker snowFlakeIdWorker;
+    private SnowFlakeIdWorker snowFlakeIdWorker;
 
     @Resource
     private WebRoomUtil webRoomUtil;
@@ -61,10 +61,10 @@ public class WebRoomServiceImpl implements WebRoomService {
 
             videoService.createRoom();
             // 设置房间相关信息
-            redisUtil.setCacheObject(RedisKeyConfig.roomOwner(webRoom.getRoomId()), uid, 60, TimeUnit.SECONDS);
-            redisUtil.setCacheObject(RedisKeyConfig.roomInfo(webRoom.getRoomId()), webRoom, 60, TimeUnit.SECONDS);
-            redisUtil.setCacheObject(RedisKeyConfig.roomNumber(webRoom.getRoomId()), Integer.MAX_VALUE - webRoom.getLimit(), 60, TimeUnit.SECONDS);//设置为redis上限减房间上限
-            redisUtil.setCacheObject(RedisKeyConfig.userOwn(uid), uid, 60, TimeUnit.SECONDS);
+            redisUtil.setNxObject(RedisKeyConfig.roomOwner(webRoom.getRoomId()), uid, 60, TimeUnit.SECONDS);
+            redisUtil.setNxObject(RedisKeyConfig.roomInfo(webRoom.getRoomId()), webRoom, 60, TimeUnit.SECONDS);
+            redisUtil.setNxObject(RedisKeyConfig.roomNumber(webRoom.getRoomId()), Integer.MAX_VALUE - webRoom.getLimit(), 60, TimeUnit.SECONDS);//设置为redis上限减房间上限
+            redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), uid, 60, TimeUnit.SECONDS);
         }
 
         String roomLink = webRoomUtil.link(WebRoomUtil.builder().put("roomId", roomId).done());

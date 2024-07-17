@@ -1,5 +1,9 @@
 package com.mixi.webroom.service.Impl;
 
+import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.core.exception.ServerException;
+import com.mixi.webroom.core.strategy.CallBackStrategy;
+import com.mixi.webroom.domain.dto.CallBackDTO;
 import com.mixi.webroom.service.WebRoomRpcService;
 import com.mixi.webroom.utils.RedisUtil;
 import io.github.common.web.Result;
@@ -15,14 +19,16 @@ import javax.annotation.Resource;
 @Service
 public class WebRoomRpcServiceImpl implements WebRoomRpcService {
     @Resource
-    RedisUtil redisUtil;
+    private CallBackStrategy callBackStrategy;
 
     /*
     * 处理回调
     * */
     @Override
-    public Result<?> joinRoomCallBack(String uid, String roomId) {
-
-        return null;
+    public Result<?> callBack(CallBackDTO callBackDTO) {
+        if(!callBackStrategy.getCallBack(callBackDTO.getCallBackName()).call(callBackDTO)){
+            throw new ServerException(ResultEnums.CALLBACK_EXECUTE_ERROR);
+        }
+        return Result.success();
     }
 }
