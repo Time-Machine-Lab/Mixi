@@ -6,6 +6,9 @@ import com.mixi.common.component.token.AbstractTokenService;
 import com.mixi.common.pojo.TokenUserInfo;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 描述: 使用Sa-Token实现Token服务
  * @author suifeng
@@ -24,6 +27,9 @@ public class SaTokenService extends AbstractTokenService {
         StpUtil.getSession().set("username", tokenUserInfo.getUsername());
         StpUtil.getSession().set("roles", tokenUserInfo.getRoles());
 
+        // 将额外字段加入Session会话
+        tokenUserInfo.getAdditionalFields().forEach((key, value) -> StpUtil.getSession().set(key, value));
+
         // 返回登录token
         return StpUtil.getTokenValue();
     }
@@ -41,7 +47,20 @@ public class SaTokenService extends AbstractTokenService {
         String username = (String) StpUtil.getSession().get("username");
         int[] roles = (int[]) StpUtil.getSession().get("roles");
 
-        return new TokenUserInfo(userId, username, roles);
+        // 提取额外字段
+        Map<String, Object> additionalFields = new HashMap<>();
+        StpUtil.getSession().keys().forEach(key -> {
+            if (!key.equals("username") && !key.equals("roles")) {
+                additionalFields.put(key, StpUtil.getSession().get(key));
+            }
+        });
+
+        return TokenUserInfo.builder()
+                .userId(userId)
+                .username(username)
+                .roles(roles)
+                .additionalFields(additionalFields)
+                .build();
     }
 
     @Override

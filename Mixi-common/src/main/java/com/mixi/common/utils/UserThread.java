@@ -43,6 +43,14 @@ public class UserThread {
     }
 
     /**
+     * 获取当前操作用户的扩展字段
+     */
+    public static Object getField(String key) {
+        TokenUserInfo user = get();
+        return user != null ? user.getField(key) : null;
+    }
+
+    /**
      * 设置当前操作用户
      */
     public static void setUser(TokenUserInfo user) {

@@ -33,6 +33,7 @@ public class OptionalAuthStrategy implements AuthStrategy {
         // 从请求头中提取token
         String token = tokenValidator.extractTokenFromHeader(exchange);
 
+        // 如果携带了TOKEN
         if (token != null && tokenValidator.isTokenValid(token)) {
             // 提取用户信息
             TokenUserInfo tokenUserInfo = tokenValidator.extractUserInfoFromToken(token);
