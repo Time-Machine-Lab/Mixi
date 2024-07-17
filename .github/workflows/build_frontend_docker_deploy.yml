@@ -4,7 +4,8 @@ on:
   pull_request:
     types:
       - closed    # 分支关闭时
-
+    # branches:
+    #   - master
 jobs:
     build-frontend:
         # if: github.event.pull_request.merged == true
