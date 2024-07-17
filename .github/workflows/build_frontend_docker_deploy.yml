@@ -33,6 +33,8 @@ jobs:
               restore-keys: |
                 ${{ runner.os }}-pnpm-
           - name: Change Directory to Mixi-UI
+            run: ls
+          - name: Change Directory to Mixi-UI
             run: cd Mixi-ui
           - name: Install pnpm
             run: npm install -g pnpm
