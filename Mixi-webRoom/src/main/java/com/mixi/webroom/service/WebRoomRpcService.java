@@ -9,5 +9,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface WebRoomRpcService {
-    Result<?> createRoomCallBack(String uid, String roomId);
+    Result<?> joinRoomCallBack(String uid, String roomId);
 }

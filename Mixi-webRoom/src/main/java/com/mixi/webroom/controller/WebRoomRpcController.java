@@ -17,9 +17,9 @@ public class WebRoomRpcController {
     @Resource
     private WebRoomRpcService webRoomRpcService;
 
-    @PostMapping("/createRoomCallBack")
-    public Result<?> createRoomCallBack(@RequestPart String uid,
+    @PostMapping("/joinRoomCallBack")
+    public Result<?> joinRoomCallBack(@RequestPart String uid,
                                         @RequestPart String roomId) {
-        return webRoomRpcService.createRoomCallBack(uid, roomId);
+        return webRoomRpcService.joinRoomCallBack(uid, roomId);
     }
 }

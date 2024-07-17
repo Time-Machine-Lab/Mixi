@@ -181,4 +181,8 @@ public class RedisUtil {
     public void increment(String key) {
         increment(key, 1);
     }
+
+    public void removeExpiration(String key){
+        redisTemplate.persist(key);
+    }
 }
