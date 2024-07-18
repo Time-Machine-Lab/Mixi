@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useAuthStore} from "@/stores/authStore";
+// import {loginGithub} from "@/api/user/userServe";
 
 const data = [
   {avatar: '', name: 'Genius'},
@@ -58,7 +59,7 @@ let parameter = ref({
               <input v-model="parameter.largest">
             </li>
             </ul>
-          <button class="M-btn">+创建房间</button>
+          <button  class="M-btn">+创建房间</button>
         </div>
       </div>
     </div>
