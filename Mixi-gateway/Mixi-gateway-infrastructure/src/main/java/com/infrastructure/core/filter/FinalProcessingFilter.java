@@ -1,7 +1,7 @@
 package com.infrastructure.core.filter;
 
 import com.infrastructure.pojo.RequestContext;
-import com.mixi.common.component.transfer.UserInfoTransferHandler;
+import com.mixi.common.component.info.transfer.UserInfoTransferHandler;
 import com.mixi.common.pojo.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

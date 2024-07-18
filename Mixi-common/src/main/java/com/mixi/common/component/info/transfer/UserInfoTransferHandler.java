@@ -1,4 +1,4 @@
-package com.mixi.common.component.transfer;
+package com.mixi.common.component.info.transfer;
 
 import com.mixi.common.pojo.TokenUserInfo;
 import org.springframework.web.server.ServerWebExchange;

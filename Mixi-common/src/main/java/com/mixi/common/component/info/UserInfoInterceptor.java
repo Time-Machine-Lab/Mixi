@@ -1,5 +1,6 @@
-package com.mixi.common.component.transfer;
+package com.mixi.common.component.info;
 
+import com.mixi.common.component.info.transfer.UserInfoTransferHandler;
 import com.mixi.common.pojo.TokenUserInfo;
 import com.mixi.common.utils.UserThread;
 import lombok.RequiredArgsConstructor;
