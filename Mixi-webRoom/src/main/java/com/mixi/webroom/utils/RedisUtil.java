@@ -194,4 +194,5 @@ public class RedisUtil {
     public List<Boolean> exec(){
         return redisTemplate.exec();
     }
+
 }
