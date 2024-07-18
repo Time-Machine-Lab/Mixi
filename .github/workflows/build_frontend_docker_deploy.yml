@@ -1,0 +1,71 @@
+name: 前端部署自动流
+
+on:
+  pull_request:
+    types:
+      - closed    # 分支关闭时
+    # branches:
+    #   - master
+jobs:
+    build-frontend:
+        # if: github.event.pull_request.merged == true
+        runs-on: ubuntu-latest
+        environment:
+          name: FRONT_END_ENV
+          
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v2
+
+          - name: Checkout builder Label
+            run: |
+                if [[ "${{ github.event.pull_request.body }}" == *"<Auto-Frontend>"* ]]; then
+                    echo "Pull request body contains <Auto-Frontend>. Proceeding with the workflow."
+                else
+                    echo "Commit message does not contain <Auto-Frontend>. Skipping the workflow."
+                    exit 78 
+                fi
+          - name: Setup Node.js
+            uses: actions/setup-node@v2
+            with:
+              node-version: '20'
+          - name: Cache pnpm modules
+            uses: actions/cache@v2
+            with:
+              path: ~/.pnpm-store
+              key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+              restore-keys: |
+                ${{ runner.os }}-pnpm-
+          - name: Install pnpm
+            working-directory: Mixi-ui
+            run: npm install -g pnpm
+          - name: Install Dependencies
+            working-directory: Mixi-ui
+            run: pnpm install
+          - name: Build Frontend
+            working-directory: Mixi-ui
+            run: pnpm build
+          - name: Log in to Docker Hub
+            run: docker login -u ${{ secrets.DOCKER_REPO }} -p ${{ secrets.DOCKER_PWD }}
+
+          - name: Build Docker image
+            run: docker build -t ${{ secrets.DOCKER_REPO }}/mixi-ui .
+            working-directory: Mixi-ui
+
+          - name: Push Docker image
+            run: docker push ${{ secrets.DOCKER_REPO }}/mixi-ui
+
+          - name: SSH into server and deploy
+            uses: appleboy/ssh-action@master
+            with:
+              host: ${{ secrets.FRONT_END_TEST_ADDRESS }}
+              username: ${{ secrets.FRONT_END_TEST_USERNAME }}
+              password: ${{ secrets.FRONT_END_TEST_PWD }}
+              script: |
+                docker stop MixiUiContainer || true
+                sleep 3
+                docker rm MixiUiContainer || true
+                docker rmi $(docker images ${{ secrets.DOCKER_REPO }}/mixi-ui -q) || true
+                sleep 3
+                docker pull ${{ secrets.DOCKER_REPO }}/mixi-ui
+                docker run --name MixiUiContainer -d -p 0.0.0.0:3000:3000 ${{ secrets.DOCKER_REPO }}/mixi-ui
