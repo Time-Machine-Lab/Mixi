@@ -2,30 +2,29 @@ package com.mixi.webroom.core.strategy.Impl;
 
 import com.mixi.webroom.config.RedisKeyConfig;
 import com.mixi.webroom.utils.RedisUtil;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
 /**
- * @Author：XiaoChun
- * @Date：2024/7/17 下午6:02
+ * @author XiaoChun
+ * @date 2024/7/19
  */
-@Component(value = "joinRoom")
-public class JoinRoomCallBack extends AbstractCallBack {
+@Component
+public class QuitRoomCallBack extends AbstractCallBack{
     @Resource
     RedisUtil redisUtil;
-
-
     @Override
     public Boolean successCallBack(String roomId, String uid) {
-        if(roomId.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid)))){
+        if((uid.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid))))) {
             redisUtil.multi();
-            redisUtil.removeExpiration(RedisKeyConfig.roomOwner(roomId));
-            redisUtil.removeExpiration(RedisKeyConfig.roomInfo(roomId));
-            redisUtil.removeExpiration(RedisKeyConfig.roomNumber(roomId));
-            redisUtil.removeExpiration(RedisKeyConfig.userOwn(uid));
+            redisUtil.deleteObject(RedisKeyConfig.roomInfo(roomId));
+            redisUtil.deleteObject(RedisKeyConfig.roomNumber(roomId));
+            redisUtil.deleteObject(RedisKeyConfig.userOwn(uid));
             redisUtil.exec();
         }
+        redisUtil.deleteObject(RedisKeyConfig.userConnected(uid));
         return null;
     }
 

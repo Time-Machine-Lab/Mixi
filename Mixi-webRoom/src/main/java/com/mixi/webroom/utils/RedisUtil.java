@@ -1,7 +1,11 @@
 package com.mixi.webroom.utils;
 
+import io.github.id.snowflake.RedisSnowflakeRegister;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -15,14 +19,23 @@ import java.util.concurrent.TimeUnit;
 @Component
 @SuppressWarnings("unchecked")
 public class RedisUtil {
-    @Resource
-    private RedisTemplate redisTemplate;
+    private final RedisTemplate redisTemplate;
+
+    private final RedisSerializer<Object> valueSerializer;
+
+    private final RedisSerializer<String> keySerializer;
 
     private static final TimeUnit defaultTimeUnit = TimeUnit.SECONDS;
 
-
     @Value("${spring.redis.defaultExpire}")
     private Integer defaultExpire;
+
+    @Autowired
+    public RedisUtil(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+        this.valueSerializer = redisTemplate.getValueSerializer();
+        this.keySerializer = redisTemplate.getKeySerializer();
+    }
 
     public <T> Boolean setNxObject(String key, T value, Integer timeout, TimeUnit timeUnit) {
         return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, timeUnit);
@@ -183,6 +196,10 @@ public class RedisUtil {
         increment(key, 1);
     }
 
+    public void setHash(String key, Map<String, Object> map) {
+        redisTemplate.opsForHash().putAll(key, map);
+    }
+
     public void removeExpiration(String key){
         redisTemplate.persist(key);
     }
@@ -195,4 +212,7 @@ public class RedisUtil {
         return redisTemplate.exec();
     }
 
+    public void pipeline(RedisCallback<Object> callback){
+        redisTemplate.executePipelined(callback);
+    }
 }

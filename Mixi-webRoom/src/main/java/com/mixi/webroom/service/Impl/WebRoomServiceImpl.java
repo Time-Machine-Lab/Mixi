@@ -23,6 +23,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -64,15 +65,17 @@ public class WebRoomServiceImpl implements WebRoomService {
         String roomId = String.valueOf(snowFlakeIdWorker.nextId());
         Map<String, Object> resultMap = new HashMap<>();
         // 判断当前用户状态
-        if(redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), roomId)){
+        if(redisUtil.exist(RedisKeyConfig.userConnected(uid)) && redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), roomId)){
             WebRoom webRoom = new WebRoom(createRoomDTO, roomId);
 
             videoService.createRoom();
             // 设置房间相关信息
+            redisUtil.multi();
             redisUtil.setNxObject(RedisKeyConfig.roomOwner(webRoom.getRoomId()), uid, 60, TimeUnit.SECONDS);
             redisUtil.setNxObject(RedisKeyConfig.roomInfo(webRoom.getRoomId()), webRoom, 60, TimeUnit.SECONDS);
             redisUtil.setNxObject(RedisKeyConfig.roomNumber(webRoom.getRoomId()), Integer.MAX_VALUE - webRoom.getLimit(), 60, TimeUnit.SECONDS);//设置为redis上限减房间上限
             redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), uid, 60, TimeUnit.SECONDS);
+            redisUtil.exec();
         }
 
         String roomLink = webRoomUtil.link(WebRoomUtil.builder().put("roomId", roomId).done());
@@ -94,7 +97,6 @@ public class WebRoomServiceImpl implements WebRoomService {
         return Result.success(resultMap);
     }
 
-    // 维护房间邀请时长
     @Override
     public Result<?> pull(String uid, List<String> emails) {
         PullVO pullVO = new PullVO();
@@ -123,6 +125,7 @@ public class WebRoomServiceImpl implements WebRoomService {
     @Override
     public Result<?> linkJoin(String uid, String key) {
         Map<String, String> res = webRoomUtil.decryptLink(key);
+        //用户当前状态为已连接
         if(!Objects.isNull(redisUtil.getCacheObject(RedisKeyConfig.userConnected(uid)))){
             throw new ServerException(ResultEnums.USER_CONNECTED);
         }
@@ -143,9 +146,11 @@ public class WebRoomServiceImpl implements WebRoomService {
     public Result<?> quitRoom(String uid, String roomId) {
         // 房主 or 成员
         if((uid.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid))))) {
+            redisUtil.multi();
             redisUtil.deleteObject(RedisKeyConfig.roomInfo(roomId));
             redisUtil.deleteObject(RedisKeyConfig.roomNumber(roomId));
             redisUtil.deleteObject(RedisKeyConfig.userOwn(uid));
+            redisUtil.exec();
         }
         redisUtil.deleteObject(RedisKeyConfig.userConnected(uid));
         return Result.success();
