@@ -13,6 +13,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import static com.infrastructure.config.GateWayConstant.REQUEST_CONTEXT;
+import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
 
 /**
  * 描述: 收尾过滤器
@@ -37,7 +38,12 @@ public class FinalProcessingFilter implements GlobalFilter, Ordered {
 
             // 如果前面从token中拿到了用户信息，那么就走传递逻辑
             if (tokenUserInfo != null) {
-                userInfoTransferHandler.passUserInfo(exchange, tokenUserInfo);
+                String userInfo = userInfoTransferHandler.packageUserInfo(tokenUserInfo);
+
+                ServerWebExchange webExchange = exchange.mutate()
+                        .request(builder -> builder.header(USER_INFO, userInfo))
+                        .build();
+                return chain.filter(webExchange);
             }
         }
 

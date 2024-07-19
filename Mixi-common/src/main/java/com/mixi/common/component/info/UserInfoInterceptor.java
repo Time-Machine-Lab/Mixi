@@ -4,10 +4,13 @@ import com.mixi.common.component.info.transfer.UserInfoTransferHandler;
 import com.mixi.common.pojo.TokenUserInfo;
 import com.mixi.common.utils.UserThread;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
 
 /**
  * 描述: 用户信息拦截器
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RequiredArgsConstructor
 @SuppressWarnings("all")
+@Component
 public class UserInfoInterceptor implements HandlerInterceptor {
 
     private final UserInfoTransferHandler userInfoTransferHandler;
@@ -24,7 +28,8 @@ public class UserInfoInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         // 从请求中提取用户信息
-        TokenUserInfo tokenUserInfo = userInfoTransferHandler.extractUserInfo(request);
+        String userInfo = request.getHeader(USER_INFO);
+        TokenUserInfo tokenUserInfo = userInfoTransferHandler.extractUserInfo(userInfo);
 
         // 如果提取到了用户信息，就加入用户线程中
         if (tokenUserInfo != null) {

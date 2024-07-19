@@ -34,21 +34,18 @@ public class NeedAuthStrategy implements AuthStrategy {
     @Override
     public Mono<Void> validate(ServerWebExchange exchange) {
 
-        // 从请求上下文中获取RequestContext对象
-        RequestContext context = (RequestContext) exchange.getAttributes().get(REQUEST_CONTEXT);
-        ApiInfo apiInfo = context.getApiInfo();
-
-        // 从请求头中提取token
-        String token = tokenValidator.extractTokenFromHeader(exchange);
+        // 从请求头中提取token，并提取用户信息
+        TokenUserInfo tokenUserInfo = tokenValidator.validateAndExtractUserInfo(tokenValidator.extractTokenFromHeader(exchange));
 
         // 判断token是否合法
-        if (!tokenValidator.isTokenValid(token)) {
+        if (null == tokenUserInfo) {
             log.warn("Invalid or missing token for API: {}", exchange.getRequest().getURI());
             return ResponseUtils.respondError(exchange, UNAUTHORIZED, "Unauthorized: Invalid or missing token.");
         }
 
-        // 提取用户信息
-        TokenUserInfo tokenUserInfo = tokenValidator.extractUserInfoFromToken(token);
+        // 从请求上下文中获取RequestContext对象
+        RequestContext context = (RequestContext) exchange.getAttributes().get(REQUEST_CONTEXT);
+        ApiInfo apiInfo = context.getApiInfo();
 
         // 检查角色权限是否合法
         if (!tokenValidator.hasRequiredRoles(tokenUserInfo.getRoles(), apiInfo.getRoles())) {

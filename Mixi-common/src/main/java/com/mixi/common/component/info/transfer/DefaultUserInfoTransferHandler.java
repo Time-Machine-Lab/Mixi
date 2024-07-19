@@ -2,15 +2,11 @@ package com.mixi.common.component.info.transfer;
 
 import com.mixi.common.pojo.TokenUserInfo;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ServerWebExchange;
-
-import javax.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
+import java.util.stream.Collectors;
 
 /**
  * 描述: 默认实现的传递与接收逻辑
@@ -21,59 +17,72 @@ import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
 public class DefaultUserInfoTransferHandler implements UserInfoTransferHandler {
 
     /**
-     * 将用户信息传递给下游微服务
+     * 将用户信息包装成userInfo字符串
      */
     @Override
-    public void passUserInfo(ServerWebExchange exchange, TokenUserInfo tokenUserInfo) {
+    public String packageUserInfo(TokenUserInfo tokenUserInfo) {
         if (tokenUserInfo != null) {
-            StringBuilder userInfoBuilder = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
+            sb.append(tokenUserInfo.getUserId())
+                    .append("|")
+                    .append(tokenUserInfo.getUsername())
+                    .append("|");
 
-            // 先拼接用户ID，用户名，权限
-            userInfoBuilder.append(tokenUserInfo.getUserId()).append(" ")
-                    .append(tokenUserInfo.getUsername()).append(" ")
-                    .append(Arrays.toString(tokenUserInfo.getRoles()));
-
-            // 拼接扩展字段
-            for (Map.Entry<String, Object> entry : tokenUserInfo.getAdditionalFields().entrySet()) {
-                userInfoBuilder.append(" ").append(entry.getKey()).append("=").append(entry.getValue());
+            // 处理角色
+            if (tokenUserInfo.getRoles() != null && tokenUserInfo.getRoles().length > 0) {
+                sb.append(Arrays.stream(tokenUserInfo.getRoles())
+                        .mapToObj(String::valueOf)
+                        .collect(Collectors.joining(",")));
             }
+            sb.append("|");
 
-            exchange.getResponse().getHeaders().add(USER_INFO, userInfoBuilder.toString());
-        }
-    }
+            // 处理扩展字段
+            tokenUserInfo.getAdditionalFields().forEach((key, value) -> {
+                sb.append(key).append("=").append(value).append(";");
+            });
 
-    /**
-     * 从请求中提取用户信息
-     */
-    @Override
-    public TokenUserInfo extractUserInfo(HttpServletRequest request) {
-        String userInfo = request.getHeader(USER_INFO);
-        if (userInfo != null && !userInfo.isEmpty()) {
-            return convertStringToTokenUserInfo(userInfo);
+            return sb.toString();
         }
         return null;
     }
 
-    private TokenUserInfo convertStringToTokenUserInfo(String userInfo) {
-        String[] parts = userInfo.split(" ");
-        String userId = parts[0];
-        String username = parts[1];
-        int[] roles = Arrays.stream(parts[2].substring(1, parts[2].length() - 1).split(","))
-                .map(String::trim)
-                .mapToInt(Integer::parseInt)
-                .toArray();
+    /**
+     * 从userInfo字符串中提取用户信息
+     */
+    @Override
+    public TokenUserInfo extractUserInfo(String userInfo) {
+        if (userInfo != null && !userInfo.isEmpty()) {
+            String[] parts = userInfo.split("\\|");
+            String userId = parts[0];
+            String username = parts[1];
 
-        Map<String, Object> additionalFields = new HashMap<>();
-        for (int i = 3; i < parts.length; i++) {
-            String[] fieldParts = parts[i].split("=");
-            additionalFields.put(fieldParts[0], fieldParts[1]);
+            // 处理角色
+            int[] roles = new int[0];
+            if (parts.length > 2 && !parts[2].isEmpty()) {
+                roles = Arrays.stream(parts[2].split(","))
+                        .mapToInt(Integer::parseInt)
+                        .toArray();
+            }
+
+            // 处理扩展字段
+            Map<String, Object> additionalFields = new HashMap<>();
+            if (parts.length > 3 && !parts[3].isEmpty()) {
+                String[] fields = parts[3].split(";");
+                for (String field : fields) {
+                    String[] keyValue = field.split("=");
+                    if (keyValue.length == 2) {
+                        additionalFields.put(keyValue[0], keyValue[1]);
+                    }
+                }
+            }
+
+            return TokenUserInfo.builder()
+                    .userId(userId)
+                    .username(username)
+                    .roles(roles)
+                    .additionalFields(additionalFields)
+                    .build();
         }
-
-        return TokenUserInfo.builder()
-                .userId(userId)
-                .username(username)
-                .roles(roles)
-                .additionalFields(additionalFields)
-                .build();
+        return null;
     }
 }

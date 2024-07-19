@@ -1,5 +1,6 @@
 package com.mixi.user;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.mixi.common.component.token.service.SaTokenService;
 import com.mixi.common.pojo.TokenUserInfo;
 import org.junit.Test;
@@ -33,9 +34,7 @@ public class SaTokenTest {
         String token = saTokenService.loginAndGenerateToken(tokenUserInfo);
         System.out.println(token);
 
-        saTokenService.isTokenValid(token);
-
-        TokenUserInfo tokenUserInfo1 = saTokenService.extractUserInfoFromToken(token);
+        TokenUserInfo tokenUserInfo1 = saTokenService.validateAndExtractUserInfo(token);
         System.out.println(tokenUserInfo1);
     }
 }

@@ -4,6 +4,7 @@ import com.infrastructure.core.auth.AuthStrategy;
 import com.infrastructure.core.auth.AuthStrategyType;
 import com.infrastructure.core.token.TokenValidator;
 import com.infrastructure.pojo.RequestContext;
+import com.infrastructure.utils.ResponseUtils;
 import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.pojo.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +31,11 @@ public class OptionalAuthStrategy implements AuthStrategy {
     @Override
     public Mono<Void> validate(ServerWebExchange exchange) {
 
-        // 从请求头中提取token
-        String token = tokenValidator.extractTokenFromHeader(exchange);
+        // 从请求头中提取token，并提取用户信息
+        TokenUserInfo tokenUserInfo = tokenValidator.validateAndExtractUserInfo(tokenValidator.extractTokenFromHeader(exchange));
 
-        // 如果携带了TOKEN
-        if (token != null && tokenValidator.isTokenValid(token)) {
-            // 提取用户信息
-            TokenUserInfo tokenUserInfo = tokenValidator.extractUserInfoFromToken(token);
-
+        // 如果携带了有效TOKEN
+        if (null != tokenUserInfo) {
             // 将用户信息存入请求上下文
             RequestContext context = (RequestContext) exchange.getAttributes().get(REQUEST_CONTEXT);
             if (context != null) {
