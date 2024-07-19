@@ -20,4 +20,5 @@ public class ServerProperties {
     private Integer probeIdleSeconds=120;
     private Integer probeWaitSeconds=5;
     private Integer handshakeWaitSeconds=5;
+    private Integer maxHistoryNum=100;
 }
