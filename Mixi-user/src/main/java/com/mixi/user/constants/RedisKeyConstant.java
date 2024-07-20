@@ -13,5 +13,5 @@ public class RedisKeyConstant {
     // 图片验证码key
     public static final RedisKey PIC_CODE_KEY = new RedisKey("mixi:user:pic-code:%s",1, TimeUnit.MINUTES);
     // 邮箱链接登录令牌key
-    public static final RedisKey EMAIL_LINK_TOKEN_KEY = new RedisKey("mixi:user:pic-code:%s",1, TimeUnit.MINUTES);
+    public static final RedisKey EMAIL_LINK_TOKEN_KEY = new RedisKey("mixi:user:link-token:%s",1, TimeUnit.MINUTES);
 }

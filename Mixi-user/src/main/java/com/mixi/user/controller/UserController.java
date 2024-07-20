@@ -21,6 +21,10 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/code/pic")
+    public Result getPicCode(){
+        return userService.getPicCode();
+    }
     @PostMapping("/linkLogin")
     public Result linkLogin(
             @RequestHeader(value="User-Agent") String userAgent,

@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.mixi.user.constants.ChainConstant.PIC_CODE_VERIFY;
+import static com.mixi.user.constants.MixiUserConstant.NIL;
 import static com.mixi.user.constants.RedisKeyConstant.PIC_CODE_KEY;
 import static com.mixi.user.constants.ServeCodeConstant.PIC_CODE_VERIFY_ERROR;
 
@@ -24,9 +25,14 @@ public class PicCodeVerifyChain extends AbstractFilterChain<String[]> {
 
     @Override
     public boolean filter(String[] value) {
+
         if(value.length==2){
-            String cachePicCode = redisGateway.get(PIC_CODE_KEY, value[0]);
-            if(!value[1].equals(cachePicCode)){
+            String key = value[0];
+            String code = value[1];
+
+            String cachePicCode = redisGateway.getAndSet(PIC_CODE_KEY,NIL,key);
+            redisGateway.template().delete(key);
+            if(cachePicCode.equals(NIL)||!code.equals(cachePicCode)){
                 throw ServeException.of(PIC_CODE_VERIFY_ERROR);
             }
             return true;

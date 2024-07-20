@@ -16,6 +16,12 @@ public class RedisGatewayImpl implements RedisGateway {
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
+    public String getAndSet(RedisKey redisKey, String value, Object... args) {
+        String key = redisKey.getKey(args);
+        return stringRedisTemplate.opsForValue().getAndSet(key, value);
+    }
+
+    @Override
     public String get(RedisKey redisKey,Object... args){
         String key = redisKey.getKey(args);
         return stringRedisTemplate.opsForValue().get(key);
