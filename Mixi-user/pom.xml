@@ -48,12 +48,14 @@
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-service</artifactId>
-<!--            <version>${assistant.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>io.github.geniusay</groupId>
+            <artifactId>assistant-mysql</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-cache</artifactId>
-<!--            <version>${assistant.version}</version>-->
         </dependency>
 
         <!--加密-->
@@ -61,7 +63,6 @@
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
-<!--            <version>3.0.3</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;-->
         </dependency>
 
         <!--        mysql-->
@@ -74,7 +75,6 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-<!--            <version>${mybatis-plus.version}</version>-->
         </dependency>
         <!--aop-->
         <dependency>
@@ -95,13 +95,6 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-<!--        mixi-common-->
-<!--        <dependency>-->
-<!--            <groupId>com</groupId>-->
-<!--            <artifactId>Mixi-common</artifactId>-->
-<!--            <version>0.0.1-SNAPSHOT</version>-->
-<!--        </dependency>-->
-
 <!--hutool-->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -113,13 +106,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-<!--jedis-->
-<!--        <dependency>-->
-<!--            <groupId>redis.clients</groupId>-->
-<!--            <artifactId>jedis</artifactId>-->
-<!--&lt;!&ndash;            <version>3.8.0</version> &lt;!&ndash; 替换为最新版本 &ndash;&gt;&ndash;&gt;-->
-<!--        </dependency>-->
-        <!--        redis-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -137,7 +124,6 @@
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>junit</groupId>

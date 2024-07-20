@@ -9,3 +9,21 @@ spring:
     active: ${ACTIVE:test}
   cloud:
     api: true
+
+assistant:
+  service:
+    id:
+      snowflake:
+        register: register-redis
+        startTime: 2024-7-20 00:00:00
+  service-chain:
+    serviceMap:
+      linkLogin: picCodeVerify->userAgentVerify->emailExistVerify
+      linkVerify: userAgentVerify->emailLinkVerify->emailExistVerify[Ignore]
+
+mixi:
+  user:
+    avatar: "https://tmlgenius.github.io/assistant-docs/img/logo.svg"
+    resume: "这个人很懒，什么都没留下"
+    nickNamePrefix: "Mixi用户"
+    nickNameLen: 10

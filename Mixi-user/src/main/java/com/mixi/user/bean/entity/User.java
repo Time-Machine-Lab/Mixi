@@ -1,23 +1,22 @@
-package com.mixi.user.domain.entity;
+package com.mixi.user.bean.entity;
 
-
-import lombok.Builder;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.mixi.user.domain.vo.InfoVo;
-import com.mixi.user.utils.UuidUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 
-/**
- * 
- * @TableName mixi_user
- */
+
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @TableName("mixi_user")
 public class User implements Serializable {
     /**
@@ -69,23 +68,4 @@ public class User implements Serializable {
      */
     private String delFlag;
 
-    public static User baseBuild(String email){
-        User user = new User();
-        user.setId(UuidUtils.creatUuid());
-        user.setEmail(email);
-        user.setAvatar("默认头像");
-        user.setNickname("默认账号");
-        user.setResume("这里什么都没有发送");
-        return user;
-    }
-
-    public static User InfoTo(InfoVo infoVo) {
-        User user = new User();
-        user.setId(infoVo.getId());
-        user.setAvatar(infoVo.getAvatar());
-        user.setNickname(infoVo.getNickname());
-        user.setSex(infoVo.getSex());
-        user.setResume(infoVo.getResume());
-        return user;
-    }
 }

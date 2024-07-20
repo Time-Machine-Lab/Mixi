@@ -1,6 +1,6 @@
 package com.mixi.user.mapper;
 
-import com.mixi.user.domain.entity.User;
+import com.mixi.user.bean.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,117 +1,133 @@
 package com.mixi.user.service.impl;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.alibaba.fastjson.JSONObject;
 import com.mixi.common.exception.ServeException;
-import com.mixi.user.designpattern.chain.ApproveChain;
-import com.mixi.user.designpattern.chain.ApproveChainBuilder;
-import com.mixi.user.designpattern.factory.LinkFactory;
-import com.mixi.user.designpattern.strategy.LinkVerifyStrategyFactory;
-import com.mixi.user.domain.entity.User;
-import com.mixi.user.domain.vo.InfoVo;
-import com.mixi.user.domain.vo.UserLoginVo;
-import com.mixi.user.domain.vo.UserRegisterVo;
+import com.mixi.common.utils.ThreadContext;
+import com.mixi.user.bean.dto.LoginDTO;
+import com.mixi.user.bean.entity.LinkInfo;
+import com.mixi.user.bean.entity.User;
+import com.mixi.user.domain.RedisGateway;
 import com.mixi.user.service.UserService;
-import com.mixi.user.mapper.UserMapper;
-import com.mixi.user.utils.*;
+import com.mixi.user.utils.AgentUtil;
+import com.mixi.user.utils.UserUtil;
+import io.github.common.SafeBag;
 import io.github.common.web.Result;
+import io.github.servicechain.ServiceChainFactory;
+import io.github.servicechain.bootstrap.ReturnType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.annotation.Resource;
+
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
-import static com.mixi.user.constants.CommonConstant.COMMON_ERROR;
-import static com.mixi.user.constants.RedisConstant.REDIS_KEY_TIMEOUT;
-import static com.mixi.user.constants.RedisConstant.REDIS_PRE;
+import static com.mixi.user.constants.RedisKeyConstant.EMAIL_LINK_TOKEN_KEY;
+import static com.mixi.user.constants.ServeCodeConstant.REGISTER_ERROR;
+import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
 
-/**
- * @author yuech
- * @description 针对表【mixi_user】的数据库操作Service实现
- * @createDate 2024-06-25 16:18:03
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-        implements UserService {
+public class UserServiceImpl implements UserService {
 
-    private final UserDaoService userDaoService;
-    private final UserMapper userMapper;
-    private final RedisTemplate redisTemplate;
-    private final ThreadService threadService;
-    private final LinkFactory linkFactory;
+    @Resource
+    private UserDaoServiceImpl userDaoService;
 
-    private final ApproveChainBuilder approveChainBuilder;
-    private final String HOME_URL = "www.baidu.com";
+    @Resource
+    private RedisGateway redisGateway;
+
+    @Resource
+    private ServiceChainFactory chainFactory;
+
+    @Resource
+    private UserUtil userUtil;
+
+    @Resource
+    StringEncryptor encryptor;
 
     @Override
-    public Result link(String email, String type) {
-        String  uuid = UuidUtils.creatUuid(), link = linkFactory.getLink(email, uuid,type);
-        ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        if (ops.setIfAbsent(REDIS_PRE + email + ":uid", String.valueOf(uuid))) {
-            redisTemplate.expire(REDIS_PRE + email + ":uid", REDIS_KEY_TIMEOUT, TimeUnit.MINUTES);
-            threadService.sendEmail(email, link);
-            ops.increment(REDIS_PRE + email + ":times");
-            redisTemplate.expire(REDIS_PRE + email + ":times", REDIS_KEY_TIMEOUT, TimeUnit.MINUTES);
-            return Result.success();
+    public Result<?> linkLogin(LoginDTO loginDTO,String userAgent) {
+
+        AgentUtil.UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
+
+        chainFactory.get("linkLogin")
+                .<LoginDTO>supplierMap(Map.of(
+                        1,(loginDto)-> new String[]{loginDto.getPicId(),loginDto.getPicCode()},
+                        2, LoginDTO::getEmail,
+                        3,(loginDto)-> agentInfo
+                ))
+                .returnType(ReturnType.THROW)
+                .execute(loginDTO);
+
+        String email = loginDTO.getEmail();
+
+        //生成短链
+        String shortLink = generateShortLink(email, agentInfo);
+
+        if (!redisGateway.setIfAbsent(EMAIL_LINK_TOKEN_KEY,shortLink,email)) {
+            throw ServeException.of(REPEAT_OPERATION);
         }
-        if (ops.increment(REDIS_PRE + email + ":" + "times") <= REDIS_KEY_TIMEOUT) {
-            threadService.sendEmail(email, link);
-            Long ttl = redisTemplate.getExpire(REDIS_PRE + email + ":uid", TimeUnit.SECONDS);
-            ops.set(REDIS_PRE + email + ":" + "uid", String.valueOf(uuid));
-            redisTemplate.expire(REDIS_PRE + email + ":uid", ttl, TimeUnit.SECONDS);
-            return Result.success();
-        }
-        log.debug("重复发送链接");
-        throw new RuntimeException(COMMON_ERROR);
-    }
 
-    @Override
-    public Result linkVerify(String email, String uid, String type) {
-        return Result.success(MapUtils.build()
-                .set("token", LinkVerifyStrategyFactory.getInvokeStrategy(type).process(email, uid))
-                .set("transTo", HOME_URL)
-                .buildMap());
-    }
-
-
-    @Override
-    public Result updateInfo(String uid, InfoVo infoVo) {
-        infoVo.setId(uid);
-        //2、满足条件修改其一
-        if (!Objects.isNull(infoVo.getPassword())||!Objects.isNull(infoVo.getEmail())){
-            return Result.success("接口未开放");
-        }
-        User user = User.InfoTo(infoVo);
-        return Result.success(userMapper.updateById(user));
-    }
-
-
-    @Override
-    public Result commonRegister(UserRegisterVo userRegisterVo) {
-        String email = userRegisterVo.getEmail(),code = userRegisterVo.getCode();
-        approveChainBuilder.buildInstance()
-                .set("CodeCheckApproveChain","000000")
-                .Build()
-                .approve();
-        User user = User.baseBuild(email);
-        return Result.success(userDaoService.insert(user));
-    }
-
-    @Override
-    public Result<?> login(UserLoginVo userLoginVo) {
-        return null;
-    }
-
-    @Override
-    public Result userInfo() {
+        //发送至邮箱
         return Result.success();
+    }
+
+    private String generateShortLink(String email,AgentUtil.UserAgentInfo agentInfo){
+        LinkInfo linkInfo = LinkInfo.builder()
+                .browser(agentInfo.getBrowser())
+                .os(agentInfo.getOs())
+                .ltId(UUID.randomUUID().toString())
+                .email(email).build();
+        return encryptor.encrypt(JSONObject.toJSONString(linkInfo));
+    }
+
+    @Override
+    public Result<?> linkVerify(String linkToken,String userAgent) {
+        // 解析 linkToken
+
+        AgentUtil.UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
+        ThreadContext.setData("agentInfo",agentInfo);
+        SafeBag<String> token = new SafeBag<>();
+        SafeBag<LinkInfo> linkInfo = new SafeBag<>();
+        chainFactory.get("linkVerify")
+                .<LinkInfo>supplierMap(Map.of(
+                        1, (obj)-> agentInfo,
+                        3, (obj)->{
+                            linkInfo.setData(ThreadContext.context().getData("LinkInfo",LinkInfo.class));
+                            return linkInfo.getData().getEmail();
+                        }
+                ))
+                // 邮箱不存在则直接进行用户注册
+                .failCallbackMap(Map.of(
+                        3,()->{
+                            User user = userUtil.newJoinUser(linkInfo.getData().getEmail(), null);
+                            register(user);
+                            //生成token
+                        }
+                ))
+                // 邮箱存在则进行用户登录
+                .successCallbackMap(Map.of(
+                        3,()->{
+                           //生成token
+                        }
+                ))
+                .execute(linkToken);
+
+
+        // 生成token
+        return Result.success(Map.of("token",token.getData()));
+    }
+
+    private void register(User user){
+        try {
+            if (!userDaoService.save(user)) {
+                throw ServeException.of(REGISTER_ERROR,"用户已经存在");
+            }
+        }catch (Exception e){
+            throw ServeException.of(REGISTER_ERROR,"用户已经存在");
+        }
     }
 }
 
