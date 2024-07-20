@@ -26,6 +26,7 @@ public class JoinRoomCallBack extends AbstractCallBack {
             redisUtil.removeExpiration(RedisKeyConfig.userOwn(uid));
             redisUtil.exec();
         }
+        redisUtil.setNxObject(RedisKeyConfig.userConnected(uid), roomId);
         return null;
     }
 
