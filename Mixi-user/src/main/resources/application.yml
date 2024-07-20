@@ -22,7 +22,7 @@ assistant:
     id:
       snowflake:
         register: register-redis
-        startTime: 2024-7-20 00:00:00
+        startTime: 2024-07-20 00:00:00
   service-chain:
     serviceMap:
       linkLogin: picCodeVerify->userAgentVerify->emailExistVerify
@@ -34,3 +34,12 @@ mixi:
     resume: "这个人很懒，什么都没留下"
     nickNamePrefix: "Mixi用户"
     nickNameLen: 10
+
+sa-token:
+  token-name: token
+  timeout: 259200
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: true
