@@ -30,14 +30,13 @@
 
         <dependency>
             <groupId>io.github.geniusay</groupId>
-            <artifactId>assistant-service</artifactId>
+            <artifactId>assistant-boot-start</artifactId>
         </dependency>
 
         <dependency>
             <groupId>io.github.geniusay</groupId>
-            <artifactId>assistant-boot-start</artifactId>
+            <artifactId>assistant-service</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>io.github.openfeign</groupId>
