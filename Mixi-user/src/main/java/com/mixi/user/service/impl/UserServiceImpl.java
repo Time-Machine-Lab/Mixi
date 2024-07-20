@@ -10,6 +10,7 @@ import com.mixi.user.domain.CaptchaServiceGateway;
 import com.mixi.user.domain.RedisGateway;
 import com.mixi.user.service.UserService;
 import com.mixi.user.utils.AgentUtil;
+import com.mixi.user.utils.EmailUtil;
 import com.mixi.user.utils.UserUtil;
 import io.github.common.SafeBag;
 import io.github.common.web.Result;
@@ -38,10 +39,13 @@ import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
 public class UserServiceImpl implements UserService {
 
     @Resource
-    CaptchaServiceGateway captchaServiceGateway;
+    private CaptchaServiceGateway captchaServiceGateway;
 
     @Resource
     private UserDaoServiceImpl userDaoService;
+
+    @Resource
+    private UserAsyncService userAsyncService;
 
     @Resource
     private RedisGateway redisGateway;
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private UserUtil userUtil;
 
     @Resource
-    StringEncryptor encryptor;
+    private StringEncryptor encryptor;
 
     @Override
     public Result<?> getPicCode() {
@@ -96,7 +100,7 @@ public class UserServiceImpl implements UserService {
             throw ServeException.of(REPEAT_OPERATION, msg);
         }
 
-        //TODO 发送至邮箱
+        userAsyncService.sendEmail(email, shortLink);
 
         return Result.success();
     }
