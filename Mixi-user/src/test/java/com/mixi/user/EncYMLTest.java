@@ -18,6 +18,5 @@ public class EncYMLTest {
 
     @Test
     public void getPass() {
-
     }
 }

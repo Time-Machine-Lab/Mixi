@@ -13,14 +13,7 @@
         <artifactId>Mixi</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-<!--    <properties>-->
-<!--        <java.version>11</java.version>-->
-<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
-<!--        <spring-boot.version>2.4.2</spring-boot.version>-->
-<!--        <assistant.version>1.1.1</assistant.version>-->
-<!--        <mybatis-plus.version>3.4.1</mybatis-plus.version>-->
-<!--    </properties>-->
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,7 +36,6 @@
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-boot-start</artifactId>
-<!--            <version>${assistant.version}</version>-->
         </dependency>
         <dependency>
             <groupId>io.github.geniusay</groupId>
@@ -95,11 +87,26 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-<!--hutool-->
+<!--        nacos-->
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.7.7</version> <!-- 版本号可能需要根据实际情况调整 -->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 <!--mail-->
         <dependency>
@@ -120,6 +127,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>

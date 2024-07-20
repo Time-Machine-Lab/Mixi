@@ -10,8 +10,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @ComponentScan(basePackages = {"com.mixi.common", "com.mixi.user"})
 @SpringBootApplication
-@EnableFeignClients
 @EnableDiscoveryClient
+@EnableFeignClients
 @SuppressWarnings({"all"})
 public class MixiUserApplication {
     public static void main(String[] args) {
