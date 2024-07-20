@@ -4,7 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.mixi.common.exception.ServeException;
 import com.mixi.common.utils.ThreadContext;
-import com.mixi.user.bean.entity.LinkInfo;
+import com.mixi.user.bean.LinkInfo;
+import com.mixi.user.bean.UserAgentInfo;
 import com.mixi.user.domain.RedisGateway;
 
 import com.mixi.user.utils.AgentUtil;
@@ -59,7 +60,7 @@ public class EmailLinkVerifyChain extends AbstractFilterChain<String> {
             throw ServeException.of(INVALID_LINK_TOKEN);
         }
         // 校验设备信息是否正确
-        AgentUtil.UserAgentInfo agentInfo = ThreadContext.context().getData("agentInfo", AgentUtil.UserAgentInfo.class);
+        UserAgentInfo agentInfo = ThreadContext.context().getData("agentInfo", UserAgentInfo.class);
 
         if (!agentInfo.getBrowser().equals(linkInfo.getBrowser())||
                 !agentInfo.getBrowser().equals(linkInfo.getOs())) {

@@ -1,4 +1,4 @@
-package com.mixi.user.bean.entity;
+package com.mixi.user.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

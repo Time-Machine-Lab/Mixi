@@ -27,11 +27,11 @@ public class PicCodeVerifyChain extends AbstractFilterChain<String[]> {
     public boolean filter(String[] value) {
 
         if(value.length==2){
-            String key = value[0];
+            String picId = value[0];
             String code = value[1];
 
-            String cachePicCode = redisGateway.getAndSet(PIC_CODE_KEY,NIL,key);
-            redisGateway.template().delete(key);
+            String cachePicCode = redisGateway.getAndSet(PIC_CODE_KEY,NIL,picId);
+            redisGateway.template().delete(PIC_CODE_KEY.getKey(picId));
             if(cachePicCode.equals(NIL)||!code.equals(cachePicCode)){
                 throw ServeException.of(PIC_CODE_VERIFY_ERROR);
             }

@@ -20,6 +20,6 @@ public class LoginDTO {
     @NotBlank(message = "图片验证码id不能为空")
     private String picId;
 
-    @Size(min = 5, max = 5, message = "图片验证码长度必须为5")
+    @Size(min = 6, max = 6, message = "图片验证码长度必须为6")
     private String picCode;
 }

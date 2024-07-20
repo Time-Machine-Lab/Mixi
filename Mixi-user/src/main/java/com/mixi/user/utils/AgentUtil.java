@@ -3,8 +3,8 @@ package com.mixi.user.utils;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.mixi.user.bean.UserAgentInfo;
+
 
 public class AgentUtil {
 
@@ -24,11 +24,5 @@ public class AgentUtil {
         return StringUtils.isBlank(userAgentInfo.getBrowser()) ||
         StringUtils.isBlank(userAgentInfo.getOs());
     }
-    @Data
-    @AllArgsConstructor
-    public static class UserAgentInfo{
-        private String browser;
 
-        private String os;
-    }
 }

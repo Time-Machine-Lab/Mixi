@@ -1,13 +1,13 @@
 package com.mixi.user.service.impl;
-import cn.hutool.system.UserInfo;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.mixi.common.exception.ServeException;
 import com.mixi.common.utils.RCode;
 import com.mixi.common.utils.ThreadContext;
 import com.mixi.common.utils.UserThread;
+import com.mixi.user.bean.UserAgentInfo;
 import com.mixi.user.bean.dto.LoginDTO;
-import com.mixi.user.bean.entity.LinkInfo;
+import com.mixi.user.bean.LinkInfo;
 import com.mixi.user.bean.entity.User;
 import com.mixi.user.bean.vo.UserVO;
 import com.mixi.user.config.UserPropertiesConfig;
@@ -81,13 +81,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<?> linkLogin(LoginDTO loginDTO, String userAgent) {
 
-        AgentUtil.UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
+        UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
 
         chainFactory.get("linkLogin")
                 .<LoginDTO>supplierMap(Map.of(
                         1, (loginDto) -> new String[]{loginDto.getPicId(), loginDto.getPicCode()},
-                        2, LoginDTO::getEmail,
-                        3, (loginDto) -> agentInfo
+                        2, (loginDto) -> agentInfo,
+                        3, LoginDTO::getEmail
                 ))
                 .returnType(ReturnType.THROW)
                 .execute(loginDTO);
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         return Result.success();
     }
 
-    private String generateShortLink(String email, AgentUtil.UserAgentInfo agentInfo) {
+    private String generateShortLink(String email, UserAgentInfo agentInfo) {
         LinkInfo linkInfo = LinkInfo.builder()
                 .browser(agentInfo.getBrowser())
                 .os(agentInfo.getOs())
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<?> linkVerify(String linkToken, String userAgent) {
         // 解析 linkToken
-        AgentUtil.UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
+        UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
         ThreadContext.setData("agentInfo", agentInfo);
         SafeBag<String> token = new SafeBag<>();
         SafeBag<LinkInfo> linkInfo = new SafeBag<>();
