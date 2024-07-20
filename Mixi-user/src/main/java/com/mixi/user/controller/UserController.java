@@ -1,5 +1,7 @@
 package com.mixi.user.controller;
 
+import com.mixi.common.annotation.auth.ApiAuth;
+import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.user.bean.dto.LoginDTO;
 import com.mixi.user.service.UserService;
 import io.github.common.web.Result;
@@ -21,10 +23,13 @@ public class UserController {
 
     private final UserService userService;
 
+    @ApiAuth(value= AuthType.NOT)
     @GetMapping("/code/pic")
     public Result getPicCode(){
         return userService.getPicCode();
     }
+
+    @ApiAuth(value= AuthType.NOT)
     @PostMapping("/linkLogin")
     public Result linkLogin(
             @RequestHeader(value="User-Agent") String userAgent,
@@ -32,10 +37,11 @@ public class UserController {
         return userService.linkLogin(loginDTO, userAgent);
     }
 
+    @ApiAuth(value= AuthType.NOT)
     @GetMapping("/linkVerify")
     public Result linkLoginVerify(
             @RequestHeader(value="User-Agent") String userAgent,
             @RequestParam("linkToken") String linkToken ){
-        return Result.success();
+        return userService.linkVerify(linkToken,userAgent);
     }
 }
