@@ -44,4 +44,11 @@ public class UserController {
             @RequestParam("linkToken") String linkToken ){
         return userService.linkVerify(linkToken,userAgent);
     }
+
+    @ApiAuth(value= AuthType.NEED)
+    @GetMapping("/getUserInfo")
+    public Result linkLoginVerify(
+            @RequestParam(value="uid",required = false) String uid){
+        return userService.getUserInfo(uid);
+    }
 }

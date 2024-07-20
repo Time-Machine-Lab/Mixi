@@ -1,16 +1,19 @@
 package com.mixi.user.service.impl;
+import cn.hutool.system.UserInfo;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.common.utils.StringUtils;
 import com.mixi.common.exception.ServeException;
 import com.mixi.common.utils.RCode;
 import com.mixi.common.utils.ThreadContext;
+import com.mixi.common.utils.UserThread;
 import com.mixi.user.bean.dto.LoginDTO;
 import com.mixi.user.bean.entity.LinkInfo;
 import com.mixi.user.bean.entity.User;
+import com.mixi.user.bean.vo.UserVO;
 import com.mixi.user.domain.CaptchaServiceGateway;
 import com.mixi.user.domain.RedisGateway;
 import com.mixi.user.service.UserService;
 import com.mixi.user.utils.AgentUtil;
-import com.mixi.user.utils.EmailUtil;
 import com.mixi.user.utils.UserUtil;
 import io.github.common.SafeBag;
 import io.github.common.web.Result;
@@ -19,18 +22,13 @@ import io.github.servicechain.bootstrap.ReturnType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
-
-import java.rmi.ServerException;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mixi.user.constants.MixiUserConstant.NIL;
-import static com.mixi.user.constants.RedisKeyConstant.EMAIL_LINK_TOKEN_KEY;
-import static com.mixi.user.constants.RedisKeyConstant.PIC_CODE_KEY;
-import static com.mixi.user.constants.ServeCodeConstant.REGISTER_ERROR;
+import static com.mixi.user.constants.RedisKeyConstant.*;
 import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
 
 @Service
@@ -149,6 +147,25 @@ public class UserServiceImpl implements UserService {
 
         // 生成token
         return Result.success(Map.of("token", token.getData()));
+    }
+
+    @Override
+    public Result<?> getUserInfo(String uid) {
+        uid = StringUtils.isEmpty(uid)?UserThread.getUserId():uid;
+        String userJson = redisGateway.get(USER_INFO_KEY, uid);
+        UserVO userVO;
+        if (StringUtils.isNotEmpty(userJson)) {
+            userVO = JSONObject.parseObject(userJson, UserVO.class);
+        }else{
+            userVO = new UserVO();
+            User userEntity = userDaoService.query().eq("id", uid).one();
+            BeanUtils.copyProperties(userEntity, userVO);
+        }
+        return Result.success(
+                Map.of(
+                        "userInfo", userVO
+                )
+        );
     }
 
 }

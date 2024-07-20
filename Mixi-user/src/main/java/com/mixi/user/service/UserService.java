@@ -8,6 +8,7 @@ public interface UserService{
 
     Result<?> getPicCode();
     Result<?> linkLogin(LoginDTO loginDTO,String userAgent);
-
     Result<?> linkVerify(String linkToken,String userAgent);
+
+    Result<?> getUserInfo(String userId);
 }
