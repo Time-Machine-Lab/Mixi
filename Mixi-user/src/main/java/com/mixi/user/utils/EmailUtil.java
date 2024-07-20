@@ -30,7 +30,7 @@ public class EmailUtil {
 	public EmailUtil() {
 	}
 
-	public void sendCode(String to, String code) {
+	public void sendCode(String to, String verifyLink) {
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
@@ -38,9 +38,9 @@ public class EmailUtil {
 			helper.setTo(to);
 			helper.setFrom(from);
 			// 邮件主题
-			String subject = "这是一条验证码";
+			String subject = "Mixi邮箱验证";
 			helper.setSubject(subject);
-			helper.setText(htmlContent.replace("CODE", code), true);
+			helper.setText(htmlContent.replace("VerifyLink", verifyLink), true);
 			mailSender.send(message);
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);

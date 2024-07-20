@@ -10,6 +10,7 @@ import com.mixi.user.bean.dto.LoginDTO;
 import com.mixi.user.bean.entity.LinkInfo;
 import com.mixi.user.bean.entity.User;
 import com.mixi.user.bean.vo.UserVO;
+import com.mixi.user.config.UserPropertiesConfig;
 import com.mixi.user.domain.CaptchaServiceGateway;
 import com.mixi.user.domain.RedisGateway;
 import com.mixi.user.service.UserService;
@@ -35,6 +36,9 @@ import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    @Resource
+    private UserPropertiesConfig propertiesConfig;
 
     @Resource
     private CaptchaServiceGateway captchaServiceGateway;
@@ -97,8 +101,8 @@ public class UserServiceImpl implements UserService {
             String msg = String.format("该邮箱已经发送校验邮件，请稍后%s分钟后再试", EMAIL_LINK_TOKEN_KEY.getTime());
             throw ServeException.of(REPEAT_OPERATION, msg);
         }
-
-        userAsyncService.sendEmail(email, shortLink);
+        String verifyLinkUrl = propertiesConfig.getVerifyLinkUrl();
+        userAsyncService.sendEmail(email, verifyLinkUrl+shortLink);
 
         return Result.success();
     }

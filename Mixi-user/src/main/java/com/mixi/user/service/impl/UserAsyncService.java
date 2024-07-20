@@ -1,7 +1,6 @@
 package com.mixi.user.service.impl;
 
 import com.mixi.user.utils.EmailUtil;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

@@ -21,3 +21,5 @@ email:
   myEmailAccount: ${EMAIL_ACCOUNT:ENC(yZ7mbew/WOwpCHb1RlrgLBLQhNWKScodQVXkggwnSYxrJn9a8au+tA==)}
   myEmailPassword: ${EMAIL_PASSWORD:ENC(qNez9SZIeXRJNOAyzPkvDRYdJ3OnsMQvhWugcefAtrZXIZ9A7RgkOA==)}
 
+mixi:
+  verifyLinkUrl: ${VERIFY_LINK:ENC(TSJqSXcliRzeuAglhUhXoXKKFZ5h2Xg22QdG6k2i/fAhQUOwGBpsEykeT/SJUTSYW8Xko2Kda+SIMa8O4u4XFQ==)}
