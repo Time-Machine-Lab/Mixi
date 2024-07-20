@@ -31,6 +31,7 @@ public class FingerCodeServiceImpl implements FingerCodeService {
         return code;
     }
 
+
     @Override
     public boolean validateCode(String fingerprint, String code) {
         // 从Redis中获取验证码
