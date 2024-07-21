@@ -17,5 +17,4 @@ public class MixiWebRoomApplication {
     public static void main(String[] args) {
         SpringApplication.run(MixiWebRoomApplication.class, args);
     }
-
 }
