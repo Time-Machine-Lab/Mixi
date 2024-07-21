@@ -1,12 +1,17 @@
 package com.mixi.server.util;
 
+import com.mixi.server.common.Constants;
 import com.mixi.server.netty.protocol.AccessMessage;
+import com.mixi.server.netty.protocol.ChatroomMsg;
 import com.mixi.server.netty.protocol.Header;
 import com.mixi.server.netty.protocol.HeaderEnum;
+import com.mixi.server.pojo.VO.TimelineMessage;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.SerializationUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description
@@ -21,6 +26,17 @@ public class AccessMessageUtils {
         return response;
     }
 
+    public static AccessMessage createChatRoomResponse(ChatroomMsg chatroomMsg){
+        AccessMessage message = new AccessMessage();
+        byte[] body = SerializationUtils.serialize(chatroomMsg);
+        message.setBody(body);
+        message.setCmd(12);
+        message.setVersion(1);
+        Header header = new Header(HeaderEnum.CHATROOM.getType(), SerializationUtils.serialize(Map.of(Constants.CHATROOM_ID,chatroomMsg.getRoomId(),Constants.CHATROOM_UID,chatroomMsg.getFromUid())));
+        message.setHeaders(List.of(header));
+        return message;
+    }
+
     public static String extractHeaderData(AccessMessage message, HeaderEnum headerEnum) {
         int headerType = headerEnum.getType();
         List<Header> headers = message.getHeaders();
@@ -29,5 +45,4 @@ public class AccessMessageUtils {
         }
         return headers.stream().filter(header -> header.getType() == headerType).findFirst().map(header -> new String(header.getData(), StandardCharsets.UTF_8)).orElse(null);
     }
-
 }

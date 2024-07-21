@@ -5,10 +5,11 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @Description
@@ -18,11 +19,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RoomChannelManager {
 
     private static final Map<String, RoomInfo> ROOM_INFO_MAP = new ConcurrentHashMap<>();
+    private static final Map<String,String> MEMBERS_ROOM_MAP = new ConcurrentHashMap<>();
     @Data
     public static class RoomInfo {
         private final String name;
         private final Set<MixiNettyChannel> channels;
         private final Map<String, MixiNettyChannel> memberChannelsMap;
+        private AtomicInteger msgCounter = new AtomicInteger(1);
         public RoomInfo(String name) {
             this.name = name;
             this.channels = new ConcurrentHashSet<>();
@@ -41,10 +44,15 @@ public class RoomChannelManager {
             memberChannelsMap.remove(memberUid);
             return true;
         }
+
+        public Integer generateMsgIdgenerateMsgId(){
+            return msgCounter.incrementAndGet();
+        }
     }
 
     public static boolean addChannel(String roomName, MixiNettyChannel channel, String uid) {
         RoomInfo roomInfo = ROOM_INFO_MAP.computeIfAbsent(roomName, RoomInfo::new);
+        MEMBERS_ROOM_MAP.put(channel.getChannelId(),roomName);
         if (StringUtils.isNotBlank(uid)) {
             roomInfo.registerUid(uid, channel);
         }
@@ -53,15 +61,20 @@ public class RoomChannelManager {
         return isNewAdded;
     }
 
-    public static void removeChannel(String roomName, MixiNettyChannel channel) {
+    public static void removeChannel(String roomName, MixiNettyChannel channel,boolean admin) {
+        MEMBERS_ROOM_MAP.remove(channel.getChannelId());
         RoomInfo roomInfo = ROOM_INFO_MAP.get(roomName);
         if (roomInfo != null) {
             Set<MixiNettyChannel> channels = roomInfo.getChannels();
-            channels.remove(channel);
-            if (channels.isEmpty()) {
-                ROOM_INFO_MAP.computeIfPresent(roomName, (k, v) -> v.getChannels().isEmpty() ? null : v);
+            if(admin){
+                destroyRoom(roomName);
+            }else{
+                channels.remove(channel);
+                if (channels.isEmpty()) {
+                    ROOM_INFO_MAP.computeIfPresent(roomName, (k, v) -> v.getChannels().isEmpty() ? null : v);
+                }
+                roomInfo.deregisterUid(channel);
             }
-            roomInfo.deregisterUid(channel);
         }
         channel.getAttrs().setEnter(false);
     }
@@ -70,6 +83,7 @@ public class RoomChannelManager {
         RoomInfo roomInfo = ROOM_INFO_MAP.remove(roomName);
         if (roomInfo != null) {
             for (MixiNettyChannel channel : roomInfo.getChannels()) {
+                MEMBERS_ROOM_MAP.remove(channel.getChannelId());
                 channel.getAttrs().setEnter(false);
             }
         }
@@ -81,5 +95,9 @@ public class RoomChannelManager {
 
     public static Collection<RoomInfo> getAllRoomInfos() {
         return ROOM_INFO_MAP.values();
+    }
+
+    public static String getRoomId(String channelId){
+        return MEMBERS_ROOM_MAP.get(channelId);
     }
 }
