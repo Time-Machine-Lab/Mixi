@@ -2,7 +2,7 @@
   margin:0;
   top:0;
   left:0;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 #app {
@@ -55,4 +55,13 @@ h5{
   cursor: pointer;
   display: grid;
   grid-template-rows: auto auto;
+}
+.M-input{
+  border-radius: 8px;
+  border: solid 1px #d7d7d7;
+  height:40px;
+  padding: 0 10px;
+}
+.M-input::placeholder{
+  font-size: 1rem;
 }

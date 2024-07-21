@@ -34,7 +34,6 @@ public class MixiHandlerRouter {
             MIXI_HANDLER_MAP.put(mark,v);
         });
         log.info(MIXI_HANDLER_MAP.size()+"beans of MixiHandler to be load...");
-        log.info(MIXI_HANDLER_MAP.toString());
     }
 
     public static MixiHandler route(int cmd){

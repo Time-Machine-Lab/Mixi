@@ -45,9 +45,7 @@ public class GateWayManager extends CloudApiConfigManager {
      */
     public boolean isModuleSupported(String moduleName) {
         boolean supported = supportModules.isEmpty() || supportModules.contains(moduleName);
-        if (supported) {
-            log.info("Module '{}' is supported.", moduleName);
-        } else {
+        if (!supported) {
             log.warn("Module '{}' is not supported.", moduleName);
         }
         return supported;

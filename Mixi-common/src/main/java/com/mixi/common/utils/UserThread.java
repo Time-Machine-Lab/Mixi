@@ -1,6 +1,6 @@
 package com.mixi.common.utils;
 
-import com.mixi.common.pojo.User;
+import com.mixi.common.pojo.TokenUserInfo;
 
 /**
  * 描述: 操作用户线程类
@@ -9,12 +9,12 @@ import com.mixi.common.pojo.User;
  */
 public class UserThread {
 
-    private static final ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<TokenUserInfo> userThreadLocal = new ThreadLocal<>();
 
     /**
      * 获取当前操作用户
      */
-    public static User get() {
+    public static TokenUserInfo get() {
         return userThreadLocal.get();
     }
 
@@ -22,36 +22,38 @@ public class UserThread {
      * 获取当前操作用户的Id
      */
     public static String getUserId() {
-        if (get() != null) {
-            return get().getId();
-        }
-        return null;
+        TokenUserInfo user = get();
+        return user != null ? user.getUserId() : null;
     }
 
     /**
      * 获取当前操作用户的用户名
      */
     public static String getUsername() {
-        if (get() != null) {
-            return get().getUsername();
-        }
-        return null;
+        TokenUserInfo user = get();
+        return user != null ? user.getUsername() : null;
     }
 
     /**
-     * 设置当前操作用户(根据userInfo)
+     * 获取当前操作用户的角色
      */
-    public static void setUser(String userInfo) {
-        // 用空格作为分割符
-        String[] split = userInfo.split(" ");
-        // TODO 这里的User对象只有单纯的id和username，如果要加其他字段，可能要在读一次表获取其他字段
-        setUser(User.builder().id(split[0]).username(split[1]).build());
+    public static int[] getRoles() {
+        TokenUserInfo user = get();
+        return user != null ? user.getRoles() : null;
     }
 
     /**
-     * 设置当前操作用户(根据user)
+     * 获取当前操作用户的扩展字段
      */
-    public static void setUser(User user) {
+    public static Object getField(String key) {
+        TokenUserInfo user = get();
+        return user != null ? user.getField(key) : null;
+    }
+
+    /**
+     * 设置当前操作用户
+     */
+    public static void setUser(TokenUserInfo user) {
         userThreadLocal.set(user);
     }
 

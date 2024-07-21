@@ -18,22 +18,12 @@ public class JwtTokenService extends AbstractTokenService {
     }
 
     @Override
-    public boolean isTokenValid(String token) {
-        return false;
-    }
-
-    @Override
-    public TokenUserInfo extractUserInfoFromToken(String token) {
+    public TokenUserInfo validateAndExtractUserInfo(String token) {
         return null;
     }
 
     @Override
     public void logoutByToken(String token) {
-
-    }
-
-    @Override
-    public void logoutById(String id) {
 
     }
 }

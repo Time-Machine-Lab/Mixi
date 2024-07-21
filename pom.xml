@@ -64,6 +64,23 @@
     </modules>
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-redis-jackson</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -254,16 +271,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-redis-jackson</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot-starter</artifactId>
-                <version>${sa-token.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
