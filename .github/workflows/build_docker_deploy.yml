@@ -130,6 +130,7 @@ jobs:
           cp ./Dockerfile ./docker
           cp ./target/*.jar ./docker
           cd docker
+          
 
           if [ "${{ env.ENV }}" == "prod" ]; then
             docker build --build-arg MODULE=${{ env.LOWERCASE_MODULE }} -t ${{ env.DOCKER_REPO }}/${{ env.LOWERCASE_MODULE }}:${{ env.VERSION }} .
