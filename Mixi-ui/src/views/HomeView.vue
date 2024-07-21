@@ -21,15 +21,30 @@ let members = ref([
   { name: 'Weisir', slogan: 'weisir', description: 'weisir', avatar: '' },
   { name: 'Weisir', slogan: 'weisir', description: 'weisir', avatar: '' }
 ])
+
+let join = ref(false)
+let RoomId = ref()
 </script>
 
 <template>
   <div class="main flex">
     <div class="create flex">
-      <div class="create-box flex">
+      <div v-show="!join" class="create-box flex">
         <h1>Mixi</h1>
         <p>便捷实时通讯网站</p>
-        <button @click="router.push('/creat')" class="M-btn" style="width: 200px; height: 40px">+创建房间</button>
+        <div>
+          <button @click="join = true" class="join-btn">加入房间</button>
+          <button @click="router.push('/CreatRoom')" class="M-btn" style="width: 100px; height: 40px;margin-left:15px">+创建房间</button>
+        </div>
+      </div>
+      <div v-show="join" class="join-room">
+        <div @click="join = false" class="close">X</div>
+        <h4>加入房间</h4>
+        <label style="margin-top: 10px"><input type="checkbox">同意我们的《用户协议》和《隐私计划》</label>
+        <div style="margin-top:25px">
+          <input v-model="RoomId" placeholder="请输入房间号" class="M-input">
+          <button class="M-btn" style="width:60px;height:40px;margin-left:20px">加入</button>
+        </div>
       </div>
     </div>
     <div class="team">
@@ -70,6 +85,39 @@ let members = ref([
       font-size: 25px;
       color: #6b6b6b;
       margin-bottom: 25px;
+    }
+    .join-btn{
+      background-color: #d7d7d7;
+      border: solid 2px #a2a2a2;
+      color: #545454;
+      width: 100px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .join-btn:hover{
+      background-color: #cccccc;
+    }
+  }
+  .join-room{
+    position: relative;
+    width:700px;
+    height:300px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .close{
+      position: absolute;
+      width:50px;
+      height:50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top:0;
+      left:calc(100% - 50px);
+      cursor: pointer;
     }
   }
 }
