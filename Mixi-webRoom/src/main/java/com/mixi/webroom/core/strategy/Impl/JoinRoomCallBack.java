@@ -19,12 +19,10 @@ public class JoinRoomCallBack extends AbstractCallBack {
     @Override
     public Boolean successCallBack(String roomId, String uid) {
         if(roomId.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid)))){
-            redisUtil.multi();
             redisUtil.removeExpiration(RedisKeyConfig.roomOwner(roomId));
             redisUtil.removeExpiration(RedisKeyConfig.roomInfo(roomId));
             redisUtil.removeExpiration(RedisKeyConfig.roomNumber(roomId));
             redisUtil.removeExpiration(RedisKeyConfig.userOwn(uid));
-            redisUtil.exec();
         }
         redisUtil.setNxObject(RedisKeyConfig.userConnected(uid), roomId);
         return null;
