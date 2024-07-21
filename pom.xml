@@ -30,6 +30,7 @@
         <fastjson.version>1.2.75</fastjson.version>
         <junit.version>4.12</junit.version>
         <Mixi-common.version>0.0.1-SNAPSHOT</Mixi-common.version>
+        <Mixi-rpc.version>0.0.1</Mixi-rpc.version>
 
         <assistant-mysql.verison>1.1.2</assistant-mysql.verison>
         <assistant-common.version>1.1.2</assistant-common.version>
@@ -59,9 +60,33 @@
         <module>Mixi-webRoom</module>
         <module>Mixi-audoVideo</module>
         <module>Mixi-gateway</module>
+        <module>Mixi-rpc</module>
     </modules>
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-redis-jackson</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+            </dependency>
+
             <!--springCloud-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -233,6 +258,11 @@
                 <version>${Mixi-common.version}</version>
             </dependency>
             <dependency>
+                <groupId>com</groupId>
+                <artifactId>Mixi-rpc</artifactId>
+                <version>${Mixi-rpc.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
@@ -241,16 +271,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-redis-jackson</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot-starter</artifactId>
-                <version>${sa-token.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

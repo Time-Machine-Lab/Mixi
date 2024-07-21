@@ -46,4 +46,20 @@ public class ServeException extends RuntimeException {
         this.code = rCode.getCode();
         this.message = rCode.getMessage() + addMessage;
     }
+
+    public static ServeException of(int code,String msg) {
+        return new ServeException(code,msg);
+    }
+    public static ServeException of(ServeCode serveCode) {
+        return ServeException.of(Integer.parseInt(serveCode.getCode()),serveCode.getMsg());
+    }
+
+    public static ServeException of(ServeCode serveCode,String msg) {
+        String newMsg = String.format(serveCode.getMsg(), msg);
+        return ServeException.of(Integer.parseInt(serveCode.getCode()),newMsg);
+    }
+
+    public static ServeException SystemError(String msg){
+        return ServeException.of(RCode.ERROR.getCode(),msg);
+    }
 }

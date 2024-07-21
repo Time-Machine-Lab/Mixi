@@ -31,11 +31,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com</groupId>
-            <artifactId>Mixi-common</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
@@ -64,14 +59,9 @@
         </dependency>
 
         <dependency>
-            <groupId> org.springframework.boot </groupId>
-            <artifactId> spring-boot-configuration-processor </artifactId>
+            <groupId> org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
         </dependency>
 
         <dependency>
@@ -79,16 +69,6 @@
             <artifactId>jasypt-spring-boot-starter</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
 
-        <!-- jwt支持 -->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.19.2</version>
-        </dependency>
     </dependencies>
 </project>

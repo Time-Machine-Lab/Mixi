@@ -8,8 +8,6 @@ package com.mixi.server.netty.protocol;
 public enum CommandEnum {
     CHATROOM_JOIN(10, "加入房间"),
 
-    CHATROOM_LEAVE(11, "离开房间"),
-
     CHATROOM_SEND(12, "发送房间消息");
     private int code;
 

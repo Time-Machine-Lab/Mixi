@@ -1,21 +1,23 @@
 package com.mixi.server.netty.channel;
 
-import java.net.InetSocketAddress;
-import java.rmi.RemoteException;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.mixi.server.netty.channel.support.ChannelAttrs;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import lombok.Data;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Description
  * @Author welsir
  * @Date 2024/7/1 1:26
  */
+@Data
 public class MixiNettyChannel implements MixiChannelManager{
 
     private static final Logger log = LoggerFactory.getLogger(MixiNettyChannel.class);
@@ -23,6 +25,7 @@ public class MixiNettyChannel implements MixiChannelManager{
     private final ConcurrentHashMap<String,Object> attributes = new ConcurrentHashMap<>();
     private Channel channel;
     private boolean close;
+    private volatile boolean sleep;
 
     public MixiNettyChannel(Channel channel){
         this.channel = channel;
@@ -50,6 +53,10 @@ public class MixiNettyChannel implements MixiChannelManager{
         return CHANNEL_MAP.values();
     }
 
+    public static MixiNettyChannel getChannelById(String uid){
+        return CHANNEL_MAP.get(uid);
+    }
+
     public String getChannelId() {
         return ChannelAttrs.getAttrs(channel).getChannelId();
     }
@@ -74,6 +81,7 @@ public class MixiNettyChannel implements MixiChannelManager{
         if(!this.isConnected()){
             log.error("Netty channel is close :[channelId:"+attributes);
         }
+        channel.writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
 
     @Override

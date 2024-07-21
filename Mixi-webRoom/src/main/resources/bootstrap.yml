@@ -1,0 +1,13 @@
+server:
+  port: ${SERVER_PORT:9020}
+
+spring:
+  application:
+    name: webRoom-service
+  config:
+    import: classpath:you-cant-see-that.yml
+  profiles:
+    active: ${ACTIVE:test}
+
+  cloud:
+    api: true

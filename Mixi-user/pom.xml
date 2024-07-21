@@ -13,14 +13,7 @@
         <artifactId>Mixi</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-<!--    <properties>-->
-<!--        <java.version>11</java.version>-->
-<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
-<!--        <spring-boot.version>2.4.2</spring-boot.version>-->
-<!--        <assistant.version>1.1.1</assistant.version>-->
-<!--        <mybatis-plus.version>3.4.1</mybatis-plus.version>-->
-<!--    </properties>-->
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,17 +36,18 @@
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-boot-start</artifactId>
-<!--            <version>${assistant.version}</version>-->
         </dependency>
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-service</artifactId>
-<!--            <version>${assistant.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>io.github.geniusay</groupId>
+            <artifactId>assistant-mysql</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.geniusay</groupId>
             <artifactId>assistant-cache</artifactId>
-<!--            <version>${assistant.version}</version>-->
         </dependency>
 
         <!--加密-->
@@ -61,7 +55,6 @@
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
-<!--            <version>3.0.3</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;-->
         </dependency>
 
         <!--        mysql-->
@@ -74,7 +67,6 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-<!--            <version>${mybatis-plus.version}</version>-->
         </dependency>
         <!--aop-->
         <dependency>
@@ -95,31 +87,33 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-<!--        mixi-common-->
-<!--        <dependency>-->
-<!--            <groupId>com</groupId>-->
-<!--            <artifactId>Mixi-common</artifactId>-->
-<!--            <version>0.0.1-SNAPSHOT</version>-->
-<!--        </dependency>-->
-
-<!--hutool-->
+<!--        nacos-->
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.7.7</version> <!-- 版本号可能需要根据实际情况调整 -->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 <!--mail-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-<!--jedis-->
-<!--        <dependency>-->
-<!--            <groupId>redis.clients</groupId>-->
-<!--            <artifactId>jedis</artifactId>-->
-<!--&lt;!&ndash;            <version>3.8.0</version> &lt;!&ndash; 替换为最新版本 &ndash;&gt;&ndash;&gt;-->
-<!--        </dependency>-->
-        <!--        redis-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -129,40 +123,45 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
         </dependency>
 
+<!--        fegin-->
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
          </dependency>
-        <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
-            <version>1.35.0.RC</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- Sa-Token 整合 Redis (使用jackson序列化方式) -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-redis-jackson</artifactId>
-            <version>1.35.0.RC</version>
-
-        </dependency>
 
     </dependencies>
 
