@@ -12,6 +12,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = {"com.mixi.rpc.client"})
 @EnableAspectJAutoProxy
+@ComponentScan(basePackages = {"com.mixi.common.component.token"})
 public class MixiWebRoomApplication {
     public static void main(String[] args) {
         SpringApplication.run(MixiWebRoomApplication.class, args);
