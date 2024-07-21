@@ -14,4 +14,6 @@ public class ServeCodeConstant {
 
     public static final ServeCode REGISTER_ERROR = new ServeCode("10006", "注册失败:%s","user:register:error");
 
+    public static final ServeCode TOKEN_GENERATE_ERROR = new ServeCode("10007", "用户身份信息生成失败:%s","user:token:gen:error");
+
 }

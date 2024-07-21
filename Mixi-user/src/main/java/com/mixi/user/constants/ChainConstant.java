@@ -9,4 +9,8 @@ public class ChainConstant {
     public static final String USER_AGENT_VERIFY = "userAgentVerify";
 
     public static final String EMAIL_LINK_VERIFY = "emailLinkVerify";
+
+    public static final String TOKEN_GENERATE = "tokenGenerate";
+
+    public static final String USER_INFO_CACHE = "userInfoCache";
 }

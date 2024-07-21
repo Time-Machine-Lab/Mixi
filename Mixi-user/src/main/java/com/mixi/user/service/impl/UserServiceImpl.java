@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import static com.mixi.user.constants.RedisKeyConstant.*;
 import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
+import static com.mixi.user.constants.ServeCodeConstant.TOKEN_GENERATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private StringEncryptor encryptor;
+
 
     @Override
     public Result<?> getPicCode() {
@@ -96,13 +98,13 @@ public class UserServiceImpl implements UserService {
 
         //生成短链
         String shortLink = generateShortLink(email, agentInfo);
-
         if (!redisGateway.setIfAbsent(EMAIL_LINK_TOKEN_KEY, shortLink, email)) {
             String msg = String.format("该邮箱已经发送校验邮件，请稍后%s分钟后再试", EMAIL_LINK_TOKEN_KEY.getTime());
             throw ServeException.of(REPEAT_OPERATION, msg);
         }
-        String verifyLinkUrl = propertiesConfig.getVerifyLinkUrl();
-        userAsyncService.sendEmail(email, verifyLinkUrl+shortLink);
+
+        // async send email
+        userAsyncService.sendEmail(email, propertiesConfig.getVerifyLinkUrl(),shortLink);
 
         return Result.success();
     }
@@ -121,10 +123,10 @@ public class UserServiceImpl implements UserService {
         // 解析 linkToken
         UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
         ThreadContext.setData("agentInfo", agentInfo);
-        SafeBag<String> token = new SafeBag<>();
         SafeBag<LinkInfo> linkInfo = new SafeBag<>();
+
         chainFactory.get("linkVerify")
-                .<LinkInfo>supplierMap(Map.of(
+                .<String>supplierMap(Map.of(
                         1, (obj) -> agentInfo,
                         3, (obj) -> {
                             linkInfo.setData(ThreadContext.context().getData("LinkInfo", LinkInfo.class));
@@ -134,23 +136,43 @@ public class UserServiceImpl implements UserService {
                 // 邮箱不存在则直接进行用户注册
                 .failCallbackMap(Map.of(
                         3, () -> {
-                            User user = userUtil.newJoinUser(linkInfo.getData().getEmail(), null);
-                            userDaoService.register(user);
-                            //TODO 生成token
+                           emailUserNoPwdRegister(linkInfo.getData().getEmail());
                         }
                 ))
                 // 邮箱存在则进行用户登录
                 .successCallbackMap(Map.of(
                         3, () -> {
-                            //TODO 生成token
+                            String email = linkInfo.getData().getEmail();
+                            log.info("{}邮箱已存在，进行登录",email);
+                            User user = userDaoService.query()
+                                    .eq("email", email)
+                                    .eq("del_flag",false)
+                                    .one();
+                            if (!chainFactory.get("tokenAndInfo").execute(user)) {
+                                throw ServeException.of(TOKEN_GENERATE_ERROR, "token生成失败");
+                            }
                         }
                 ))
                 .returnType(ReturnType.THROW)
                 .execute(linkToken);
 
-
         // 生成token
-        return Result.success(Map.of("token", token.getData()));
+        return Result.success(Map.of(
+                "token", ThreadContext.getData("token")
+        ));
+    }
+
+    /**
+     *  邮箱链接直接注册
+     * @param email
+     */
+    private void emailUserNoPwdRegister(String email) {
+        User user = userUtil.newJoinUser(email, null);
+        log.info("邮箱不存在，进行用户注册,用户邮箱为:{} 新用户名为:{}",user.getEmail(),user.getNickname());
+        userDaoService.register(user);
+        if (!chainFactory.get("tokenAndInfo").execute(user)) {
+            throw ServeException.of(TOKEN_GENERATE_ERROR, "token生成失败");
+        }
     }
 
     @Override
@@ -164,6 +186,7 @@ public class UserServiceImpl implements UserService {
             userVO = new UserVO();
             User userEntity = userDaoService.query().eq("id", uid).one();
             BeanUtils.copyProperties(userEntity, userVO);
+            userAsyncService.saveUserInfo(userEntity);
         }
         return Result.success(
                 Map.of(

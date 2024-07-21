@@ -32,7 +32,7 @@ public class PicCodeVerifyChain extends AbstractFilterChain<String[]> {
 
             String cachePicCode = redisGateway.getAndSet(PIC_CODE_KEY,NIL,picId);
             redisGateway.template().delete(PIC_CODE_KEY.getKey(picId));
-            if(cachePicCode.equals(NIL)||!code.equals(cachePicCode)){
+            if(NIL.equals(cachePicCode)||!code.equals(cachePicCode)){
                 throw ServeException.of(PIC_CODE_VERIFY_ERROR);
             }
             return true;
