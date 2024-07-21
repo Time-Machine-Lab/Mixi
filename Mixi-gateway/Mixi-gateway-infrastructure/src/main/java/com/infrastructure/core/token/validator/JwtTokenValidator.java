@@ -13,12 +13,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenValidator extends AbstractTokenValidator {
 
     @Override
-    public boolean isTokenValid(String token) {
-        return tokenService.isTokenValid(token);
-    }
-
-    @Override
-    public TokenUserInfo extractUserInfoFromToken(String token) {
-        return tokenService.extractUserInfoFromToken(token);
+    public TokenUserInfo validateAndExtractUserInfo(String token) {
+        return tokenService.validateAndExtractUserInfo(token);
     }
 }

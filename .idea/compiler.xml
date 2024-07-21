@@ -14,6 +14,7 @@
         <module name="Mixi-webRoom" />
         <module name="Mixi-gateway-config" />
         <module name="Mixi-gateway-infrastructure" />
+        <module name="Mixi-rpc" />
         <module name="Mixi-common" />
       </profile>
     </annotationProcessing>
@@ -24,6 +25,7 @@
       <module name="Mixi-gateway-app" options="-parameters" />
       <module name="Mixi-gateway-config" options="-parameters" />
       <module name="Mixi-gateway-infrastructure" options="-parameters" />
+      <module name="Mixi-rpc" options="-parameters" />
       <module name="Mixi-server" options="-parameters" />
       <module name="Mixi-user" options="-parameters" />
       <module name="Mixi-webRoom" options="-parameters" />

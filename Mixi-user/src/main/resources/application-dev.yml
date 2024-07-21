@@ -3,35 +3,25 @@ spring:
     name: mixi-user-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/mixi?characterEncoding=utf8&useSSL=false}
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:051111}
+    url: ${MYSQL_URL:ENC(wuxmSwTVsNPnvznsPQ9Da6aAZ9HVaSUjscJmUqSBszl5PF0J/6W6qn5bviPb3cEtq9gsmRQ9OXv7SkB3m/tNZEaqXvwGJN7Iu0pw01PILPurQyi6J8nYj3J6E4vQSlaZ)}
+    username: ${MYSQL_USERNAME:ENC(+IMKJ8579CxFfvdSJkGtDVu9nen9zm8y)}
+    password: ${MYSQL_PASSWORD:ENC(s46BLckvILKia876w8vukdzL/UCMD3/CqedOUStw55dOQLmjHpoeEQ==)}
   cloud:
     nacos:
-      serverAddr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      server-addr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
       username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
       password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
       namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
-    url: ${MYSQP_URL:ENC(cKwWah5/eoPU3LqiZ42DKb93hn37V9BC118guCHwfFwcKkpdj69tJQCO0+h6kZpibt887ENhLI8=)}
-    username: ${MYSQL_USERNAME:ENC(uKRMIxh1gV0iKm1iTmEx7A==)}
-    password: ${MYSQL_PASSWORD:ENC(blcquWevQFa9Eif3xcgyoCU0P1F188dCsoD1eYbfwfY=)}
+      discovery:
+        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+      config:
+        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+
   redis:
     host: ${REDIS_HOST:ENC(DoATKT3H6aEIGPC0FL69KkjLvrJKnw9q/oQ9kPs5Vt4=)}
     port: 6379
     database: 10
     password: ${REDIS_PASSWORD:ENC(3SF9cUbQq5wcQbZF42lbEm6RH9zB6Y5sGZIoUymT+exjpy1oFbGb0A==)}
-email:
-  myEmailAccount: ${EMAIL_ACCOUNT:ENC(yZ7mbew/WOwpCHb1RlrgLBLQhNWKScodQVXkggwnSYxrJn9a8au+tA==)}
-  myEmailPassword: ${EMAIL_PASSWORD:ENC(qNez9SZIeXRJNOAyzPkvDRYdJ3OnsMQvhWugcefAtrZXIZ9A7RgkOA==)}
-env:
-  ip: 127.0.0.1
-  port: 9010
-sa-token:
-  token-name: token
-  timeout: 259200
-  active-timeout: -1
-  is-concurrent: true
-  is-share: true
-  token-style: uuid
-  is-log: true
 
+mixi:
+  verifyLinkUrl: http://localhost:3000/verify-email?token=
