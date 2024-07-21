@@ -138,7 +138,7 @@ jobs:
             docker build --build-arg MODULE=${{ env.LOWERCASE_MODULE }} --build-arg DEBUG_PORT=${{ env.DEBUG_PORT }} -t ${{ env.DOCKER_REPO }}/${{ env.LOWERCASE_MODULE }}:${{ env.VERSION }} .
           fi
           docker login -u $DOCKER_REPO -p $DOCKER_PASSWORD
-          docker push $DOCKER_REPO/$MODULE:$VERSION
+          docker push $DOCKER_REPO/${{ env.LOWERCASE_MODULE }}:$VERSION
 
       - name: Choose the Server Host
         if: ${{ env.ENV != ''}}
