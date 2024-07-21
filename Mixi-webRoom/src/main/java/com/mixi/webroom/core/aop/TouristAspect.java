@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,8 +43,9 @@ public class TouristAspect {
             }
 
             // 验证通过，调用用户模块的生成随机游客接口得到token
-            String token = userClient.GenerateVisitorUser(fingerprint);
+            String token = userClient.generateVisitorUser(fingerprint);
             TokenUserInfo tokenUserInfo = tokenService.validateAndExtractUserInfo(token);
+
             if (null == tokenUserInfo) {
                 throw new ServerException("1002", "游客用户生成失败");
             }

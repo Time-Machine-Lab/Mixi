@@ -28,6 +28,7 @@ public class LoginTestController {
     @ApiAuth(AuthType.NOT)
     @GetMapping(value = "/login")
     public R<String> login(){
+
         TokenUserInfo tokenUserInfo = TokenUserInfo.builder()
                 .userId("123456")
                 .username("genius")
@@ -38,7 +39,10 @@ public class LoginTestController {
                 .addField("age", "1")
                 .roles(new int[]{1001, 1002})
                 .build();
+
+
         String token = saTokenService.loginAndGenerateToken(tokenUserInfo);
+
         return R.success(token);
     }
 

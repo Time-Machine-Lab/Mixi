@@ -49,7 +49,7 @@ public class CloudApiConfigManager {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, List<ApiInfo>> stringListMap = config == null ? new HashMap<>() : objectMapper.readValue(config, new TypeReference<Map<String, List<ApiInfo>>>() {});
-            Map<String, ApiInfo> apiInfos = new HashMap<>();
+            Map<String, ApiInfo> apiInfos = new ConcurrentHashMap<>();
             for (Map.Entry<String, List<ApiInfo>> entry : stringListMap.entrySet()) {
                 for (ApiInfo apiInfo : entry.getValue()) {
                     apiInfos.put(apiInfo.generateHashKey(), apiInfo);

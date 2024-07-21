@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserClient {
 
     @GetMapping("/api/user/visit/generate")
-    String GenerateVisitorUser(@RequestParam String fingerprint);
+    String generateVisitorUser(@RequestParam String fingerprint);
 }
