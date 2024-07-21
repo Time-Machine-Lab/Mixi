@@ -15,7 +15,7 @@ export async function loginToken(form: Profile): Promise<void> {
 
         const { token } = data;
         if(!token) return;
-        await storage.set('token', token); // 将 token 保存到 localStorage
+        storage.set('token', token); // 将 token 保存到 localStorage
         useAuthStore().setLoggedIn(data);
     } catch (error) {
         // 获取的数据里没有token
