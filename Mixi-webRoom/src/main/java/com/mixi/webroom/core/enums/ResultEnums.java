@@ -18,7 +18,9 @@ public enum ResultEnums{
     QUIT_ROOM_ERROR("425", "退出房间错误"),
     PULL_HAS_NOT_COOLED_DOWN("426", "拉人还未冷却"),
     CALLBACK_EXECUTE_ERROR("427", "回调执行错误"),
-    TRANSCODE_ERROR("428", "转码错误");
+    ROOM_NOT_EXIST("428", "房间不存在"),
+    THE_USER_DID_NOT_CREATE_A_ROOM("429", "用户未创建房间"),
+    TRANSCODE_ERROR("430", "转码错误");
 
     private final String code;
 

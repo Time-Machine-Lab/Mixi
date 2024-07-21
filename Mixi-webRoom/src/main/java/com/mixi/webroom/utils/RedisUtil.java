@@ -205,7 +205,7 @@ public class RedisUtil {
         redisTemplate.multi();
     }
 
-    public List<Boolean> exec(){
+    public List<Object> exec(){
         return redisTemplate.exec();
     }
 
