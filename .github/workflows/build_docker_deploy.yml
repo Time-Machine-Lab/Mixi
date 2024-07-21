@@ -172,7 +172,7 @@ jobs:
             pwd="${{ secrets.MIXI_GATEWAY_PROD_PWD }}"
             host="${{ secrets.MIXI_GATEWAY_PROD_ADDRESS }}"
             port="${{ secrets.MIXI_GATEWAY_PROD_PORT }}"
-          elif [ "${{ env.ENV }}" == "test" ] && [ "${{ env.MODULE }}" == "Mixi-user"]; then
+          elif [ "${{ env.ENV }}" == "test" ] && [ "${{ env.MODULE }}" == "Mixi-user" ]; then
             username="${{ secrets.MIXI_USER_TEST_USERNAME }}"
             pwd="${{ secrets.MIXI_USER_TEST_PWD }}"
             host="${{ secrets.MIXI_USER_TEST_ADDRESS }}"
