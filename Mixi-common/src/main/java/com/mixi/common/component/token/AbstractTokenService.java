@@ -11,7 +11,7 @@ public abstract class AbstractTokenService implements TokenService {
 
     @Override
     public String loginAndGenerateToken(String userId, String username, int[] roles) {
-        return loginAndGenerateToken(new TokenUserInfo(userId, username, roles));
+        return loginAndGenerateToken(new TokenUserInfo(userId, username, roles, null));
     }
 
     @Override

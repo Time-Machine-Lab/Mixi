@@ -22,14 +22,9 @@ public interface TokenValidator {
     String extractTokenFromHeader(ServerWebExchange exchange);
 
     /**
-     * 验证Token是否合法。
-     */
-    boolean isTokenValid(String token);
-
-    /**
      * 从Token中提取用户信息。
      */
-    TokenUserInfo extractUserInfoFromToken(String token);
+    TokenUserInfo validateAndExtractUserInfo(String token);
 
     /**
      * 检查用户是否具有所需的角色权限。

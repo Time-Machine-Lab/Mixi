@@ -2,6 +2,7 @@ package com.infrastructure.core.token.validator;
 
 import com.infrastructure.core.token.AbstractTokenValidator;
 import com.mixi.common.pojo.TokenUserInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,16 +10,12 @@ import org.springframework.stereotype.Component;
  * @author suifeng
  * 日期: 2024/7/12
  */
+@RequiredArgsConstructor
 @Component
 public class SaTokenValidator extends AbstractTokenValidator {
 
     @Override
-    public boolean isTokenValid(String token) {
-        return tokenService.isTokenValid(token);
-    }
-
-    @Override
-    public TokenUserInfo extractUserInfoFromToken(String token) {
-        return tokenService.extractUserInfoFromToken(token);
+    public TokenUserInfo validateAndExtractUserInfo(String token) {
+        return tokenService.validateAndExtractUserInfo(token);
     }
 }

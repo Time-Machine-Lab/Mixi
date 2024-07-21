@@ -23,11 +23,18 @@ email:
 env:
   ip: 127.0.0.1
   port: 9010
+
 sa-token:
-  token-name: token
+  token-name: Authorization
   timeout: 259200
   active-timeout: -1
   is-concurrent: true
   is-share: true
   token-style: uuid
   is-log: true
+  # 是否从cookie中读取token
+  is-read-cookie: false
+  # 是否从head中读取token
+  is-read-head: true
+  # token前缀
+  token-prefix: Bearer
