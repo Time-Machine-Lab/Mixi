@@ -1,18 +1,19 @@
 package com.mixi.user.utils;
 
+import java.util.Random;
+
 public class RandomUtil {
-	
-	/**
-	 * 生成6位验证码
-	 * @return
-	 */
-	public synchronized static String getCode() {
-		StringBuffer code=new StringBuffer();
-		int num;
-		for (int i=0;i<6;i++){
-			num=(int)(Math.random()*10);
-			code.append(String.valueOf(num));
-		}
-		return code.toString();
-	}
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    public static String generateRandomString(int len) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(len);
+
+        for (int i = 0; i < len; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+
+        return sb.toString();
+    }
 }
