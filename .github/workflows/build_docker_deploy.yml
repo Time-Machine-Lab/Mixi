@@ -152,22 +152,22 @@ jobs:
             pwd="${{ secrets.MIXI_USER_PROD_PWD }}"
             host="${{ secrets.MIXI_USER_PROD_ADDRESS }}"
             port="${{ secrets.MIXI_USER_PROD_PORT }}"
-          elif ["${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-audoVideo" ]; then
+          elif [ "${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-audoVideo" ]; then
             username="${{ secrets.MIXI_AUDO_VIDEO_PROD_USERNAME }}"
             pwd="${{ secrets.MIXI_AUDO_VIDEO_PROD_PWD }}"
             host="${{ secrets.MIXI_AUDO_VIDEO_PROD_ADDRESS }}"
             port="${{ secrets.MIXI_AUDO_VIDEO_PROD_PORT }}"
-          elif ["${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-server" ]; then
+          elif [ "${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-server" ]; then
             username="${{ secrets.MIXI_SERVER_PROD_USERNAME }}"
             pwd="${{ secrets.MIXI_SERVER_PROD_PWD }}"
             host="${{ secrets.MIXI_SERVER_PROD_ADDRESS }}"
             port="${{ secrets.MIXI_SERVER_PROD_PORT }}"
-          elif ["${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-webRoom" ]; then
+          elif [ "${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-webRoom" ]; then
             username="${{ secrets.MIXI_WEB_ROOM_PROD_USERNAME }}"
             pwd="${{ secrets.MIXI_WEB_ROOM_PROD_PWD }}"
             host="${{ secrets.MIXI_WEB_ROOM_PROD_ADDRESS }}"
             port="${{ secrets.MIXI_WEB_ROOM_PROD_PORT }}"
-          elif ["${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then
+          elif [ "${{ env.ENV }}" == "prod" ] && [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then
             username="${{ secrets.MIXI_GATEWAY_PROD_USERNAME }}"
             pwd="${{ secrets.MIXI_GATEWAY_PROD_PWD }}"
             host="${{ secrets.MIXI_GATEWAY_PROD_ADDRESS }}"
