@@ -2,6 +2,8 @@ package com.mixi.common.component.info;
 
 import com.mixi.common.component.info.transfer.UserInfoTransferHandler;
 import com.mixi.common.pojo.TokenUserInfo;
+import com.mixi.common.utils.IpAddressUtil;
+import com.mixi.common.utils.ThreadContext;
 import com.mixi.common.utils.UserThread;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,7 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
+import static com.mixi.common.constant.constpool.TransferConstant.*;
 
 /**
  * 描述: 用户信息拦截器
@@ -35,6 +37,10 @@ public class UserInfoInterceptor implements HandlerInterceptor {
         if (tokenUserInfo != null) {
             UserThread.setUser(tokenUserInfo);
         }
+
+        // 获取ip地址和机器码加入用户线程
+        ThreadContext.setData(IP_ADDRESS, IpAddressUtil.getIpAddress(request));
+        ThreadContext.setData(MACHINE_CODE, request.getHeader(MACHINE_CODE));
 
         return true;
     }

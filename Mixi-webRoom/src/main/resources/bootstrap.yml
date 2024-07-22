@@ -11,3 +11,19 @@ spring:
 
   cloud:
     api: true
+
+#logging:
+#  level:
+#    org.springframework: DEBUG
+
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: true
+  is-read-cookie: false
+  is-read-head: true
+  token-prefix: Bearer

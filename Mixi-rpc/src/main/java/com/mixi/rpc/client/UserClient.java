@@ -1,5 +1,6 @@
 package com.mixi.rpc.client;
 
+import com.mixi.common.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserClient {
 
     @GetMapping("/api/user/visit/generate")
-    String generateVisitorUser(@RequestParam String fingerprint);
+    R<String> generateVisitorUser(@RequestParam String fingerprint);
 }

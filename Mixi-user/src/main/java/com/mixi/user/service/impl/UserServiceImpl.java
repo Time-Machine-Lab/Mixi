@@ -2,6 +2,7 @@ package com.mixi.user.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.mixi.common.exception.ServeException;
+import com.mixi.common.utils.R;
 import com.mixi.common.utils.RCode;
 import com.mixi.common.utils.ThreadContext;
 import com.mixi.common.utils.UserThread;
@@ -29,6 +30,7 @@ import javax.annotation.Resource;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.mixi.user.constants.MixiUserConstant.NIL;
 import static com.mixi.user.constants.RedisKeyConstant.*;
 import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
 import static com.mixi.user.constants.ServeCodeConstant.TOKEN_GENERATE_ERROR;
@@ -104,7 +106,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // async send email
-        userAsyncService.sendEmail(email, propertiesConfig.getVerifyLinkUrl(),shortLink);
+        userAsyncService.sendEmail(email, propertiesConfig.getVerifyLinkUrl(), shortLink);
 
         return Result.success();
     }
@@ -119,7 +121,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<?> linkVerify(String linkToken, String userAgent) {
+    public Result<?> linkVerify(String linkToken, String userAgent, String fingerprint) {
         // 解析 linkToken
         UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
         ThreadContext.setData("agentInfo", agentInfo);
@@ -136,17 +138,17 @@ public class UserServiceImpl implements UserService {
                 // 邮箱不存在则直接进行用户注册
                 .failCallbackMap(Map.of(
                         3, () -> {
-                           emailUserNoPwdRegister(linkInfo.getData().getEmail());
+                            emailUserNoPwdRegister(linkInfo.getData().getEmail(), fingerprint);
                         }
                 ))
                 // 邮箱存在则进行用户登录
                 .successCallbackMap(Map.of(
                         3, () -> {
                             String email = linkInfo.getData().getEmail();
-                            log.info("{}邮箱已存在，进行登录",email);
+                            log.info("{}邮箱已存在，进行登录", email);
                             User user = userDaoService.query()
                                     .eq("email", email)
-                                    .eq("del_flag",false)
+                                    .eq("del_flag", false)
                                     .one();
                             if (!chainFactory.get("tokenAndInfo").execute(user)) {
                                 throw ServeException.of(TOKEN_GENERATE_ERROR, "token生成失败");
@@ -163,13 +165,27 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     *  邮箱链接直接注册
+     * 邮箱链接直接注册
+     *
      * @param email
      */
-    private void emailUserNoPwdRegister(String email) {
-        User user = userUtil.newJoinUser(email, null);
-        log.info("邮箱不存在，进行用户注册,用户邮箱为:{} 新用户名为:{}",user.getEmail(),user.getNickname());
-        userDaoService.register(user);
+    private void emailUserNoPwdRegister(String email, String fingerprint) {
+        // 转正判断，根据指纹判断此用户是否为之前注册的游客
+        User user = userDaoService.getUserByFinger(fingerprint);
+        // 如果存在
+        if (null != user) {
+            // 将此用户转正
+            user = convertVisitorToRegularUser(user, email);
+        }
+
+        // 不存在，走正常注册
+        else {
+            user = userUtil.newJoinUser(email, null);
+            log.info("邮箱不存在，进行用户注册,用户邮箱为:{} 新用户名为:{}", user.getEmail(), user.getNickname());
+            userDaoService.register(user);
+        }
+
+
         if (!chainFactory.get("tokenAndInfo").execute(user)) {
             throw ServeException.of(TOKEN_GENERATE_ERROR, "token生成失败");
         }
@@ -177,12 +193,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<?> getUserInfo(String uid) {
-        uid = StringUtils.isEmpty(uid)?UserThread.getUserId():uid;
+        uid = StringUtils.isEmpty(uid) ? UserThread.getUserId() : uid;
         String userJson = redisGateway.get(USER_INFO_KEY, uid);
         UserVO userVO;
         if (StringUtils.isNotEmpty(userJson)) {
             userVO = JSONObject.parseObject(userJson, UserVO.class);
-        }else{
+        } else {
             userVO = new UserVO();
             User userEntity = userDaoService.query().eq("id", uid).one();
             BeanUtils.copyProperties(userEntity, userVO);
@@ -195,4 +211,52 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    /**
+     * 根据指纹生成游客token（指纹不存在，将新建游客用户）
+     * @param fingerprint 指纹
+     * @return 游客用户登录token
+     */
+    @Override
+    public R<String> generateVisitorUser(String fingerprint) {
+
+        // 判断此指纹是否存在
+        User user = userDaoService.getUserByFinger(fingerprint);
+
+        // 指纹不存在，走游客用户创建逻辑
+        if (user == null) {
+            user = userUtil.newJoinUser(fingerprint);
+            log.info("指纹不存在，进行游客用户注册，用户指纹为:{} 新用户名为:{}", user.getFinger(), user.getNickname());
+            userDaoService.register(user);
+        }
+
+        // 登录并生成token
+        if (!chainFactory.get("tokenAndInfo").execute(user)) {
+            throw ServeException.of(TOKEN_GENERATE_ERROR, "token生成失败");
+        }
+
+        log.info("游客用户:{}登录成功", user.getNickname());
+
+        // 返回游客token
+        return R.success(ThreadContext.getData("token").toString());
+    }
+
+    /**
+     * 将游客用户转正为正常用户
+     * @param user  游客用户
+     * @param email 邮箱
+     * @return 转正后的用户
+     */
+    private User convertVisitorToRegularUser(User user, String email) {
+        // 更新用户信息
+        user.setEmail(email);
+        user.setUsername(email);
+        user.setRoles(userUtil.getUserRole()); // 更新为正常用户角色
+        user.setFinger(NIL); // 清除指纹字段
+
+        // 保存更新后的用户信息
+        userDaoService.updateById(user);
+
+        log.info("用户:{} 转正成功，新的邮箱为:{}", user.getNickname(), email);
+        return user;
+    }
 }

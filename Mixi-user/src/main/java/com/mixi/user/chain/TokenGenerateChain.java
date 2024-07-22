@@ -30,6 +30,7 @@ public class TokenGenerateChain extends AbstractFilterChain<User> {
         TokenUserInfo tokenUserInfo = TokenUserInfo.builder()
                 .userId(userInfo.getId())
                 .username(userInfo.getUsername())
+                .roles(new int[] {Integer.parseInt(userInfo.getRoles())})
                 .build();
         String token = tokenService.loginAndGenerateToken(tokenUserInfo);
         ThreadContext.setData("token",token);

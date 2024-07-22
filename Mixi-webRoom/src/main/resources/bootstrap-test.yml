@@ -7,12 +7,13 @@ spring:
     defaultExpire: 7200
   cloud:
     nacos:
-      server-addr: ${NACOS_SERVER_ADDR:ENC(mZ6KsI+EkqODZAH2qdKUJzlo66asDZxKegO5bkjb3hwJb8y6FkFOLA==)}
-      username: ${NACOS_SERVER_USER:ENC(fjV9WIPRx0giRHfPe+sQ4RdkUyvAY3sp)}
-      password: ${NACOS_SERVER_PASSWORD:ENC(NZYKzLvLPo+HLsfOxoPkIA1XLClwp2VI1p4frx2IrPXvI0rm6egfmQ==)}
+      server-addr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
+      password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
+      namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
       discovery:
         namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
-        ip: ${SERVER_ADDR:ENC(k8vJSnZr6caJGxQ1KPjdbKYkVJrBUeSWSAK0ry8TfBk=)}
+#        ip: ${SERVER_ADDR:ENC(k8vJSnZr6caJGxQ1KPjdbKYkVJrBUeSWSAK0ry8TfBk=)}
   mail:
     host: ${EMIAL_HOST:ENC(qMKUwBybaAKewuGZCDYjQw6tCfRVAO5aIQUolS8L06U=)}
     port: ${EMAIL_PORT:ENC(7RRjEe4cBjcETAkyZ6TBh5zwIw6KrEaz)}
