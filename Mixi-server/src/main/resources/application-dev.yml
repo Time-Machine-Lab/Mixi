@@ -1,5 +1,14 @@
 mixi:
   netty:
     channelIdleSeconds: 180
-
-
+spring:
+  cloud:
+    nacos:
+      server-addr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
+      password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
+      namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+      discovery:
+        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+      config:
+        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292

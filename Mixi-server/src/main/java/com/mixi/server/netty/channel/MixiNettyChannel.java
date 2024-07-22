@@ -73,13 +73,13 @@ public class MixiNettyChannel implements MixiChannelManager{
 
     @Override
     public boolean isConnected() {
-        return !channel.isActive()&&close;
+        return channel.isActive()&&!close;
     }
 
     @Override
     public void send(Object message){
         if(!this.isConnected()){
-            log.error("Netty channel is close :[channelId:"+attributes);
+            log.error("Netty channel is close :[channelId:"+getChannelId()+"]");
         }
         channel.writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }

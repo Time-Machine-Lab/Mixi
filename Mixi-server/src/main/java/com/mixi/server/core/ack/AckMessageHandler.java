@@ -36,6 +36,7 @@ public class AckMessageHandler {
             for (TimelineMessage message : messages) {
                 ChatroomMsg chatroomMsg = ChatroomMsg.convertMsgToChatRoom(message);
                 AccessMessage res = AccessMessageUtils.createChatRoomResponse(chatroomMsg);
+                log.info(channel.getChannelId()+"send msg:{}",res);
                 channel.send(res);
             }
         }

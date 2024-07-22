@@ -33,6 +33,7 @@ public class RoomChannelManager {
         }
 
         public MixiNettyChannel registerUid(String uid, MixiNettyChannel channel) {
+            channels.add(channel);
             return memberChannelsMap.putIfAbsent(uid,channel);
         }
 
@@ -41,6 +42,7 @@ public class RoomChannelManager {
             if (StringUtils.isBlank(memberUid)) {
                 return false;
             }
+            channels.remove(channel);
             memberChannelsMap.remove(memberUid);
             return true;
         }

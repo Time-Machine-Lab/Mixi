@@ -69,7 +69,6 @@ public class TimelineMemoryStore implements MixiTimelineStore{
                             while (roomIterator.hasNext()) {
                                 res.add(roomIterator.next());
                             }
-                            // messagesFromNext 就是从 room 中从下一个消息开始的集合
                             break;
                         }
                     }
