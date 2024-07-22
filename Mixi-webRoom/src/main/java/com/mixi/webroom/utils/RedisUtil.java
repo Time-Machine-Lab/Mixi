@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @Date：2024/6/28 上午11:23
  */
 @Component
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
 public class RedisUtil {
     private final RedisTemplate redisTemplate;
 

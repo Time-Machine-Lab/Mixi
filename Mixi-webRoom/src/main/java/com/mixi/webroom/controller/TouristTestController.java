@@ -4,7 +4,7 @@ import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.utils.UserThread;
 import com.mixi.webroom.core.annotation.TouristCheck;
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;

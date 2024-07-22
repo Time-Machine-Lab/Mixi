@@ -1,6 +1,6 @@
 package com.mixi.webroom.controller;
 
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import org.springframework.web.bind.annotation.*;
 import io.github.common.web.Result;

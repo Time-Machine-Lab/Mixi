@@ -1,14 +1,11 @@
 package com.mixi.webroom.service.Impl;
 
-import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.pojo.enums.ResultEnums;
 import com.mixi.webroom.core.exception.ServerException;
-import com.mixi.webroom.core.strategy.CallBack;
 import com.mixi.webroom.core.strategy.CallBackStrategy;
-import com.mixi.webroom.domain.dto.CallBackDTO;
+import com.mixi.webroom.pojo.dto.CallBackDTO;
 import com.mixi.webroom.service.WebRoomRpcService;
-import com.mixi.webroom.utils.RedisUtil;
 import io.github.common.web.Result;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

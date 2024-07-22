@@ -1,4 +1,4 @@
-package com.mixi.webroom.domain.dto;
+package com.mixi.webroom.pojo.dto;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

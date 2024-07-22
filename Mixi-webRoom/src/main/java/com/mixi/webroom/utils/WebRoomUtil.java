@@ -1,9 +1,8 @@
 package com.mixi.webroom.utils;
 
-import com.mixi.webroom.core.factory.TicketFactory;
-import com.mixi.webroom.domain.entity.WebRoom;
+import com.mixi.common.factory.TicketFactory;
+import com.mixi.webroom.pojo.entity.WebRoom;
 import lombok.Getter;
-import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

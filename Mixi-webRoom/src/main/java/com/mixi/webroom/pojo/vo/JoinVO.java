@@ -1,4 +1,4 @@
-package com.mixi.webroom.domain.vo;
+package com.mixi.webroom.pojo.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

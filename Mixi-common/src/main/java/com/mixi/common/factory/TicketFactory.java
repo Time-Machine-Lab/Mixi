@@ -1,8 +1,5 @@
-package com.mixi.webroom.core.factory;
+package com.mixi.common.factory;
 
-import com.mixi.webroom.core.enums.ResultEnums;
-import com.mixi.webroom.core.exception.ServerException;
-import com.mixi.webroom.utils.WebRoomUtil;
 import lombok.Getter;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.stereotype.Component;
@@ -42,9 +39,6 @@ public class TicketFactory {
             for (String pair : pairs) {
                 String[] keyValue = pair.split(":"); // 限制split只进行一次，避免处理值中可能包含的':'
 
-                if (keyValue.length != 2) {
-                    throw new ServerException(ResultEnums.TRANSCODE_ERROR);
-                }
                 String key = keyValue[0];
                 String value = keyValue[1];
                 map.put(key, value);

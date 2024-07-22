@@ -1,6 +1,6 @@
 package com.mixi.webroom.service;
 
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import io.github.common.web.Result;
 import org.springframework.stereotype.Component;
 

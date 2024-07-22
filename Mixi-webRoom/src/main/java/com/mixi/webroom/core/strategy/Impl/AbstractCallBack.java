@@ -1,7 +1,7 @@
 package com.mixi.webroom.core.strategy.Impl;
 
 import com.mixi.webroom.core.strategy.CallBack;
-import com.mixi.webroom.domain.dto.CallBackDTO;
+import com.mixi.webroom.pojo.dto.CallBackDTO;
 
 /**
  * @Author：XiaoChun

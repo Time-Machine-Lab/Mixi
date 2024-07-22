@@ -1,4 +1,4 @@
-package com.mixi.webroom.core.enums;
+package com.mixi.webroom.pojo.enums;
 
 import lombok.Getter;
 

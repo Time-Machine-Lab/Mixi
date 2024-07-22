@@ -1,6 +1,6 @@
 package com.mixi.webroom.core.strategy.Impl;
 
-import com.mixi.webroom.config.RedisKeyConfig;
+import com.mixi.webroom.constants.RedisKeyConstants;
 import com.mixi.webroom.utils.RedisUtil;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +18,13 @@ public class JoinRoomCallBack extends AbstractCallBack {
 
     @Override
     public Boolean successCallBack(String roomId, String uid) {
-        if(roomId.equals(redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid)))){
-            redisUtil.removeExpiration(RedisKeyConfig.roomOwner(roomId));
-            redisUtil.removeExpiration(RedisKeyConfig.roomInfo(roomId));
-            redisUtil.removeExpiration(RedisKeyConfig.roomNumber(roomId));
-            redisUtil.removeExpiration(RedisKeyConfig.userOwn(uid));
+        if(roomId.equals(redisUtil.getCacheObject(RedisKeyConstants.userOwn(uid)))){
+            redisUtil.removeExpiration(RedisKeyConstants.roomOwner(roomId));
+            redisUtil.removeExpiration(RedisKeyConstants.roomInfo(roomId));
+            redisUtil.removeExpiration(RedisKeyConstants.roomNumber(roomId));
+            redisUtil.removeExpiration(RedisKeyConstants.userOwn(uid));
         }
-        redisUtil.setNxObject(RedisKeyConfig.userConnected(uid), roomId);
+        redisUtil.setNxObject(RedisKeyConstants.userConnected(uid), roomId);
         return null;
     }
 

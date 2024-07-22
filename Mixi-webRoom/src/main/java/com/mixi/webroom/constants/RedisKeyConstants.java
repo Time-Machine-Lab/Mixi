@@ -1,27 +1,13 @@
-package com.mixi.webroom.config;
-
-import javax.validation.constraints.NotBlank;
+package com.mixi.webroom.constants;
 
 /**
  * @Author：XiaoChun
  * @Date：2024/6/27 11:25
  */
-public class RedisKeyConfig {
+public class RedisKeyConstants {
     public static String WEB_ROOM = "Mixi:WebRoom:";
 
     public static String USER = "Mixi:User:";
-
-//    public static String userNettyState( String uid){
-//        return WEB_ROOM + uid + ":NettyState";
-//    }
-//
-//    public static String userVideoState( String uid){
-//        return WEB_ROOM + uid + ":VideoState";
-//    }
-
-//    public static String roomLimit( String roomId){
-//        return WEB_ROOM + roomId + ":Limit";
-//    }
 
     public static String roomPullFlag( String roomId){
         return WEB_ROOM + roomId + ":PullFlag";
@@ -38,10 +24,6 @@ public class RedisKeyConfig {
     public static String roomOwner( String roomId){
         return WEB_ROOM + roomId + ":Owner";
     }
-
-//    public static String roomLink( String roomId){
-//        return WEB_ROOM + roomId + ":RoomLink";
-//    }
 
     public static String userTicket( String uid){
         return USER + uid;
