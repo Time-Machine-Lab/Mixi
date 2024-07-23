@@ -7,6 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Mixi-user</name>
     <description>Mixi-user</description>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>com</groupId>
@@ -167,13 +168,23 @@
 
     <build>
         <plugins>
-            <!-- maven 打包时跳过测试 -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId> <!-- 测试使用到的插件 -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip><!-- 声明跳过测试 -->
+                    <executable>true</executable>
+                    <layout>JAR</layout>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <attach>false</attach>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
