@@ -1,7 +1,10 @@
 package com.mixi.webroom.utils;
 
 import com.mixi.common.factory.TicketFactory;
+import com.mixi.common.pojo.Ticket;
+import com.mixi.webroom.core.exception.ServerException;
 import com.mixi.webroom.pojo.entity.WebRoom;
+import com.mixi.webroom.pojo.enums.ResultEnums;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Date 2024/7/7
@@ -25,39 +29,20 @@ public class WebRoomUtil {
     @Value("${room.port}")
     private String port;
 
-    public String link(Map<String, String> keys){
-        return ip + ":" + port + "/linkJoin/?key=" + ticketFactory.createTicket(keys);
+    public String link(Ticket ticket){
+        return ticketFactory.createTicket(ticket);
     }
 
-    public String link(Builder builder){
-        return link(builder.getParams());
-    }
-
-    public String link(WebRoom webRoom){
-        Map<String, String> params = new HashMap<>();
-        params.put("roomId", webRoom.getRoomId());
-        return link(params);
-    }
-
-    public Map<String, String> decryptLink(String key){
-        return ticketFactory.decryptTicket(key);
-    }
-
-    public static Builder builder(){
-        return new Builder();
-    }
-
-    @Getter
-    public static class Builder{
-        private final Map<String, String> params = new HashMap<>();
-
-        public Builder put(String key, String value){
-            params.put(key, value);
-            return this;
+    public Ticket decryptLink(String key){
+        Ticket ticket = null;
+        try {
+            ticket = ticketFactory.decryptTicket(key);
+        } catch (Exception e) {
+            throw new ServerException(ResultEnums.TRANSCODE_ERROR);
         }
-
-        public Builder done(){
-            return this;
+        if(Objects.isNull(ticket)){
+            throw new ServerException(ResultEnums.TRANSCODE_ERROR);
         }
+        return ticket;
     }
 }

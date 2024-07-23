@@ -26,3 +26,6 @@ netty:
 room:
   ip: 127.0.0.1
   port: 9020
+
+mixi:
+  verifyLinkUrl: ${VERIFY_LINK:ENC(TSJqSXcliRzeuAglhUhXoXKKFZ5h2Xg22QdG6k2i/fAhQUOwGBpsEykeT/SJUTSYW8Xko2Kda+SIMa8O4u4XFQ==)}

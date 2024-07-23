@@ -1,6 +1,8 @@
 package com.mixi.webroom.pojo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -13,6 +15,8 @@ import javax.validation.constraints.NotNull;
  * @Date：2024/6/27 下午3:34
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateRoomDTO {
 
     @NotBlank(message = "RoomName cannot be null!")

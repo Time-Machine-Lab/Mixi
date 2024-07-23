@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebRoom implements Serializable {
+public class WebRoom {
     private String roomId;  //房间id
 
     private String roomName;    //房间名
@@ -24,7 +24,7 @@ public class WebRoom implements Serializable {
 
     private Boolean anonymityFlag;  //匿名用户是否准入标识
 
-    private LocalDateTime createTime;   //房间创建时间
+    private Long createTimeMillis;   //房间创建时间
 
     private String socketIp;
 
@@ -34,7 +34,7 @@ public class WebRoom implements Serializable {
 
     public WebRoom(CreateRoomDTO createRoomDTO, String roomId) {
         this.roomId = roomId;
-        this.createTime = LocalDateTime.now();
+        this.createTimeMillis = System.currentTimeMillis();
         this.roomName = createRoomDTO.getRoomName();
         this.limit = createRoomDTO.getLimit();
         this.anonymityFlag = createRoomDTO.getAnonymityFlag();

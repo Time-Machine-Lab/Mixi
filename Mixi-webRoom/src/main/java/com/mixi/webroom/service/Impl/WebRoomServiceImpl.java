@@ -1,11 +1,15 @@
 package com.mixi.webroom.service.Impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mixi.common.factory.TicketFactory;
+import com.mixi.webroom.config.JoinPropertiesConfig;
+import com.mixi.webroom.core.listener.TicketExpireListener;
 import com.mixi.webroom.core.worker.SnowFlakeIdWorker;
+import com.mixi.webroom.domain.RedisOption;
+import com.mixi.common.pojo.Ticket;
 import com.mixi.webroom.pojo.enums.ResultEnums;
 import com.mixi.webroom.core.exception.ServerException;
 import com.mixi.webroom.core.rpc.VideoService;
-import com.mixi.webroom.constants.RedisKeyConstants;
 import com.mixi.webroom.pojo.entity.WebRoom;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.pojo.vo.JoinVO;
@@ -18,8 +22,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.mixi.webroom.constants.RedisKeyConstants.*;
 
 
 /**
@@ -30,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class WebRoomServiceImpl implements WebRoomService {
     @Resource
-    private RedisUtil redisUtil;
+    private RedisOption redisOption;
 
     @Resource
     private VideoService videoService;
@@ -45,60 +52,73 @@ public class WebRoomServiceImpl implements WebRoomService {
     private EmailService asyncEmailSender;
 
     @Resource
-    private TicketFactory ticketFactory;
+    private TicketExpireListener ticketExpireListener;
+
+    @Resource
+    private JoinPropertiesConfig joinPropertiesConfig;
+
+    @Value("${mixi.ticket.expire}")
+    private Integer ticketExpire;
 
     @Value("${netty.socket-ip}")
     private String socketIp;
 
     @Override
     public Result<?> createRoom(CreateRoomDTO createRoomDTO, String uid) {
-        if(redisUtil.exist(RedisKeyConstants.userConnected(uid))){
+        if(redisOption.hashExist(user(uid), CONNECTED)){
             throw new ServerException(ResultEnums.USER_CONNECTED);
         }
         // 生成roomId
         String roomId = String.valueOf(snowFlakeIdWorker.nextId());
         Map<String, Object> resultMap = new HashMap<>();
         // 判断当前用户状态
-        if(redisUtil.setNxObject(RedisKeyConstants.userOwn(uid), roomId, 60, TimeUnit.SECONDS)){
+        if(redisOption.setHashNx(user(uid), OWN, roomId, 60, TimeUnit.SECONDS)){
             WebRoom webRoom = new WebRoom(createRoomDTO, roomId);
 
             videoService.createRoom();
             // 设置房间相关信息
-            redisUtil.setNxObject(RedisKeyConstants.roomOwner(webRoom.getRoomId()), uid, 60, TimeUnit.SECONDS);
-            redisUtil.setNxObject(RedisKeyConstants.roomInfo(webRoom.getRoomId()), webRoom, 60, TimeUnit.SECONDS);
-            redisUtil.setNxObject(RedisKeyConstants.roomNumber(webRoom.getRoomId()), Integer.MAX_VALUE - webRoom.getLimit(), 60, TimeUnit.SECONDS);//设置为redis上限减房间上限
+            redisOption.setHashObject(webRoom(roomId), Map.of(OWNER, uid, INFO, JSONObject.toJSONString(webRoom), NUMBER, Integer.MAX_VALUE - webRoom.getLimit()), 60, TimeUnit.SECONDS);
+            log.info(String.format("房间已创建，房间号：%s，创建者：%s", roomId, uid));
         }
 
-        String roomLink = webRoomUtil.link(WebRoomUtil.builder().put("roomId", redisUtil.getCacheObject(RedisKeyConstants.userOwn(uid))).done());
+        String roomLink = createTicket(roomId, uid);
         resultMap.put("link", roomLink);
         return Result.success(resultMap);
     }
 
+    private String createTicket(String roomId, String uid){
+        Ticket ticket = Ticket.builder()
+                .uId(uid)
+                .roomId(roomId)
+                .build();
+        return webRoomUtil.link(ticket);
+    }
+
     @Override
     public Result<?> linkShare(String uid) {
-        String roomId = redisUtil.getCacheObject(RedisKeyConstants.userOwn(uid));
+        String roomId = redisOption.getHashString(user(uid), OWN);
         Map<String, Object> resultMap = new HashMap<>();
 
         if(roomId == null){
             throw new ServerException(ResultEnums.THE_USER_DID_NOT_CREATE_A_ROOM);
         }
 
-        String roomLink = webRoomUtil.link(WebRoomUtil.builder().put("roomId", roomId).done());
+        String roomLink = createTicket(roomId, null);
         resultMap.put("link", roomLink);
         return Result.success(resultMap);
     }
 
     @Override
     public Result<?> pull(String uid, List<String> emails) {
-        String roomId = redisUtil.getCacheObject(RedisKeyConstants.userOwn(uid));
+        String roomId = redisOption.getHashString(user(uid), OWN);
         if(roomId == null){
             throw new ServerException(ResultEnums.THE_USER_DID_NOT_CREATE_A_ROOM);
         }
-        if(!redisUtil.setNxObject(RedisKeyConstants.roomPullFlag(roomId), true, 3, TimeUnit.MINUTES)){
+        if(!redisOption.setHashNx(webRoom(roomId), PULL_FLAG, true, 3, TimeUnit.MINUTES)){
             throw new ServerException(ResultEnums.PULL_HAS_NOT_COOLED_DOWN);
         }
 
-        String roomLink = webRoomUtil.link(WebRoomUtil.builder().put("roomId", roomId).done());
+        String roomLink = createTicket(roomId, null);
         for(String email : new HashSet<>(emails)){
             asyncEmailSender.sendLink(email, roomLink);
         }
@@ -108,39 +128,46 @@ public class WebRoomServiceImpl implements WebRoomService {
 
     @Override
     public Result<?> linkJoin(String uid, String key) {
-        Map<String, String> res = webRoomUtil.decryptLink(key);
+        Ticket ticket = webRoomUtil.decryptLink(key);
+        //判断匿名用户是否准入 后续改为业务链
+
         //用户当前状态为已连接
-        if(!Objects.isNull(redisUtil.getCacheObject(RedisKeyConstants.userConnected(uid)))){
+        if(redisOption.hashExist(user(uid), CONNECTED)){
             throw new ServerException(ResultEnums.USER_CONNECTED);
         }
 
-        if(!redisUtil.exist(RedisKeyConstants.roomInfo(res.get("roomId")))){
+        if(!redisOption.hashExist(webRoom(ticket.getRoomId()), OWNER)){
             throw new ServerException(ResultEnums.ROOM_NOT_EXIST);
         }
 
+        if(ticketExpireListener.exists(user(uid) + ":" + TICKET)){
+            ticketExpireListener.remove(user(uid) + ":" + TICKET);
+        }
+
         try {
-            redisUtil.increment(RedisKeyConstants.roomNumber(res.get("roomId")));
+            redisOption.hashIncrement(webRoom(ticket.getRoomId()), NUMBER);
         } catch (Exception e){
             throw new ServerException(ResultEnums.ROOM_FULLED);
         }
-        WebRoom webRoom = redisUtil.getCacheObject(RedisKeyConstants.roomInfo(res.get("roomId")));
+        WebRoom webRoom = redisOption.getHashObject(webRoom(ticket.getRoomId()), INFO, WebRoom.class);
 
-        String ticket = ticketFactory.createTicket(TicketFactory.builder().put("uid", uid).put("roomId", res.get("roomId")).done());
-        JoinVO joinVO = JoinVO.builder().videoIp(webRoom.getVideoIp()).ticket(ticket).socketIp(socketIp).build();
-        redisUtil.setCacheObject(RedisKeyConstants.userTicket(uid), ticket, 60, TimeUnit.SECONDS);
+        JoinVO joinVO = JoinVO.builder()
+                .videoIp(webRoom.getVideoIp())
+                .ticket(createTicket(ticket.getRoomId(), uid))
+                .socketIp(socketIp).build();
+        redisOption.setCacheObject(user(uid) + ":" + TICKET, joinVO.getTicket(), ticketExpire, TimeUnit.SECONDS);
+        ticketExpireListener.put(user(uid) + ":" + TICKET, new String[]{webRoom(ticket.getRoomId()), NUMBER});
+
         return Result.success(joinVO);
     }
 
     @Override
     public Result<?> quitRoom(String uid, String roomId) {
         // 房主 or 成员
-        if((uid.equals(redisUtil.getCacheObject(RedisKeyConstants.userOwn(uid))))) {
-            redisUtil.deleteObject(RedisKeyConstants.roomInfo(roomId));
-            redisUtil.deleteObject(RedisKeyConstants.roomNumber(roomId));
-            redisUtil.deleteObject(RedisKeyConstants.roomOwner(roomId));
-            redisUtil.deleteObject(RedisKeyConstants.userOwn(uid));
+        if((uid.equals(redisOption.getHashString(webRoom(roomId), OWNER)))) {
+            redisOption.deleteHash(webRoom(roomId));
         }
-        redisUtil.deleteObject(RedisKeyConstants.userConnected(uid));
+        redisOption.deleteHash(user(uid));
         return Result.success();
     }
 }

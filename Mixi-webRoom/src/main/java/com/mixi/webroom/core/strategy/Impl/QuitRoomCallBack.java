@@ -1,34 +1,32 @@
 package com.mixi.webroom.core.strategy.Impl;
 
-import com.mixi.webroom.constants.RedisKeyConstants;
-import com.mixi.webroom.utils.RedisUtil;
+import com.mixi.webroom.domain.RedisOption;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+
+import static com.mixi.webroom.constants.RedisKeyConstants.*;
 
 /**
  * @author XiaoChun
  * @date 2024/7/19
  */
-@Component
+@Component(value = "quitRoom")
 public class QuitRoomCallBack extends AbstractCallBack{
     @Resource
-    RedisUtil redisUtil;
+    RedisOption redisOption;
     @Override
     public Boolean successCallBack(String roomId, String uid) {
-        if((uid.equals(redisUtil.getCacheObject(RedisKeyConstants.userOwn(uid))))) {
-            redisUtil.multi();
-            redisUtil.deleteObject(RedisKeyConstants.roomInfo(roomId));
-            redisUtil.deleteObject(RedisKeyConstants.roomNumber(roomId));
-            redisUtil.deleteObject(RedisKeyConstants.userOwn(uid));
-            redisUtil.exec();
+        //房主删除房间 用户删除自身
+        if((uid.equals(redisOption.getHashString(webRoom(roomId), OWNER)))) {
+            redisOption.deleteHash(webRoom(roomId));
         }
-        redisUtil.deleteObject(RedisKeyConstants.userConnected(uid));
-        return null;
+        redisOption.deleteHash(user(uid));
+        return true;
     }
 
     @Override
     public Boolean failCallBack(String roomId, String uid) {
-        return null;
+        return true;
     }
 }
