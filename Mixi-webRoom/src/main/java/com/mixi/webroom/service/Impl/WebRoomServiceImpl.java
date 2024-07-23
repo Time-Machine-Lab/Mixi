@@ -75,7 +75,7 @@ public class WebRoomServiceImpl implements WebRoomService {
 
             videoService.createRoom();
             // 设置房间相关信息
-            redisOption.setHashObject(webRoom(roomId), Map.of(OWNER, uid, INFO, JSONObject.toJSONString(webRoom), NUMBER, Integer.MAX_VALUE - webRoom.getLimit(), MAX, webRoom.getLimit()), 60, TimeUnit.SECONDS);
+            redisOption.setHashObject(webRoom(roomId), Map.of(OWNER, uid, INFO, JSONObject.toJSONString(webRoom), NUMBER, 0, MAX, webRoom.getLimit()), 60, TimeUnit.SECONDS);
             log.info(String.format("房间已创建，房间号：%s，创建者：%s", roomId, uid));
         }
 

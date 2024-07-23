@@ -24,7 +24,6 @@ public class WebRoomRpcServiceImpl implements WebRoomRpcService {
     * */
     @Override
     public Result<?> callBack(CallBackDTO callBackDTO) {
-        Boolean b = callBackStrategy.getStrategy(callBackDTO.getCallBackName()).call(callBackDTO);
         if(!callBackStrategy.getStrategy(callBackDTO.getCallBackName()).call(callBackDTO)){
             throw new ServerException(ResultEnums.CALLBACK_EXECUTE_ERROR);
         }

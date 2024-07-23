@@ -132,7 +132,7 @@ public class RedisOption {
     }
 
     public void deleteHash(String key){
-        redisTemplate.opsForHash().delete(key);
+        redisTemplate.delete(key);
     }
 
     /**
