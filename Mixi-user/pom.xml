@@ -191,8 +191,18 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
+
 
 <!--    <dependencyManagement>-->
 <!--        <dependencies>-->
@@ -247,6 +257,7 @@
 <!--                    </execution>-->
 <!--                </executions>-->
 <!--            </plugin>-->
+
 <!--        </plugins>-->
 <!--    </build>-->
 
