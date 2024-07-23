@@ -14,6 +14,8 @@ import org.jasypt.encryption.StringEncryptor;
 
 
 import javax.annotation.Resource;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +41,11 @@ public class EmailLinkVerifyChain extends AbstractFilterChain<String> {
 
     @Override
     public boolean filter(String linkToken) {
+
+        if (linkToken.contains("%2B")) {
+            linkToken = URLDecoder.decode(linkToken, StandardCharsets.UTF_8);
+        }
+
         LinkInfo linkInfo;
         // 解密校验短链信息
         try {

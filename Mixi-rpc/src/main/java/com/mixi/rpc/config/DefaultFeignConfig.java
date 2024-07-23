@@ -2,7 +2,6 @@ package com.mixi.rpc.config;
 
 import com.mixi.common.component.info.transfer.DefaultUserInfoTransferHandler;
 import com.mixi.common.pojo.TokenUserInfo;
-import com.mixi.common.utils.ThreadContext;
 import com.mixi.common.utils.UserThread;
 import feign.RequestInterceptor;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +27,6 @@ public class DefaultFeignConfig {
                 String userInfo = userInfoTransferHandler.packageUserInfo(tokenUserInfo);
                 requestTemplate.header(USER_INFO, userInfo);
             }
-            requestTemplate.header(IP_ADDRESS, ThreadContext.getData(IP_ADDRESS).toString());
-            requestTemplate.header(MACHINE_CODE, ThreadContext.getData(MACHINE_CODE).toString());
         };
     }
 }

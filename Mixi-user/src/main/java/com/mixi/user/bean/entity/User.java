@@ -77,9 +77,4 @@ public class User implements Serializable {
      * 指纹
      */
     private String finger;
-
-    /**
-     * IP + 机器码
-     */
-    private String ipAddress;
 }

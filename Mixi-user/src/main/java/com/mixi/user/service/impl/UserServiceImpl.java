@@ -9,8 +9,10 @@ import com.mixi.common.utils.UserThread;
 import com.mixi.user.bean.UserAgentInfo;
 import com.mixi.user.bean.dto.LoginDTO;
 import com.mixi.user.bean.LinkInfo;
+import com.mixi.user.bean.dto.TouristLoginDTO;
 import com.mixi.user.bean.entity.User;
 import com.mixi.user.bean.vo.UserVO;
+import com.mixi.user.chain.PicCodeVerifyChain;
 import com.mixi.user.config.UserPropertiesConfig;
 import com.mixi.user.domain.CaptchaServiceGateway;
 import com.mixi.user.domain.RedisGateway;
@@ -30,13 +32,15 @@ import javax.annotation.Resource;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mixi.user.constants.MixiUserConstant.NIL;
+import static com.mixi.common.constant.constpool.TransferConstant.FINGER_PRINT;
 import static com.mixi.user.constants.RedisKeyConstant.*;
 import static com.mixi.user.constants.ServeCodeConstant.REPEAT_OPERATION;
 import static com.mixi.user.constants.ServeCodeConstant.TOKEN_GENERATE_ERROR;
+import static com.mixi.user.utils.FingerprintUtil.isValidFingerprint;
 
-@Service
 @RequiredArgsConstructor
+@SuppressWarnings("all")
+@Service
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -121,11 +125,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<?> linkVerify(String linkToken, String userAgent, String fingerprint) {
+    public Result<?> linkVerify(String linkToken, String userAgent) {
         // 解析 linkToken
         UserAgentInfo agentInfo = AgentUtil.getUserAgent(userAgent);
         ThreadContext.setData("agentInfo", agentInfo);
         SafeBag<LinkInfo> linkInfo = new SafeBag<>();
+
 
         chainFactory.get("linkVerify")
                 .<String>supplierMap(Map.of(
@@ -138,7 +143,7 @@ public class UserServiceImpl implements UserService {
                 // 邮箱不存在则直接进行用户注册
                 .failCallbackMap(Map.of(
                         3, () -> {
-                            emailUserNoPwdRegister(linkInfo.getData().getEmail(), fingerprint);
+                            emailUserNoPwdRegister(linkInfo.getData().getEmail());
                         }
                 ))
                 // 邮箱存在则进行用户登录
@@ -166,19 +171,30 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 邮箱链接直接注册
-     *
-     * @param email
      */
-    private void emailUserNoPwdRegister(String email, String fingerprint) {
-        // 转正判断，根据指纹判断此用户是否为之前注册的游客
-        User user = userDaoService.getUserByFinger(fingerprint);
-        // 如果存在
-        if (null != user) {
+    private void emailUserNoPwdRegister(String email) {
+
+        // 尝试从用户线程里获取指纹
+        Object fingerprint = UserThread.getField(FINGER_PRINT);
+
+        User user;
+
+        // 如果有指纹，代表此用户之前是使用游客身份登录过的
+        if (fingerprint != null) {
+
+            // 验证指纹的合法性
+            if (!isValidFingerprint(fingerprint.toString())) throw new ServeException(RCode.ILLEGAL_FINGERPRINT);
+
+            // 尝试从数据库里获取此用户
+            user = userDaoService.getUserByFinger(fingerprint.toString());
+
+            if (user == null) throw new ServeException(RCode.ILLEGAL_FINGERPRINT);
+
             // 将此用户转正
             user = convertVisitorToRegularUser(user, email);
         }
 
-        // 不存在，走正常注册
+        // 如果没有指纹，代表此用户之前没有用游客身份登录，走正常注册
         else {
             user = userUtil.newJoinUser(email, null);
             log.info("邮箱不存在，进行用户注册,用户邮箱为:{} 新用户名为:{}", user.getEmail(), user.getNickname());
@@ -191,6 +207,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 获取用户信息(uid为空代表获取自己的信息)
+     */
     @Override
     public Result<?> getUserInfo(String uid) {
         uid = StringUtils.isEmpty(uid) ? UserThread.getUserId() : uid;
@@ -213,13 +232,20 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 根据指纹生成游客token（指纹不存在，将新建游客用户）
-     * @param fingerprint 指纹
      * @return 游客用户登录token
      */
     @Override
-    public R<String> generateVisitorUser(String fingerprint) {
+    public R<String> visitorUserLogin(TouristLoginDTO loginDTO) {
 
-        // 判断此指纹是否存在
+        // 验证验证码是否正确
+        ((PicCodeVerifyChain) chainFactory.getChain("picCodeVerify")).filter(new String[]{loginDTO.getPicId(), loginDTO.getPicCode()});
+
+        String fingerprint = loginDTO.getFingerprint();
+
+        // 验证指纹的合法性
+        if (!isValidFingerprint(fingerprint)) throw new ServeException(RCode.ILLEGAL_FINGERPRINT);
+
+        // 判断该指纹是否存在数据库中
         User user = userDaoService.getUserByFinger(fingerprint);
 
         // 指纹不存在，走游客用户创建逻辑
@@ -242,16 +268,12 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 将游客用户转正为正常用户
-     * @param user  游客用户
-     * @param email 邮箱
-     * @return 转正后的用户
      */
     private User convertVisitorToRegularUser(User user, String email) {
-        // 更新用户信息
+        // 用户信息更新为正常用户
         user.setEmail(email);
         user.setUsername(email);
-        user.setRoles(userUtil.getUserRole()); // 更新为正常用户角色
-        user.setFinger(NIL); // 清除指纹字段
+        user.setRoles(userUtil.getUserRole());
 
         // 保存更新后的用户信息
         userDaoService.updateById(user);

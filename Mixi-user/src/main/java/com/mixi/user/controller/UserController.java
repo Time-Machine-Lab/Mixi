@@ -3,6 +3,7 @@ package com.mixi.user.controller;
 import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.common.utils.R;
 import com.mixi.user.bean.dto.LoginDTO;
+import com.mixi.user.bean.dto.TouristLoginDTO;
 import com.mixi.user.service.UserService;
 import io.github.common.web.Result;
 import lombok.RequiredArgsConstructor;
@@ -39,13 +40,12 @@ public class UserController {
         return userService.linkLogin(loginDTO, userAgent);
     }
 
-    @ApiAuth(NOT)
+    @ApiAuth(value = OPTIONAL)
     @GetMapping("/linkVerify")
     public Result linkLoginVerify(
             @RequestHeader(value="User-Agent") String userAgent,
-            @RequestParam("linkToken") String linkToken,
-            @RequestParam(value = "fingerprint", required = false) String fingerprint){
-        return userService.linkVerify(linkToken, userAgent, fingerprint);
+            @RequestParam("linkToken") String linkToken){
+        return userService.linkVerify(linkToken, userAgent);
     }
 
     @ApiAuth(NEED)
@@ -55,10 +55,9 @@ public class UserController {
         return userService.getUserInfo(uid);
     }
 
-    @ApiAuth(INNER)
-    @GetMapping("/visit/generate")
-    public R<String> generateVisitorUser(
-            @RequestParam(value = "fingerprint") String fingerprint) {
-        return userService.generateVisitorUser(fingerprint);
+    @ApiAuth(NOT)
+    @PostMapping("/visit/login")
+    public R<String> visitorUserLogin(@RequestBody  @Valid TouristLoginDTO touristLoginDTO) {
+        return userService.visitorUserLogin(touristLoginDTO);
     }
 }

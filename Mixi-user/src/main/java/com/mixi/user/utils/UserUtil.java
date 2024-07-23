@@ -2,7 +2,6 @@ package com.mixi.user.utils;
 
 import com.alibaba.nacos.api.utils.StringUtils;
 import com.mixi.common.exception.ServeException;
-import com.mixi.common.utils.ThreadContext;
 import com.mixi.user.bean.entity.User;
 import io.github.id.snowflake.SnowflakeGenerator;
 import io.github.id.snowflake.SnowflakeRegisterException;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.mixi.common.constant.constpool.TransferConstant.IP_ADDRESS;
-import static com.mixi.common.constant.constpool.TransferConstant.MACHINE_CODE;
 import static com.mixi.user.constants.MixiUserConstant.NIL;
 
 @Component
@@ -48,7 +45,6 @@ public class UserUtil {
 
     public User newJoinUser(String username, String email, String password, String fingerprint) {
         try {
-            Object data = ThreadContext.getData(MACHINE_CODE);
             return User.builder()
                     .id(String.valueOf(snowflakeGenerator.generate()))
                     .sex(NIL)
@@ -61,7 +57,6 @@ public class UserUtil {
                     .delFlag(Boolean.FALSE.toString())
                     .finger(StringUtils.isBlank(fingerprint) ? NIL : fingerprint)
                     .roles(StringUtils.isBlank(fingerprint) ? userRole : touristRole)
-                    .ipAddress(ThreadContext.getData(IP_ADDRESS) + "|" + ThreadContext.getData(MACHINE_CODE))
                     .build();
         } catch (SnowflakeRegisterException e) {
             throw ServeException.SystemError("id生成失败");

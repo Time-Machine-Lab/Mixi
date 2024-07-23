@@ -9,5 +9,16 @@ import reactor.core.publisher.Mono;
  * 日期: 2024/7/12
  */
 public interface AuthStrategy {
-    Mono<Void> validate(ServerWebExchange exchange);
+
+    default Mono<Void> before(ServerWebExchange exchange) {
+        return Mono.empty();
+    }
+
+    default Mono<Void> validate(ServerWebExchange exchange) {
+        return Mono.empty();
+    }
+
+    default Mono<Void> after(ServerWebExchange exchange) {
+        return Mono.empty();
+    }
 }

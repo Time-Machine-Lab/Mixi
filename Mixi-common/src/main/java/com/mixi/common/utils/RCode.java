@@ -29,7 +29,12 @@ public enum RCode {
     VERIFICATION_FAILURE(30001, "验证失败"),
     FAILED_TO_CREATE_USER(30002, "创建用户失败"),
     MISSING_VERIFICATION_CODE(30003, "缺少验证码"),
-    MISSING_FINGERPRINTS(30004, "缺少指纹参数");
+
+    /**
+     * 游客
+     */
+    VISITOR_REDIRECTION(90001, "游客用户请先进行游客注册"),
+    ILLEGAL_FINGERPRINT(90002, "指纹参数不合法，请再试一次");
 
     /**
      * 自定义状态码

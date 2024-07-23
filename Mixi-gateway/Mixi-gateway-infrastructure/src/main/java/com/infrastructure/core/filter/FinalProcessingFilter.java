@@ -36,11 +36,9 @@ public class FinalProcessingFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        String machineCode = exchange.getRequest().getHeaders().getFirst(MACHINE_CODE);
-
         // 创建一个Map来存储需要添加的请求头
         Map<String, String> headersToAdd = new HashMap<>();
-        headersToAdd.put(MACHINE_CODE, machineCode);
+        headersToAdd.put(USER_AGENT, exchange.getRequest().getHeaders().getFirst(USER_AGENT));
 
         RequestContext context = (RequestContext) exchange.getAttributes().get(REQUEST_CONTEXT);
         if (context != null) {

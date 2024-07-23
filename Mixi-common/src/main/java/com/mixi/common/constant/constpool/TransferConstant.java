@@ -10,7 +10,8 @@ public class TransferConstant {
     // 用户信息传递
     public final static String USER_INFO = "user-info";
 
-    // ip和机器码
-    public static final String IP_ADDRESS = "ip-address";
-    public static final String MACHINE_CODE = "Machine-Code";
+    // 指纹
+    public final static String FINGER_PRINT = "Finger-print";
+
+    public final static String USER_AGENT = "User-Agent";
 }
