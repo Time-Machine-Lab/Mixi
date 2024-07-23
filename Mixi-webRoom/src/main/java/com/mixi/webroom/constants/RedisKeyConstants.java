@@ -13,6 +13,8 @@ public class RedisKeyConstants {
 
     public static String NUMBER = "Number";
 
+    public static String MAX = "Max";
+
     public static String PULL_FLAG = "PullFlag";
 
     public static String USER = "Mixi:User:";

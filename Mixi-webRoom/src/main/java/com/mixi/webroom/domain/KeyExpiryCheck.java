@@ -19,7 +19,7 @@ public class KeyExpiryCheck {
     public void startCheck(Map<String, String[]> ticket){
         List<Object> results = checkAndDeleteExpiredKeys(ticket);
         List<String[]> timeoutList = getTimeoutTicket(ticket, results);
-        deleteExpiredTicket(timeoutList);
+        if (!timeoutList.isEmpty()) deleteExpiredTicket(timeoutList);
     }
 
     public List<Object> checkAndDeleteExpiredKeys(Map<String, String[]> ticket) {

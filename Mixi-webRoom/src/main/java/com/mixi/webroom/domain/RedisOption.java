@@ -1,14 +1,20 @@
 package com.mixi.webroom.domain;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mixi.webroom.constants.LuaConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.mixi.webroom.constants.RedisKeyConstants.webRoom;
 
 /**
  * @Author：XiaoChun
@@ -168,5 +174,13 @@ public class RedisOption {
 
     public void removeExpiration(String key){
         redisTemplate.persist(key);
+    }
+
+    public Boolean compareAndIncrement(String key){
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setResultType(Long.class);
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(LuaConstants.COMPARE_AND_INCREMENT)));
+        // Ensure you pass the hashKey as a list of keys to the execute method
+        return Objects.nonNull(redisTemplate.execute(redisScript, Collections.singletonList(key)));
     }
 }

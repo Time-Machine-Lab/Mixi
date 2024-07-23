@@ -22,6 +22,7 @@ public class JoinRoomCallBack extends AbstractCallBack {
         if((uid.equals(redisOption.getHashString(webRoom(roomId), OWNER)))) {
             redisOption.removeExpiration(webRoom(roomId));
         }
+        redisOption.removeExpiration(user(uid));
         redisOption.setHashNx(user(uid), CONNECTED, roomId);
         return true;
     }

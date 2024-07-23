@@ -1,7 +1,6 @@
 package com.mixi.webroom.service.Impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mixi.common.factory.TicketFactory;
 import com.mixi.webroom.config.JoinPropertiesConfig;
 import com.mixi.webroom.core.listener.TicketExpireListener;
 import com.mixi.webroom.core.worker.SnowFlakeIdWorker;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -77,7 +75,7 @@ public class WebRoomServiceImpl implements WebRoomService {
 
             videoService.createRoom();
             // 设置房间相关信息
-            redisOption.setHashObject(webRoom(roomId), Map.of(OWNER, uid, INFO, JSONObject.toJSONString(webRoom), NUMBER, Integer.MAX_VALUE - webRoom.getLimit()), 60, TimeUnit.SECONDS);
+            redisOption.setHashObject(webRoom(roomId), Map.of(OWNER, uid, INFO, JSONObject.toJSONString(webRoom), NUMBER, Integer.MAX_VALUE - webRoom.getLimit(), MAX, webRoom.getLimit()), 60, TimeUnit.SECONDS);
             log.info(String.format("房间已创建，房间号：%s，创建者：%s", roomId, uid));
         }
 
@@ -144,9 +142,7 @@ public class WebRoomServiceImpl implements WebRoomService {
             ticketExpireListener.remove(user(uid) + ":" + TICKET);
         }
 
-        try {
-            redisOption.hashIncrement(webRoom(ticket.getRoomId()), NUMBER);
-        } catch (Exception e){
+        if(!redisOption.compareAndIncrement(webRoom(ticket.getRoomId()))){
             throw new ServerException(ResultEnums.ROOM_FULLED);
         }
         WebRoom webRoom = redisOption.getHashObject(webRoom(ticket.getRoomId()), INFO, WebRoom.class);
