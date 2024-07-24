@@ -10,7 +10,7 @@ spring:
       max-lifetime: 120000
 
   profiles:
-    active: ${ACTIVE:test}
+    active: ${ACTIVE:dev}
   cloud:
     api: true
     feign:
