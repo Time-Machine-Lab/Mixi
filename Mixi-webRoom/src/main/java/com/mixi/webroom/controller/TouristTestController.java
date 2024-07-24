@@ -3,7 +3,7 @@ package com.mixi.webroom.controller;
 import com.mixi.common.annotation.auth.ApiAuth;
 import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.utils.R;
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
