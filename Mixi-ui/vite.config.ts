@@ -24,5 +24,17 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    proxy: {
+      '/api/user': {
+        target: "http://119.3.234.15:9010/",
+        changeOrigin: true,
+      },
+      '/api/webRoom': {
+        target: 'http://122.152.215.226:9020/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/webRoom/, "/webRoom"),      }
+    }
   }
 })

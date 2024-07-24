@@ -3,7 +3,7 @@ import { useSnackbarStore } from "@/stores/snackbarStore";
 import { statusTextMap,errorStatusCodes,ignoreStatusCodes } from '@/util/statusCodes'
 
 const request = axios.create({
-  baseURL: "/appApi",
+  baseURL: "/api",
   timeout: 10000,
 });
 
