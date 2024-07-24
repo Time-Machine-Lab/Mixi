@@ -79,7 +79,12 @@
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-redis-jackson</artifactId>
         </dependency>
-
+        <!-- Mixi Common -->
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
