@@ -106,6 +106,9 @@ jobs:
           if [ "${{ env.MODULE_TYPE }}" != "single" ]; then
             cd $MODULE
           fi 
+          if [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then
+            cd Mixi-gateway-app
+          fi
           echo "LOWERCASE_MODULE=$(echo ${{ env.MODULE }} | awk '{print tolower($0)}')" >> $GITHUB_ENV
           echo "jasypt:" > src/main/resources/you-cant-see-that.yml
           echo "  encryptor:" >> src/main/resources/you-cant-see-that.yml
