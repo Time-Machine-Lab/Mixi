@@ -7,3 +7,12 @@ export interface Profile {
     sex: string;
     resume: string;
 }
+
+export type linkLoginForm = {
+    email:string;
+    picId:string;
+    picCode:string;
+}
+export type linkVerifyForm = {
+    linkToken:string;
+}
