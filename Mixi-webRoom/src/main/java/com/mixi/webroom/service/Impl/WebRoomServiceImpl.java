@@ -1,25 +1,30 @@
 package com.mixi.webroom.service.Impl;
 
-import com.mixi.common.constant.enums.UserStateEnum;
+import com.alibaba.fastjson.JSONObject;
+import com.mixi.webroom.config.JoinPropertiesConfig;
+import com.mixi.webroom.core.listener.TicketExpireListener;
 import com.mixi.webroom.core.worker.SnowFlakeIdWorker;
-import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.domain.RedisOption;
+import com.mixi.common.pojo.Ticket;
+import com.mixi.webroom.pojo.enums.ResultEnums;
 import com.mixi.webroom.core.exception.ServerException;
 import com.mixi.webroom.core.rpc.VideoService;
-import com.mixi.webroom.config.RedisKeyConfig;
-import com.mixi.webroom.domain.entity.WebRoom;
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.entity.WebRoom;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.vo.JoinVO;
+import com.mixi.webroom.service.EmailService;
 import com.mixi.webroom.service.WebRoomService;
 import com.mixi.webroom.utils.*;
 import io.github.common.web.Result;
-import io.github.servicechain.ServiceChainFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static com.mixi.webroom.constants.RedisKeyConstants.*;
 
 
 /**
@@ -27,107 +32,138 @@ import java.util.Map;
  * @Date：2024/6/25 17:20
  */
 @Service
+@Slf4j
 public class WebRoomServiceImpl implements WebRoomService {
     @Resource
-    private RedisUtil redisUtil;
+    private RedisOption redisOption;
 
     @Resource
     private VideoService videoService;
 
     @Resource
-    SnowFlakeIdWorker snowFlakeIdWorker;
-
-    @Resource
-    private UserUtil userUtil;
+    private SnowFlakeIdWorker snowFlakeIdWorker;
 
     @Resource
     private WebRoomUtil webRoomUtil;
 
     @Resource
-    private EmailUtil emailUtil;
+    private EmailService asyncEmailSender;
 
     @Resource
-    private ServiceChainFactory factory;
+    private TicketExpireListener ticketExpireListener;
 
     @Resource
-    private LuaUtil luaUtil;
+    private JoinPropertiesConfig joinPropertiesConfig;
+
+    @Value("${mixi.ticket.expire}")
+    private Integer ticketExpire;
 
     @Value("${netty.socket-ip}")
     private String socketIp;
 
     @Override
     public Result<?> createRoom(CreateRoomDTO createRoomDTO, String uid) {
+        if(redisOption.hashExist(user(uid), CONNECTED)){
+            throw new ServerException(ResultEnums.USER_CONNECTED);
+        }
+        // 生成roomId
         String roomId = String.valueOf(snowFlakeIdWorker.nextId());
         Map<String, Object> resultMap = new HashMap<>();
-        String roomLink = null;
         // 判断当前用户状态
-        if(redisUtil.setNxObject(RedisKeyConfig.userOwn(uid), roomId)){
+        if(redisOption.setHashNx(user(uid), OWN, roomId, 60, TimeUnit.SECONDS)){
             WebRoom webRoom = new WebRoom(createRoomDTO, roomId);
-            roomLink = webRoomUtil.link(webRoom);
 
-            videoService.createRoom().getData();
-            redisUtil.setCacheObject(RedisKeyConfig.roomOwner(webRoom.getRoomId()), uid);
-            redisUtil.setCacheObject(RedisKeyConfig.roomInfo(webRoom.getRoomId()), webRoom);
-            redisUtil.setCacheObject(RedisKeyConfig.roomNumber(webRoom.getRoomId()), Integer.MAX_VALUE - webRoom.getLimit());
-            redisUtil.setCacheObject(RedisKeyConfig.roomLink(webRoom.getRoomId()), roomLink);
-        } else {
-            roomLink = redisUtil.getCacheObject(RedisKeyConfig.roomLink(
-                    redisUtil.getCacheObject(RedisKeyConfig.userOwn(uid))
-            ));
+            videoService.createRoom();
+            // 设置房间相关信息
+            redisOption.setHashObject(webRoom(roomId), Map.of(OWNER, uid, INFO, JSONObject.toJSONString(webRoom), NUMBER, 0, MAX, webRoom.getLimit()), 60, TimeUnit.SECONDS);
+            log.info(String.format("房间已创建，房间号：%s，创建者：%s", roomId, uid));
         }
+
+        String roomLink = createTicket(roomId, uid);
         resultMap.put("link", roomLink);
         return Result.success(resultMap);
+    }
+
+    private String createTicket(String roomId, String uid){
+        Ticket ticket = Ticket.builder()
+                .uId(uid)
+                .roomId(roomId)
+                .build();
+        return webRoomUtil.link(ticket);
     }
 
     @Override
     public Result<?> linkShare(String uid) {
-        String roomId = redisUtil.getCacheObject(RedisKeyConfig.roomOwner(uid));
+        String roomId = redisOption.getHashString(user(uid), OWN);
         Map<String, Object> resultMap = new HashMap<>();
+
         if(roomId == null){
-            throw new ServerException(ResultEnums.ONLY_HOMEOWNER);
+            throw new ServerException(ResultEnums.THE_USER_DID_NOT_CREATE_A_ROOM);
         }
-        String roomLink = redisUtil.getCacheObject(RedisKeyConfig.roomLink(roomId));
+
+        String roomLink = createTicket(roomId, null);
         resultMap.put("link", roomLink);
         return Result.success(resultMap);
-//        ServiceChainBootstrap bootstrap = factory
-//                .get("OwnRoomNotEmpty")
-//                .failCallbackMap(Map.of(
-//                        1, () -> {
-//                            throw new ServerException(ResultEnums.ONLY_HOMEOWNER);
-//                        }
-//                ))
-//                .successCallbackMap(Map.of(
-//                        1, () -> {
-//                            String roomLink = redisUtil.getCacheObject(RedisKeyConfig.roomLink(roomId));
-//                            resultMap.put("link", roomLink);
-//                        }
-//                ));
-//        return
     }
 
     @Override
-    public Result<?> pull(String uid, List<String> ids) {
-        String roomId = redisUtil.getCacheObject(RedisKeyConfig.roomOwner(uid));
+    public Result<?> pull(String uid, List<String> emails) {
+        String roomId = redisOption.getHashString(user(uid), OWN);
         if(roomId == null){
-            throw new ServerException(ResultEnums.ONLY_HOMEOWNER);
+            throw new ServerException(ResultEnums.THE_USER_DID_NOT_CREATE_A_ROOM);
         }
-        List<String> emailList = new ArrayList<>();//获取用户的email
-        String roomLink = redisUtil.getCacheObject(RedisKeyConfig.roomLink(roomId));
-//        emailUtil.sendLink(); 发送邮箱 有被打崩的风险
+        if(!redisOption.setHashNx(webRoom(roomId), PULL_FLAG, true, 3, TimeUnit.MINUTES)){
+            throw new ServerException(ResultEnums.PULL_HAS_NOT_COOLED_DOWN);
+        }
+
+        String roomLink = createTicket(roomId, null);
+        for(String email : new HashSet<>(emails)){
+            asyncEmailSender.sendLink(email, roomLink);
+        }
+
         return Result.success();
     }
 
     @Override
     public Result<?> linkJoin(String uid, String key) {
-        Map<String, Object> resultMap = new HashMap<>();
-        String roomId = webRoomUtil.decryptLink(key);
+        Ticket ticket = webRoomUtil.decryptLink(key);
+        //判断匿名用户是否准入 后续改为业务链
 
-        userUtil.setUserState(uid, UserStateEnum.READY);
-        return Result.success(resultMap);
+        //用户当前状态为已连接
+        if(redisOption.hashExist(user(uid), CONNECTED)){
+            throw new ServerException(ResultEnums.USER_CONNECTED);
+        }
+
+        if(!redisOption.hashExist(webRoom(ticket.getRoomId()), OWNER)){
+            throw new ServerException(ResultEnums.ROOM_NOT_EXIST);
+        }
+
+        if(ticketExpireListener.exists(user(uid) + ":" + TICKET)){
+            ticketExpireListener.remove(user(uid) + ":" + TICKET);
+        }
+
+        if(!redisOption.compareAndIncrement(webRoom(ticket.getRoomId()))){
+            throw new ServerException(ResultEnums.ROOM_FULLED);
+        }
+        WebRoom webRoom = redisOption.getHashObject(webRoom(ticket.getRoomId()), INFO, WebRoom.class);
+
+        JoinVO joinVO = JoinVO.builder()
+                .videoIp(webRoom.getVideoIp())
+                .ticket(createTicket(ticket.getRoomId(), uid))
+                .socketIp(socketIp).build();
+        redisOption.setCacheObject(user(uid) + ":" + TICKET, joinVO.getTicket(), ticketExpire, TimeUnit.SECONDS);
+        ticketExpireListener.put(user(uid) + ":" + TICKET, new String[]{webRoom(ticket.getRoomId()), NUMBER});
+
+        return Result.success(joinVO);
     }
 
     @Override
-    public Result<?> quitRoom() {
+    public Result<?> quitRoom(String uid, String roomId) {
+        // 房主 or 成员
+        if((uid.equals(redisOption.getHashString(webRoom(roomId), OWNER)))) {
+            redisOption.deleteHash(webRoom(roomId));
+        }
+        redisOption.deleteHash(user(uid));
         return Result.success();
     }
 }

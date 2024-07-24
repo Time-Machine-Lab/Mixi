@@ -37,6 +37,7 @@ public class GlobalExceptionHandle {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public R<Object> runtimeExceptionHandler(final Exception e) {
         log.error("全局异常[RuntimeException]: {}:", e.getMessage());
+        e.printStackTrace();
         return R.error();
     }
 
