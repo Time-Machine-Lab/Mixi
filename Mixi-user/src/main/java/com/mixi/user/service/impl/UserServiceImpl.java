@@ -220,6 +220,9 @@ public class UserServiceImpl implements UserService {
         } else {
             userVO = new UserVO();
             User userEntity = userDaoService.query().eq("id", uid).one();
+
+            if (userEntity == null) throw new ServeException(RCode.USER_DOES_NOT_EXIST);
+
             BeanUtils.copyProperties(userEntity, userVO);
             userAsyncService.saveUserInfo(userEntity);
         }
