@@ -1,7 +1,27 @@
 spring:
   cloud:
     nacos:
-      server-addr:
-      username:
-      password:
+      server-addr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
+      password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
+      namespace: 32281a6b-5578-4c51-a2e7-1c65eba79860
+      discovery:
+        namespace: 32281a6b-5578-4c51-a2e7-1c65eba79860
+    gateway:
+      supportModules: webroom,user,admin
+      routes:
+        - id: webRoom
+          uri: lb://webRoom-service
+          predicates:
+            - Path=/webRoom/**
+        - id: user
+          uri: lb://mixi-user-service
+          predicates:
+            - Path=/api/user/**
+
+  redis:
+    host: ${REDIS_HOST:ENC(DoATKT3H6aEIGPC0FL69KkjLvrJKnw9q/oQ9kPs5Vt4=)}
+    port: 6379
+    database: 10
+    password: ${REDIS_PASSWORD:ENC(3SF9cUbQq5wcQbZF42lbEm6RH9zB6Y5sGZIoUymT+exjpy1oFbGb0A==)}
 
