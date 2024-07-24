@@ -1,14 +1,14 @@
 package com.infrastructure.core.auth.strategy;
 
 import com.infrastructure.core.auth.AuthStrategy;
-import com.infrastructure.core.auth.AuthStrategyType;
+import com.infrastructure.core.auth.annotation.AuthStrategyType;
 import com.infrastructure.core.token.TokenValidator;
 import com.infrastructure.pojo.RequestContext;
-import com.infrastructure.utils.ResponseUtils;
 import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.common.pojo.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -31,8 +31,10 @@ public class OptionalAuthStrategy implements AuthStrategy {
     @Override
     public Mono<Void> validate(ServerWebExchange exchange) {
 
+        ServerHttpRequest request = exchange.getRequest();
+
         // 从请求头中提取token，并提取用户信息
-        TokenUserInfo tokenUserInfo = tokenValidator.validateAndExtractUserInfo(tokenValidator.extractTokenFromHeader(exchange));
+        TokenUserInfo tokenUserInfo = tokenValidator.validateAndExtractUserInfo(tokenValidator.extractTokenFromHeader(request));
 
         // 如果携带了有效TOKEN
         if (null != tokenUserInfo) {
@@ -40,10 +42,10 @@ public class OptionalAuthStrategy implements AuthStrategy {
             RequestContext context = (RequestContext) exchange.getAttributes().get(REQUEST_CONTEXT);
             if (context != null) {
                 context.setTokenUserInfo(tokenUserInfo);
-                log.info("Token validation successful for API: {}", exchange.getRequest().getURI());
+                log.info("Token validation successful for API: {}", request.getURI());
             }
         } else {
-            log.info("No valid token found, proceeding without authentication for API: {}", exchange.getRequest().getURI());
+            log.info("No valid token found, proceeding without authentication for API: {}", request.getURI());
         }
 
         // 无论是否有TOKEN，均继续放行

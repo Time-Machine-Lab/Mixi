@@ -1,5 +1,6 @@
 package com.mixi.webroom;
 
+import com.mixi.rpc.config.DefaultFeignConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -11,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = {"com.mixi.common", "com.mixi.rpc","com.mixi.webroom"})
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = {"com.mixi.rpc.client"})
+@EnableFeignClients(basePackages = {"com.mixi.rpc.client"}, defaultConfiguration = DefaultFeignConfig.class)
 @EnableAspectJAutoProxy
 @EnableScheduling
 public class MixiWebRoomApplication {
