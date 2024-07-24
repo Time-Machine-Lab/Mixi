@@ -5,8 +5,7 @@ package com.mixi.webroom.core.exception;
  * @Date：2024/7/4 下午5:32
  */
 
-import com.mixi.common.utils.RCode;
-import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.pojo.enums.ResultEnums;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -23,6 +22,7 @@ public class ServerException extends RuntimeException{
 
     public ServerException(ResultEnums resultEnums){
         this.message = resultEnums.getMessage();
+
         this.code = resultEnums.getCode();
     }
 

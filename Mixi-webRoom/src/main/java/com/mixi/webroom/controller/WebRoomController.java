@@ -1,9 +1,6 @@
 package com.mixi.webroom.controller;
 
-import com.mixi.common.constant.enums.UserStateEnum;
-import com.mixi.common.utils.UserThread;
-import com.mixi.webroom.core.annotation.UserState;
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import org.springframework.web.bind.annotation.*;
 import io.github.common.web.Result;
@@ -11,6 +8,7 @@ import io.github.common.web.Result;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -25,7 +23,6 @@ public class WebRoomController {
     WebRoomService webRoomService;
 
     @PostMapping("/create")
-    @UserState(value = UserStateEnum.NORMAL)
     public Result<?> createRoom(@RequestBody
                                     @Valid
                                     CreateRoomDTO createRoomDTO,
@@ -46,12 +43,14 @@ public class WebRoomController {
 
     @PostMapping("/pull")
     public Result<?> pull(@RequestHeader
-                               @Valid
-                               @NotBlank
-                               String uid,
-                          @RequestBody
-                          List<String> ids) {
-        return webRoomService.pull(uid, ids);
+                              @Valid
+                              @NotBlank
+                              String uid,
+                              @RequestBody
+                              @Valid
+                              @Size(max = 20, message = "The maximum limit for email list is 20")
+                              List<String> emails) {
+        return webRoomService.pull(uid, emails);
     }
 
     @GetMapping("/linkJoin")
@@ -67,7 +66,26 @@ public class WebRoomController {
     }
 
     @PostMapping("/quit")
-    public Result<?> quitRoom() {
-        return webRoomService.quitRoom();
+    public Result<?> quitRoom(@RequestHeader
+                                  @Valid
+                                  @NotBlank
+                                  String uid,
+                                  @RequestPart
+                                  @Valid
+                                  @NotBlank
+                                  String roomId) {
+        return webRoomService.quitRoom(uid, roomId);
+    }
+
+    @PostMapping("/transferOwner")
+    public Result<?> transferOwner(@RequestHeader
+                                   @Valid
+                                   @NotBlank
+                                   String uid,
+                                   @RequestPart
+                                   @Valid
+                                   @NotBlank
+                                   String owner){
+        return null;
     }
 }

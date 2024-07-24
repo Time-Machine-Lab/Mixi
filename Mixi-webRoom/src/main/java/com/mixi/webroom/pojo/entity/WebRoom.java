@@ -1,6 +1,6 @@
-package com.mixi.webroom.domain.entity;
+package com.mixi.webroom.pojo.entity;
 
-import com.mixi.webroom.domain.dto.CreateRoomDTO;
+import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebRoom implements Serializable {
+public class WebRoom {
     private String roomId;  //房间id
 
     private String roomName;    //房间名
@@ -24,13 +24,17 @@ public class WebRoom implements Serializable {
 
     private Boolean anonymityFlag;  //匿名用户是否准入标识
 
-    private LocalDateTime createTime;   //房间创建时间
+    private Long createTimeMillis;   //房间创建时间
+
+    private String socketIp;
+
+    private String videoIp;
 
 //    private String createId;    //创建者id
 
     public WebRoom(CreateRoomDTO createRoomDTO, String roomId) {
         this.roomId = roomId;
-        this.createTime = LocalDateTime.now();
+        this.createTimeMillis = System.currentTimeMillis();
         this.roomName = createRoomDTO.getRoomName();
         this.limit = createRoomDTO.getLimit();
         this.anonymityFlag = createRoomDTO.getAnonymityFlag();

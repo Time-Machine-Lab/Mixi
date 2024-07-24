@@ -1,5 +1,7 @@
 package com.mixi.webroom.core.worker;
 
+import org.springframework.stereotype.Component;
+
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -8,7 +10,7 @@ import java.net.NetworkInterface;
  * @Date 2024/7/9
  * @Author xiaochun
  */
-
+@Component
 public class SnowFlakeIdWorker {
     // 时间起始标记点，作为基准，一般取系统的最近时间（一旦确定不能变动）
     private final static long twepoch = 1678154396522L;

@@ -15,8 +15,7 @@ import java.util.Map;
  * @Author xiaochun
  */
 @Component
-@FeignClient(name = "tml-captcha-service")
-@RequestMapping("/captcha")
+@FeignClient(name = "tml-captcha-service", path = "/captcha")
 public interface CaptchaServiceClient {
     @GetMapping("/email")
     Result<Map<String, String>> email(@RequestParam String to);

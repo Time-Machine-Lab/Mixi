@@ -1,9 +1,9 @@
 spring:
   redis:
-    host: ${REDIS_HOST:ENC(DoATKT3H6aEIGPC0FL69KkjLvrJKnw9q/oQ9kPs5Vt4=)}
-    port: 6379
-    database: 10
-    password: ${REDIS_PASSWORD:ENC(3SF9cUbQq5wcQbZF42lbEm6RH9zB6Y5sGZIoUymT+exjpy1oFbGb0A==)}
+    host: ${REDIS_HOST:ENC(fYhPCM4nzcmya0tWevZ7FiMJZKDoGjQ7mDfsdKFDCls=)}
+    password: ${REDIS_PASSWORD:ENC(nkO7js/LxK6wBmynZFt5Let4IBVNH0v+GuLsbLQpctCJhfNhoLOKJg==)}
+    port: ${REDIS_PORT:ENC(RGkJ9hZw9l2Rjs1BaqWrRExk9wK+E9tc)}
+    database: 0
     defaultExpire: 7200
   cloud:
     nacos:
@@ -27,3 +27,6 @@ netty:
 room:
   ip: 127.0.0.1
   port: 9020
+
+mixi:
+  verifyLinkUrl: ${VERIFY_LINK:ENC(TSJqSXcliRzeuAglhUhXoXKKFZ5h2Xg22QdG6k2i/fAhQUOwGBpsEykeT/SJUTSYW8Xko2Kda+SIMa8O4u4XFQ==)}
