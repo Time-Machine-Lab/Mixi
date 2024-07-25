@@ -34,7 +34,13 @@ export default defineConfig({
       '/api/webRoom': {
         target: 'http://122.152.215.226:9020/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/webRoom/, "/webRoom"),      }
+        rewrite: (path) => path.replace(/^\/api\/webRoom/, "/webRoom"),
+      },
+      '/api/gateway': {
+        target: 'http://116.205.236.94:8080/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/gateway/,"/api")
+      }
     }
   }
 })

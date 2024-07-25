@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { statusTextMap,errorStatusCodes,ignoreStatusCodes } from '@/util/statusCodes'
-
+import { storage } from "./storage";
 const request = axios.create({
-  baseURL: "/api",
+  baseURL: "/api/gateway",
+  // baseURL: "/api",
   timeout: 10000,
 });
 
@@ -12,9 +13,10 @@ const retryDelay = 1000; // 设置重试的间隔时间
 // request 拦截器
 request.interceptors.request.use(
   (config:any) => {
-    //config.headers['Content-Type'] = 'application/json';
-    // const token = storage.get<string>('token')
-    // config.headers.token = token
+    config.headers['Content-Type'] = 'application/json';
+    const Authorization = storage.get<string>('Authorization')
+    config.headers.Authorization = 'Bearer ' + Authorization
+    config.headers["X-Request-Prefix"] = '/api' + config.url
     return config;
   },
   (error:any) => {
