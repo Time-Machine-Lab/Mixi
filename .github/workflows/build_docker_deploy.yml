@@ -103,6 +103,11 @@ jobs:
           JASYPT_ALGO: ${{ secrets.JASYPT_ALGO }}
           JASYPT_PWD: ${{ secrets.JASYPT_PWD }}
         run: |
+          if [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then
+            cd Mixi-common
+            mvn install
+            cd ..
+          fi
           if [ "${{ env.MODULE_TYPE }}" != "single" ]; then
             cd $MODULE
           fi 
