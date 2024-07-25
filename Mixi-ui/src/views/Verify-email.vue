@@ -14,11 +14,22 @@ import { onMounted,ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {linkVerifyApi} from '@/api/user/userApi'
 import { storage } from '@/util/storage';
+import {useAuthStore} from "@/stores/authStore";
+
 let router = useRouter();
 let time = ref(0)
 onMounted(()=>{
     linkVerifyApi({linkToken:router.currentRoute.value.query.token as string}).then((res:any)=>{
         if(res.code == 200) {
+            useAuthStore().setLoggedIn({
+                username: '',
+                email: '',
+                password: '',
+                avatar: '',
+                nickname: '',
+                sex: '',
+                resume: ''
+            })
             time.value = 6
             storage.set("Authorization",res.data.token)
             let interval  = setInterval(()=>{

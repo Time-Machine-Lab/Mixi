@@ -1,6 +1,23 @@
+<!--
+ * @Author: Dhx
+ * @Date: 2024-07-22 16:05:16
+ * @Description: 
+ * @FilePath: \Mixi\Mixi-ui\src\components\Head.vue
+-->
 <script setup lang="ts">
 import router from "@/router/index";
 import {useAuthStore} from "@/stores/authStore";
+import {getUserInfoApi} from '@/api/user/userApi'
+import { onMounted } from "vue";
+onMounted(()=>{
+  getUserInfoApi('').then((res:any)=>{
+    if(res.code == 200) {
+      useAuthStore().setLoggedIn(res.data.userInfo)
+    }
+  },(error:any)=>{
+
+  })
+})
 </script>
 
 <template>
@@ -11,8 +28,9 @@ import {useAuthStore} from "@/stores/authStore";
       <nav class="flex" @click="router.push('/price')">定价</nav>
       <nav class="flex" @click="router.push('/about')">关于我们</nav>
       <nav class="flex">
-        <button @click="useAuthStore().setLoggedIn" v-if="!useAuthStore().isLoggedIn" class="M-btn">登录/注册</button>
-        <img v-else src="" alt="avatar"/>
+        <button @click="router.push('/demo/Login')" v-if="!useAuthStore().isLoggedIn" class="M-btn">登录/注册</button>
+        <!-- <button @click="useAuthStore().setLoggedIn" v-if="!useAuthStore().isLoggedIn" class="M-btn">登录/注册</button> -->
+        <img v-else :src="useAuthStore().getProfile?.avatar" alt="avatar"/>
       </nav>
     </div>
   </header>

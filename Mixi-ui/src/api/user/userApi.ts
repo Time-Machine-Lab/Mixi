@@ -41,3 +41,10 @@ export function linkVerifyApi(form:linkVerifyForm) {
         params: form
     })
 }
+export function getUserInfoApi(uid:string){
+    return request({
+        url: '/user/getUserInfo',
+        method: 'get',
+        params:uid
+    })
+}
