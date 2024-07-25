@@ -11,6 +11,7 @@ import io.github.servicechain.chain.AbstractFilterChain;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.mixi.common.constant.constpool.TransferConstant.FINGER_PRINT;
 import static com.mixi.user.constants.ChainConstant.TOKEN_GENERATE;
 
 @Chain(TOKEN_GENERATE)
@@ -30,6 +31,8 @@ public class TokenGenerateChain extends AbstractFilterChain<User> {
         TokenUserInfo tokenUserInfo = TokenUserInfo.builder()
                 .userId(userInfo.getId())
                 .username(userInfo.getUsername())
+                .roles(new int[] {Integer.parseInt(userInfo.getRoles())})
+                .addField(FINGER_PRINT, userInfo.getFinger())
                 .build();
         String token = tokenService.loginAndGenerateToken(tokenUserInfo);
         ThreadContext.setData("token",token);

@@ -9,4 +9,9 @@ public class TransferConstant {
 
     // 用户信息传递
     public final static String USER_INFO = "user-info";
+
+    // 指纹
+    public final static String FINGER_PRINT = "Finger-print";
+
+    public final static String USER_AGENT = "User-Agent";
 }

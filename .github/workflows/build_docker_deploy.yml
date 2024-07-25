@@ -129,6 +129,9 @@ jobs:
           if [ "${{ env.MODULE_TYPE }}" != "single" ]; then
             cd $MODULE
           fi 
+          if [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then
+            cd Mixi-gateway-app
+          fi
           mkdir ./docker
           cp ./Dockerfile ./docker
           if [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then

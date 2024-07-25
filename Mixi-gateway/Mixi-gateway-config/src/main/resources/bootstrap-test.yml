@@ -5,7 +5,9 @@ spring:
       username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
       password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
       namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
-
+      discovery:
+        ip: ${SERVER_ADDR:ENC(2axG+2kUokeaiG0PICeWjMeG4YfsImxq425nC/tPjmo=)}
+        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
     gateway:
       supportModules: webroom,user,admin
       routes:

@@ -2,7 +2,7 @@ package com.infrastructure.core.token;
 
 import com.infrastructure.config.GateWayConstant;
 import com.mixi.common.component.token.TokenService;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +22,8 @@ public abstract class AbstractTokenValidator implements TokenValidator {
     }
 
     @Override
-    public String extractTokenFromHeader(ServerWebExchange exchange) {
-        String authorizationHeader = exchange.getRequest().getHeaders().getFirst(GateWayConstant.AUTHORIZATION);
+    public String extractTokenFromHeader(ServerHttpRequest request) {
+        String authorizationHeader = request.getHeaders().getFirst(GateWayConstant.AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith(GateWayConstant.BEARER)) {
             return authorizationHeader.substring(7);
         }

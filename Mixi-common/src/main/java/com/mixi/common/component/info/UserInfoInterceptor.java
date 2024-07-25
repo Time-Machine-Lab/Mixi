@@ -10,7 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
+import static com.mixi.common.constant.constpool.TransferConstant.*;
 
 /**
  * 描述: 用户信息拦截器

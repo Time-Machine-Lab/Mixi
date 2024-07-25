@@ -1,15 +1,16 @@
 spring:
   redis:
-    host: ${REDIS_HOST:ENC(DoATKT3H6aEIGPC0FL69KkjLvrJKnw9q/oQ9kPs5Vt4=)}
-    port: 6379
-    database: 10
-    password: ${REDIS_PASSWORD:ENC(3SF9cUbQq5wcQbZF42lbEm6RH9zB6Y5sGZIoUymT+exjpy1oFbGb0A==)}
+    host: ${REDIS_HOST:ENC(fYhPCM4nzcmya0tWevZ7FiMJZKDoGjQ7mDfsdKFDCls=)}
+    password: ${REDIS_PASSWORD:ENC(nkO7js/LxK6wBmynZFt5Let4IBVNH0v+GuLsbLQpctCJhfNhoLOKJg==)}
+    port: ${REDIS_PORT:ENC(RGkJ9hZw9l2Rjs1BaqWrRExk9wK+E9tc)}
+    database: 0
     defaultExpire: 7200
   cloud:
     nacos:
-      server-addr: ${NACOS_SERVER_ADDR:ENC(mZ6KsI+EkqODZAH2qdKUJzlo66asDZxKegO5bkjb3hwJb8y6FkFOLA==)}
-      username: ${NACOS_SERVER_USER:ENC(fjV9WIPRx0giRHfPe+sQ4RdkUyvAY3sp)}
-      password: ${NACOS_SERVER_PASSWORD:ENC(NZYKzLvLPo+HLsfOxoPkIA1XLClwp2VI1p4frx2IrPXvI0rm6egfmQ==)}
+      server-addr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
+      username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
+      password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
+      namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
       discovery:
         namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
         ip: ${SERVER_ADDR:ENC(k8vJSnZr6caJGxQ1KPjdbKYkVJrBUeSWSAK0ry8TfBk=)}
@@ -26,3 +27,6 @@ netty:
 room:
   ip: 127.0.0.1
   port: 9020
+
+mixi:
+  verifyLinkUrl: ${VERIFY_LINK:ENC(TSJqSXcliRzeuAglhUhXoXKKFZ5h2Xg22QdG6k2i/fAhQUOwGBpsEykeT/SJUTSYW8Xko2Kda+SIMa8O4u4XFQ==)}
