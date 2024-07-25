@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useAuthStore} from "@/stores/authStore";
+import {create} from "@/api/room/roomServe";
+import type {parameter} from '@/api/room/roomType'
+import router from "@/router";
+
 
 const data = [
   {avatar: '', name: 'Genius'},
@@ -21,12 +25,11 @@ history.value = data.map(item => ({
 }));
 // 筛选已选项
 function filterChosenItems() {
-  return history.value.filter(item => item.isChoose === true);
+  return history.value.filter((item:any) => item.isChoose === true);
 }
 
-let parameter = ref({
-  name: '',
-  largest: 30
+let parameter = ref(<parameter>{
+  anonymityFlag: false, limit: 30, roomName: "111"
 })
 </script>
 
@@ -51,14 +54,19 @@ let parameter = ref({
           <ul>
             <li>
               <h5>房间名</h5>
-              <input v-model="parameter.name">
+              <input v-model="parameter.roomName">
             </li>
             <li>
               <h5>人数限制</h5>
-              <input v-model="parameter.largest">
+              <input v-model="parameter.limit">
+            </li>
+            <li @click="parameter.anonymityFlag = !parameter.anonymityFlag">
+              <svg v-show="parameter.anonymityFlag" xml:space="preserve" viewBox="0 0 100 100" y="0" x="0" style="margin: initial; display: block; shape-rendering: auto" preserveAspectRatio="xMidYMid" width="30" height="30"><g class="ldl-scale" style="transform-origin: 50% 50%; transform: rotate(0deg) scale(0.8, 0.8);"><g class="ldl-ani"><g class="ldl-layer"><g class="ldl-ani" style="transform: matrix3d(0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 1); transform-box: view-box; opacity: 1; animation: 1s linear -0.75s infinite normal forwards running animate; transform-origin: 50px 50px;"><path fill="#333" d="M76.5 90h-53C16 90 10 84 10 76.5v-53C10 16 16 10 23.5 10h53C84 10 90 16 90 23.5v53C90 84 84 90 76.5 90z" style="stroke-width: 1; fill: rgb(113, 94, 138);"></path></g></g><g class="ldl-layer"><g class="ldl-ani"><g><g class="ldl-layer"><g class="ldl-ani" style="transform: matrix3d(0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 1); transform-box: view-box; opacity: 1; animation: 1s linear -1s infinite normal forwards running animate; transform-origin: 50px 50px;"><path d="M44.6 72.7L21.2 49.4l7.6-7.6 15.8 15.9L71.2 31l7.6 7.6z" fill="#abbd81" style="stroke-width: 1; fill: rgb(255, 255, 255);"></path></g></g></g></g></g></g></g></svg>
+              <svg v-show="!parameter.anonymityFlag" xml:space="preserve" viewBox="0 0 100 100" y="0" x="0" style="margin: initial; display: block; shape-rendering: auto" preserveAspectRatio="xMidYMid" width="30" height="30"><g class="ldl-scale" style="transform-origin: 50% 50%; transform: rotate(0deg) scale(0.8, 0.8);"><g class="ldl-ani"><g class="ldl-layer"><g class="ldl-ani" style="opacity: 1; transform-origin: 50px 50px; transform: matrix3d(0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 1); animation: 1s linear -0.75s infinite normal forwards running animate; transform-box: view-box;"><path stroke-miterlimit="10" stroke-width="8" stroke="#333" fill="none" d="M76.5 90h-53C16 90 10 84 10 76.5v-53C10 16 16 10 23.5 10h53C84 10 90 16 90 23.5v53C90 84 84 90 76.5 90z" style="stroke-width: 8; stroke: rgb(113, 94, 138);"></path></g></g><g class="ldl-layer"><g class="ldl-ani"><g><g class="ldl-layer"><g class="ldl-ani" style="opacity: 1; transform-origin: 50px 50px; transform: matrix3d(0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 0.91, 0, 0, 0, 0, 1); animation: 1s linear -1s infinite normal forwards running animate; transform-box: view-box;"><path d="M44.6 75.6L19.8 50.8l10.4-10.4 14.4 14.4 25.2-25.2L80.2 40z" fill="#abbd81" style="stroke-width: 1; fill: rgb(113, 94, 138);"></path></g></g></g></g></g></g></g></svg>
+              <h5>允许匿名用户进入</h5>
             </li>
             </ul>
-          <button class="M-btn">+创建房间</button>
+          <button @click="create(parameter)" class="M-btn">+创建房间</button>
         </div>
       </div>
     </div>

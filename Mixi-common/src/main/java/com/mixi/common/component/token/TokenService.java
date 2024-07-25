@@ -18,22 +18,12 @@ public interface TokenService {
     String loginAndGenerateToken(String userId, String username, int[] roles);
 
     /**
-     * 验证Token是否合法。
+     * 验证并解析出用户信息。
      */
-    boolean isTokenValid(String token);
-
-    /**
-     * 从Token中提取用户信息。
-     */
-    TokenUserInfo extractUserInfoFromToken(String token);
+    TokenUserInfo validateAndExtractUserInfo(String token);
 
     /**
      * 使用token进行登出
      */
     void logoutByToken(String token);
-
-    /**
-     * 使用用户id进行登出
-     */
-    void logoutById(String id);
 }

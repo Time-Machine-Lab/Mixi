@@ -1,7 +1,7 @@
 <!--
  * @Author: Dhx
  * @Date: 2024-07-08 09:17:23
- * @Description: 
+ * @Description:
  * @FilePath: \Mixi\Mixi-ui\src\views\demo\chatDemo.vue
 -->
 <template>

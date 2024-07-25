@@ -5,7 +5,69 @@ spring:
   config:
     import: classpath:you-cant-see-that.yml
 
+  datasource:
+    hikari:
+      max-lifetime: 120000
+
   profiles:
-    active: ${ACTIVE:test}
+    active: ${ACTIVE:dev}
   cloud:
     api: true
+    feign:
+      discovery:
+        enabled: true
+  mail:
+    host: ${EMIAL_HOST:ENC(qMKUwBybaAKewuGZCDYjQw6tCfRVAO5aIQUolS8L06U=)}
+    port: ${EMAIL_PORT:ENC(7RRjEe4cBjcETAkyZ6TBh5zwIw6KrEaz)}
+    username: ${EMAIL_USERNAME:ENC(Ndpes2aPfHdQQLG2Ds47yIxEh5/YB2ywTbf7UZ8Re7JgCTjwemDMQw==)}
+    password: ${EMAIL_PASSWORD:ENC(IFKjNrj7WUsXTiTldZ8TDgHxBxgkYHXBD5RrrjZ2SlGFXMCaObgqgA==)}
+    test-connection: false
+
+assistant:
+  service:
+    id:
+      snowflake:
+        register: register-redis
+        startTime: 2024-07-20 00:00:00
+  service-chain:
+    serviceMap:
+      linkLogin: picCodeVerify->userAgentVerify
+      linkVerify: userAgentVerify->emailLinkVerify->emailExistVerify[Ignore]
+      tokenAndInfo: tokenGenerate->userInfoCache
+
+mixi:
+  user:
+    avatar: "https://tmlgenius.github.io/assistant-docs/img/logo.svg"
+    resume: "这个人很懒，什么都没留下"
+    nickNamePrefix: "Mixi用户"
+    nickNameLen: 10
+    userRole: 1001
+    touristRole: 1002
+
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: true
+  is-read-cookie: false
+  is-read-head: true
+  token-prefix: Bearer
+
+feign:
+  httpclient:
+    enabled: true
+    max-connections: 200 # 最大的连接数
+    max-connections-per-route: 50 # 每个路径的最大连接数
+  client:
+    config:
+      default:
+        connect-timeout: 30000
+        read-timeout: 100000
+        loggerLevel: full
+
+#logging:
+#  level:
+#    org.springframework: DEBUG

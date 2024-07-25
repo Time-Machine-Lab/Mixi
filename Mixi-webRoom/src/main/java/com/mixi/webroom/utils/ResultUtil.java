@@ -1,7 +1,7 @@
 package com.mixi.webroom.utils;
 
 
-import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.pojo.enums.ResultEnums;
 import io.github.common.web.Result;
 
 /**

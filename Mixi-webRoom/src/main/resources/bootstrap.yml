@@ -11,3 +11,7 @@ spring:
 
   cloud:
     api: true
+
+#logging:
+#  level:
+#    org.springframework: DEBUG

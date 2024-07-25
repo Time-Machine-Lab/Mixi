@@ -14,8 +14,10 @@ import javax.mail.internet.MimeMessage;
 public class EmailUtil {
     @Value("${spring.mail.username}")
     private String from;
+
     @Resource
-    private String htmlContent;  // HTML模板内容
+    private String linkTemplate;  // 链接模板内容
+
     @Resource
     private JavaMailSender mailSender;
 
@@ -23,16 +25,19 @@ public class EmailUtil {
     }
 
     public void sendLink(String to, String link) {
+        String subject = "这是一条邀请链接";
+        sendEmail(to, linkTemplate.replace("JOIN_URL", link), subject);
+    }
+
+    public void sendEmail(String to, String text, String subject){
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
         try {
             helper.setTo(to);
             helper.setFrom(from);
-            // 邮件主题
-            String subject = "这是一条验证码";
             helper.setSubject(subject);
-            helper.setText(htmlContent.replace("JOIN_URL", link), true);
+            helper.setText(text, true);
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);

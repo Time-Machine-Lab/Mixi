@@ -1,27 +1,20 @@
 package com.mixi.user.service;
 
-import com.mixi.user.domain.entity.User;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.mixi.user.domain.vo.InfoVo;
-import com.mixi.user.domain.vo.UserLoginVo;
-import com.mixi.user.domain.vo.UserRegisterVo;
+
+import com.mixi.common.utils.R;
+import com.mixi.user.bean.dto.LoginDTO;
+import com.mixi.user.bean.dto.TouristLoginDTO;
 import io.github.common.web.Result;
 
-/**
-* @author yuech
-* @description 针对表【mixi_user】的数据库操作Service
-* @createDate 2024-06-25 16:18:03
-*/
-public interface UserService extends IService<User> {
-    Result link(String email, String type);
+public interface UserService{
 
-    Result linkVerify(String email, String uid, String type);
+    Result<?> getPicCode();
 
-    Result updateInfo(String uid, InfoVo infoVo);
+    Result<?> linkLogin(LoginDTO loginDTO,String userAgent);
 
-    Result commonRegister(UserRegisterVo userRegisterVo);
+    Result<?> linkVerify(String linkToken, String userAgent);
 
-    Result login(UserLoginVo userLoginVo);
+    Result<?> getUserInfo(String userId);
 
-    Result userInfo();
+    R<String> visitorUserLogin(TouristLoginDTO touristLoginDTO);
 }
