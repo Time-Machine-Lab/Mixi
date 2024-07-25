@@ -32,7 +32,7 @@ public class WebRoom {
 
 //    private String createId;    //创建者id
 
-    public WebRoom(CreateRoomDTO createRoomDTO, String roomId) {
+    public WebRoom(CreateRoomDTO createRoomDTO, String roomId, String socketIp, String videoIp) {
         this.roomId = roomId;
         this.createTimeMillis = System.currentTimeMillis();
         this.roomName = createRoomDTO.getRoomName();
