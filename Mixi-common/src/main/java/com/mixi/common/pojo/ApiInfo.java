@@ -8,7 +8,6 @@ import lombok.Data;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,24 +30,23 @@ public class ApiInfo {
     // 来着哪个模块
     private String module;
 
-    // 来自哪个类
-    private String type;
-
-    // 方法名
-    private String method;
-
     // 请求的方式(GET/POST/PUT/DELETE)
-    private String requestMethod;
+    private String method;
 
     // 身份维度
     private int[] roles;
 
-    public static ApiInfo build(ApiAuth apiAuth, RequestMappingInfo requestMappingInfo, Method method, Class<?> beanType) {
+    // 前置处理器
+    private String beforeHandler;
+
+    // 后置处理器
+    private String afterHandler;
+
+    public static ApiInfo build(ApiAuth apiAuth, RequestMappingInfo requestMappingInfo, Class<?> beanType) {
         String moduleName = extractModuleName(beanType.getPackage().getName());
         String url = getUrlFromRequestMappingInfo(requestMappingInfo);
         String requestMethod = getRequestMethodFromRequestMappingInfo(requestMappingInfo);
         String authType = determineAuthType(apiAuth);
-        String handlerMethod = method.getName();
 
         // 提取身份维度数组
         int[] roles = apiAuth.roles();
@@ -58,7 +56,7 @@ public class ApiInfo {
             roles = null;
         }
 
-        return new ApiInfo(authType, url, moduleName, beanType.getSimpleName(), handlerMethod, requestMethod, roles);
+        return new ApiInfo(authType, url, moduleName, requestMethod, roles, apiAuth.before(), apiAuth.after());
     }
 
     private static String extractModuleName(String packageName) {
@@ -88,10 +86,10 @@ public class ApiInfo {
      * 生成用于存储到哈希表中的键
      */
     public String generateHashKey() {
-        return url + "#" + requestMethod;
+        return url + "#" + method;
     }
 
-    public static String generateHashKey(String url, String requestMethod) {
-        return url + "#" + requestMethod;
+    public static String generateHashKey(String url, String method) {
+        return url + "#" + method;
     }
 }

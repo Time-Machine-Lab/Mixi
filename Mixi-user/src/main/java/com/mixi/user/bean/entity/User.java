@@ -68,4 +68,13 @@ public class User implements Serializable {
      */
     private String delFlag;
 
+    /**
+     * 权限维度
+     */
+    private String roles;
+
+    /**
+     * 指纹
+     */
+    private String finger;
 }

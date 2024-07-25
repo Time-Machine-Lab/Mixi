@@ -11,12 +11,11 @@ spring:
       server-addr: ENC(i3qo2y25Hbjddhzf48Z/suQY3yqEuL2CcZJxf+6oalaJ/VvYNUXLPw==)
       username: ENC(nF6dMgeUkKVZFapN4YBt7W7blo/wthUx)
       password: ENC(zqDMrrhfrRY2dI495lb+/J8DHwDIm9yPzUEuB7a7UQVCBOY/6bFl4Q==)
-      namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+      namespace: 32281a6b-5578-4c51-a2e7-1c65eba79860
       discovery:
-        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
+        namespace: 32281a6b-5578-4c51-a2e7-1c65eba79860
       config:
-        namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
-
+        namespace: 32281a6b-5578-4c51-a2e7-1c65eba79860
   redis:
     host: ${REDIS_HOST:ENC(DoATKT3H6aEIGPC0FL69KkjLvrJKnw9q/oQ9kPs5Vt4=)}
     port: 6379
@@ -24,4 +23,4 @@ spring:
     password: ${REDIS_PASSWORD:ENC(3SF9cUbQq5wcQbZF42lbEm6RH9zB6Y5sGZIoUymT+exjpy1oFbGb0A==)}
 
 mixi:
-  verifyLinkUrl: http://localhost:3000/verify-email?token=
+  verifyLinkUrl: ${VERIFY_LINK:ENC(TSJqSXcliRzeuAglhUhXoXKKFZ5h2Xg22QdG6k2i/fAhQUOwGBpsEykeT/SJUTSYW8Xko2Kda+SIMa8O4u4XFQ==)}

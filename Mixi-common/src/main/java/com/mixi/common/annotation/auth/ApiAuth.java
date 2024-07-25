@@ -45,4 +45,11 @@ public @interface ApiAuth {
      */
 
     int[] roles() default {};
+
+    /**
+     *  添加前置后置过滤器，对应网关模块的过滤器
+     *   - 默认为NIL，代表不进行任何处理
+     */
+    String before() default "NIL";
+    String after() default "NIL";
 }

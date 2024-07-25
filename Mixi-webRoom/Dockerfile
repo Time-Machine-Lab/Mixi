@@ -34,4 +34,4 @@ EXPOSE ${DEBUG_PORT}
 COPY /*.jar /$MOUDLE.jar
 
 ENTRYPOINT ["/bin/sh", "-c", "if [ ! -z \"$DEBUG_PORT\" ]; then java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT -jar /$MOUDLE.jar; else java -jar /$MOUDLE.jar; fi"]
-#<Auto> -e:test -m:test -v:1.0.1 -rp:8088 -dp:8089 -de:<-e ACTIVE=test -e SERVER_PORT=8088>
+#<Auto> -e:test -m:Mixi-webRoom -v:1.0.1 -rp:9020 -dp:9021 -de:<-e ACTIVE=test -e SERVER_PORT=9020>

@@ -38,7 +38,6 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-            <version>${nacos-config.version}</version>
         </dependency>
 
         <dependency>
@@ -50,13 +49,19 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-            <version>${loadbalancer.version}</version>
         </dependency>
+
 
         <dependency>
             <groupId> org.springframework.boot</groupId>
@@ -69,6 +74,56 @@
             <artifactId>jasypt-spring-boot-starter</artifactId>
         </dependency>
 
-
+        <!-- Sa-Token 整合 Redis （使用 jackson 序列化方式） -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+        </dependency>
+        <!-- Mixi Common -->
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>Mixi-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 此插件必须放在父 POM 中  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <!--
+                    执行本插件的方法为，在主目录下执行如下命令：
+                    mvn package assembly:single
+
+                    对于 IntelliJ IDEA，生成的 JAR 包位于每个模块下的文件夹 target
+                    -->
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <!-- 此处 IntelliJ IDEA 可能会报红，这是正常现象  -->
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- 配置程序运行入口所在的类 -->
+                            <mainClass>com.app.GatewayApplication</mainClass>
+                        </manifest>
+                    </archive>
+                    <!-- 设置 JAR 包输出目录 -->
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

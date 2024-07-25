@@ -66,7 +66,7 @@ public class CloudApiCollector implements InitializingBean {
 
             // 没标ApiAuth注解的就不上云
             if (apiAuth != null) {
-                apiInfoList.add(ApiInfo.build(apiAuth, requestMappingInfo, method, beanType));
+                apiInfoList.add(ApiInfo.build(apiAuth, requestMappingInfo, beanType));
             }
         }
         return apiInfoList;

@@ -5,7 +5,7 @@ package com.mixi.webroom.core.exception;
  * @Date：2024/7/4 下午5:32
  */
 
-import com.mixi.webroom.core.enums.ResultEnums;
+import com.mixi.webroom.pojo.enums.ResultEnums;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

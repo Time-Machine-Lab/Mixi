@@ -2,7 +2,7 @@ package com.infrastructure.core.token;
 
 import com.mixi.common.component.token.TokenService;
 import com.mixi.common.pojo.TokenUserInfo;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
  * 描述: 定义了Token验证的标准方法
@@ -19,7 +19,7 @@ public interface TokenValidator {
     /**
      * 从请求头中提取Token。
      */
-    String extractTokenFromHeader(ServerWebExchange exchange);
+    String extractTokenFromHeader(ServerHttpRequest request);
 
     /**
      * 从Token中提取用户信息。

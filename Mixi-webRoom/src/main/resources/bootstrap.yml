@@ -7,7 +7,11 @@ spring:
   config:
     import: classpath:you-cant-see-that.yml
   profiles:
-    active: ${ACTIVE:test}
+    active: ${ACTIVE:dev}
 
   cloud:
     api: true
+
+#logging:
+#  level:
+#    org.springframework: DEBUG

@@ -6,5 +6,5 @@ package com.mixi.common.annotation.auth;
  * 日期: 2024/7/6
  */
 public enum AuthType {
-    NEED, NOT, INNER, OPTIONAL;
+    NEED, NOT, INNER, OPTIONAL,
 }
