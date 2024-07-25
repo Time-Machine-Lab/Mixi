@@ -1,5 +1,7 @@
 package com.mixi.webroom.controller;
 
+import com.mixi.common.annotation.auth.ApiAuth;
+import com.mixi.common.annotation.auth.AuthType;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.service.WebRoomService;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class WebRoomController {
     WebRoomService webRoomService;
 
     @PostMapping("/create")
+    @ApiAuth(value = AuthType.NEED)
     public Result<?> createRoom(@RequestBody
                                     @Valid
                                     CreateRoomDTO createRoomDTO,
@@ -34,6 +37,7 @@ public class WebRoomController {
     }
 
     @GetMapping("/linkShare")
+    @ApiAuth(value = AuthType.NEED)
     public Result<?> linkShare(@RequestHeader
                                    @Valid
                                    @NotBlank
@@ -42,6 +46,7 @@ public class WebRoomController {
     }
 
     @PostMapping("/pull")
+    @ApiAuth(value = AuthType.NEED, before = "TouristBeforeHandler")
     public Result<?> pull(@RequestHeader
                               @Valid
                               @NotBlank
@@ -54,6 +59,7 @@ public class WebRoomController {
     }
 
     @GetMapping("/linkJoin")
+    @ApiAuth(value = AuthType.NEED)
     public Result<?> linkJoin(@RequestHeader
                                   @Valid
                                   @NotBlank
@@ -66,6 +72,7 @@ public class WebRoomController {
     }
 
     @PostMapping("/quit")
+    @ApiAuth(value = AuthType.NEED)
     public Result<?> quitRoom(@RequestHeader
                                   @Valid
                                   @NotBlank
@@ -78,6 +85,7 @@ public class WebRoomController {
     }
 
     @PostMapping("/transferOwner")
+    @ApiAuth(value = AuthType.NEED)
     public Result<?> transferOwner(@RequestHeader
                                    @Valid
                                    @NotBlank
