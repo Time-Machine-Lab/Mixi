@@ -134,7 +134,18 @@ jobs:
           fi
           mkdir ./docker
           cp ./Dockerfile ./docker
-          cp ./target/*.jar ./docker
+          if [ "${{ env.MODULE }}" == "Mixi-gateway" ]; then
+            cd Mixi-gateway-app
+            cp ./target/*.jar ../docker
+            cd Mixi-gateway-config
+            cp ./target/*.jar ../docker
+            cd Mixi-gateway-infrastructure
+            cp ./target/*.jar ../docker
+            cd ..
+          fi
+          if [ "${{ env.MODULE }}" != "Mixi-gateway" ]; then
+            cp ./target/*.jar ./docker
+          fi
           cd docker
           
           
