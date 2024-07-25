@@ -58,9 +58,8 @@ public class RoomChannelManager {
         if (StringUtils.isNotBlank(uid)) {
             roomInfo.registerUid(uid, channel);
         }
-        boolean isNewAdded = roomInfo.getChannels().add(channel);
         channel.getAttrs().setEnter(true);
-        return isNewAdded;
+        return true;
     }
 
     public static void removeChannel(String roomName, MixiNettyChannel channel,boolean admin) {

@@ -21,4 +21,11 @@ public class TimelineMessage {
     private String roomId;
     private int cmd;
     private String content;
+
+    public TimelineMessage(){
+
+    }
+    public TimelineMessage(Integer id){
+        this.id = id;
+    }
 }

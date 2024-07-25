@@ -1,5 +1,6 @@
 package com.mixi.server.domain;
 
+import com.mixi.server.pojo.DTO.RemoteMsgSendDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface WebRoomServiceGateway {
 
     @PostMapping("/callback")
-    void notifyRemote();
+    void notifyRemote(RemoteMsgSendDTO remoteMsgSendDTO);
 
 }

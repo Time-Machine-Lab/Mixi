@@ -47,7 +47,11 @@ public class TimelineMemoryStore implements MixiTimelineStore{
     }
     @Override
     public List<TimelineMessage> consumeMsgIfNeed(String channelId, String roomId) {
-        if(userStore.get(channelId).getLast().getId()<roomStore.get(roomId).getLast().getId()){
+        Integer roomLastId = roomStore.get(roomId).getLast().getId();
+        Integer userLastId = userStore.get(channelId).getLast().getId();
+        System.out.println("房间最后一条消息:"+roomLastId);
+        System.out.println("用户消费最后一条消息:"+userLastId);
+        if(Objects.equals(userLastId, roomLastId)){
             return null;
         }
         Deque<TimelineMessage> userMessages = userStore.get(channelId);
@@ -79,5 +83,17 @@ public class TimelineMemoryStore implements MixiTimelineStore{
         }
         return res;
     }
+    @Override
+    public void registerUserStore(String channelId){
+        ConcurrentLinkedDeque<TimelineMessage> deque = new ConcurrentLinkedDeque<>();
+        deque.add(new TimelineMessage(1));
+        userStore.putIfAbsent(channelId,deque);
+    }
 
+    @Override
+    public void registerRoomStore(String roomId) {
+        ConcurrentLinkedDeque<TimelineMessage> deque = new ConcurrentLinkedDeque<>();
+        deque.add(new TimelineMessage(1));
+        roomStore.put(roomId,deque);
+    }
 }

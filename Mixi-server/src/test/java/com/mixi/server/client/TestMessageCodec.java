@@ -42,10 +42,10 @@ public class TestMessageCodec {
             WebSocketClient client = new WebSocketClient(new URI(uri)) {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
-                    System.out.println("Connected");
+                    System.out.println("client"+"Connected");
 
                     // Create the message
-                    byte[] message = AccessMessageEncoder.createWebSocketMessage();
+                    byte[] message = AccessMessageEncoder.roomMessage(123,10,"");
 
                     // Send the message
                     ByteBuffer buffer = ByteBuffer.wrap(message);
@@ -59,14 +59,11 @@ public class TestMessageCodec {
 
                 @Override
                 public void onMessage(ByteBuffer message) {
-                    System.out.println("Received ByteBuffer message: "+message);
+
                     ByteBuf byteBuf = Unpooled.wrappedBuffer(message);
                     AccessMessage decode = MessageCodec.decode(byteBuf);
                     String s = new String(decode.getBody(), StandardCharsets.UTF_8);
-                    System.out.println(s);
-                    Object o = JSONObject.parseObject(s, AccessResponse.class);
-                    System.out.println(o);
-                    System.out.println(decode);
+                    System.out.println("client"+"Received ByteBuffer message: "+s);
                 }
 
                 @Override
@@ -82,9 +79,9 @@ public class TestMessageCodec {
             WebSocketClient client1 = new WebSocketClient(new URI(uri)){
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
-                    System.out.println("Connected");
+                    System.out.println("client1"+"Connected");
                     // Create the message
-                    byte[] message = AccessMessageEncoder.createWebSocketMessage();
+                    byte[] message = AccessMessageEncoder.roomMessage(1234,10,"");
 
                     // Send the message
                     ByteBuffer buffer = ByteBuffer.wrap(message);
@@ -98,14 +95,11 @@ public class TestMessageCodec {
 
                 @Override
                 public void onMessage(ByteBuffer message) {
-                    System.out.println("Received ByteBuffer message: "+message);
+
                     ByteBuf byteBuf = Unpooled.wrappedBuffer(message);
                     AccessMessage decode = MessageCodec.decode(byteBuf);
                     String s = new String(decode.getBody(), StandardCharsets.UTF_8);
-                    System.out.println(s);
-                    Object o = JSONObject.parseObject(s, AccessResponse.class);
-                    System.out.println(o);
-                    System.out.println(decode);
+                    System.out.println("client1"+"Received ByteBuffer message: "+s);
                 }
 
                 @Override
@@ -119,6 +113,17 @@ public class TestMessageCodec {
                 }
             };
             client.connect();
+            Thread.sleep(10000);
+            client1.connect();
+            byte[] message = AccessMessageEncoder.roomMessage(123,12,"我觉得柳州螺蛳粉大于株洲螺蛳粉");
+            // Send the message
+            ByteBuffer buffer = ByteBuffer.wrap(message);
+            Thread.sleep(1000);
+            client.send(buffer);
+            Thread.sleep(500);
+            byte[] message1 = AccessMessageEncoder.roomMessage(1234,12,"我同意");
+            ByteBuffer buffer1 = ByteBuffer.wrap(message1);
+            client1.send(buffer1);
         } catch (Exception e) {
             e.printStackTrace();
         }

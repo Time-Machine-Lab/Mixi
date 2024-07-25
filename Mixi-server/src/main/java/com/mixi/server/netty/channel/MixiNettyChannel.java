@@ -25,7 +25,7 @@ public class MixiNettyChannel implements MixiChannelManager{
     private final ConcurrentHashMap<String,Object> attributes = new ConcurrentHashMap<>();
     private Channel channel;
     private boolean close;
-    private volatile boolean sleep;
+    private volatile boolean sleep = false;
 
     public MixiNettyChannel(Channel channel){
         this.channel = channel;

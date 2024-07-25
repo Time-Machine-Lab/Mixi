@@ -25,13 +25,10 @@ public class TimelineMessageManager implements MixiTimeline{
     }
 
     @Override
-    public void push(TimelineMessage message) {
+    public void push(TimelineMessage message,String channelId) {
         //这里也同理
         timelineStore.storeRoomMessage(message);
-        for (MixiNettyChannel channel : RoomChannelManager.getRoomInfo(message.getRoomId()).getChannels()) {
-            //如果并发量大，这里很可能会乱序添加。目前先不处理，留个坑
-            timelineStore.storeUserMessage(channel.getChannelId(),message);
-        }
+        timelineStore.storeUserMessage(channelId,message);
         pool.consume(message.getRoomId(),message.getFromId());
     }
 
@@ -43,5 +40,13 @@ public class TimelineMessageManager implements MixiTimeline{
     @Override
     public void removeConsumer(String roomId) {
         pool.removeConsumer(roomId);
+    }
+
+    public void registerUserStore(String channelId){
+        timelineStore.registerUserStore(channelId);
+    }
+
+    public void registerRoomStore(String roomId) {
+        timelineStore.registerRoomStore(roomId);
     }
 }

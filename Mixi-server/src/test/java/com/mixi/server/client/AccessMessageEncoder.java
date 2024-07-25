@@ -1,5 +1,7 @@
 package com.mixi.server.client;
 
+import com.mixi.server.netty.protocol.ChatroomMsg;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,20 +24,22 @@ public class AccessMessageEncoder {
         return str.getBytes(StandardCharsets.UTF_8);
     }
 
-    public static byte[] createWebSocketMessage() {
+    public static byte[] roomMessage(int uid,int headerCmd,String msg) {
         byte version = 1;
         boolean heartBeat = false;
         byte cmd = 1; // 加入房间
 
         List<Header> headers = new ArrayList<>();
-        headers.add(new Header(2, stringToBytes("{\n" +
-                "    \"room\": 123,\n" +
-                "    \"uid\": 123,\n" +
-                "    \"cmd\": 10\n" +
+        headers.add(new Header(2, stringToBytes("{" +
+                "\"room\": 123," +
+                "\"uid\": " + uid + "," +
+                "\"cmd\": " + headerCmd +
                 "}")));
-
-        byte[] body = stringToBytes("this is the body");
-
+        byte[] body = stringToBytes("{" +
+                "\"roomId\": 123," +
+                "\"fromUid\":"+ uid + "," +
+                "\"content\": \""+ msg + "\"" +
+                "}");
         int totalLength = 0;
         for (Header header : headers) {
             totalLength += encodeVarInt(header.data.length).remaining() + 1 + header.data.length;
@@ -79,13 +83,6 @@ public class AccessMessageEncoder {
         byte[] byteArray = new byte[buf.remaining()];
         buf.get(byteArray);
         return byteArray;
-    }
-
-    public static void main(String[] args) {
-        byte[] message = createWebSocketMessage();
-        for (byte b : message) {
-            System.out.printf("%02x ", b);
-        }
     }
 
     static class Header {

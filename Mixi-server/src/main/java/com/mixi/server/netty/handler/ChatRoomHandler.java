@@ -41,6 +41,7 @@ public class ChatRoomHandler extends MixiAbstractHandler {
             return INVALID_ROOM_NAME;
         }
         int cmd = jsonObject.getInteger(Constants.CHATROOM_CMD);
+        System.out.println(cmd);
         if(CommandEnum.CHATROOM_JOIN.getCode() == cmd){
             return joinRoom(channel,message,jsonObject);
         }else if(CommandEnum.CHATROOM_SEND.getCode() == cmd){
@@ -62,13 +63,19 @@ public class ChatRoomHandler extends MixiAbstractHandler {
         }
         attrs.setUid(uid);
         String roomId = headerObj.getString(Constants.CHATROOM_ID);
-        if(RoomChannelManager.getRoomInfo(roomId)==null)
+        if(RoomChannelManager.getRoomInfo(roomId)==null){
+            timeline.registerRoomStore(roomId);
             timeline.registerConsumer(roomId);
+        }
         RoomChannelManager.addChannel(roomId,channel,uid);
+        timeline.registerUserStore(channel.getChannelId());
         //发送消息
-        TimelineMessage timelineMessage = convertMsgToTimeline(message, roomId, attrs.getChannelId());
-        timeline.push(timelineMessage);
-        RemoteMsgSendDTO.convertMsg(roomId,uid,Constants.JOIN_ROOM,true);
+        for (MixiNettyChannel mixiNettyChannel : RoomChannelManager.getRoomInfo(roomId).getChannels()) {
+            mixiNettyChannel.send(message);
+            System.out.println(mixiNettyChannel.getChannelId()+"收到消息:"+CommandEnum.CHATROOM_JOIN.name());
+        }
+        RemoteMsgSendDTO sendDTO = RemoteMsgSendDTO.convertMsg(roomId, uid, Constants.JOIN_ROOM, true);
+//        remoteApi.notifyRemote(sendDTO);
         return SUCCESS;
     }
 
@@ -90,9 +97,10 @@ public class ChatRoomHandler extends MixiAbstractHandler {
         String body = new String(message.getBody());
         ChatroomMsg request = JSON.parseObject(body, ChatroomMsg.class);
         //发送消息
-        TimelineMessage timelineMessage = convertMsgToTimeline(message, roomId, attrs.getChannelId());
+        TimelineMessage timelineMessage = convertMsgToTimeline(message, roomId, attrs.getUid());
         timelineMessage.setContent(request.getContent());
-        timeline.push(timelineMessage);
+        System.out.println(request.getFromUid()+"发送消息:"+request.getContent());
+        timeline.push(timelineMessage,channel.getChannelId());
         return SUCCESS;
     }
 

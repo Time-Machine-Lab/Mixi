@@ -21,13 +21,15 @@ public class RoomConsumerPool {
 
     public void consume(String roomId,String uid){
         MixiNettyChannel nettyChannel = MixiNettyChannel.getChannelById(uid);
-        nettyChannel.setSleep(false);
-        pool.get(roomId).startWork();
+        pool.get(roomId).sleep=false;
     }
 
     public void addConsumer(String roomId){
-        pool.put(roomId,new WorkThread(roomId));
-        pool.get(roomId).start();
+        WorkThread workThread = pool.computeIfAbsent(roomId, key -> {
+            WorkThread newThread = new WorkThread(key);
+            newThread.start();
+            return newThread;
+        });
     }
 
     public void removeConsumer(String roomId){
@@ -35,25 +37,30 @@ public class RoomConsumerPool {
     }
     private final class WorkThread extends Thread{
         private final String roomId;
-        private volatile boolean work = false;
+        private volatile boolean work = true;
+        private volatile boolean sleep = true;
         private WorkThread(String roomId) {
             this.roomId = roomId;
         }
         @Override
         public void run() {
-            while (work) {
-                RoomChannelManager.RoomInfo roomInfo = RoomChannelManager.getRoomInfo(roomId);
-                for (MixiNettyChannel channel : roomInfo.getChannels()) {
-                    //sleep这个状态在被处理一次后就会为true 防止重复消费
-                    if(!channel.isSleep()){
-                        dispatchConsumer(channel);
+            try {
+                while (work) {
+                    RoomChannelManager.RoomInfo roomInfo = RoomChannelManager.getRoomInfo(roomId);
+                    if(roomInfo==null)
+                        continue;
+                    for (MixiNettyChannel channel : roomInfo.getChannels()) {
+                        //sleep这个状态在被处理一次后就会为true 防止重复消费
+                        if(!sleep){
+                            System.out.println(channel.getChannelId()+"开始消费");
+                            dispatchConsumer(channel);
+                        }
                     }
-                }
-                try {
+                    sleep=true;
                     Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
                 }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -62,8 +69,7 @@ public class RoomConsumerPool {
         }
 
         private void dispatchConsumer(MixiNettyChannel channel) {
-            if(!channel.isSleep()){
-                channel.setSleep(true);
+            if(!sleep){
                 ackHandler.consumerAck(channel);
             }
         }

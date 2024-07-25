@@ -15,4 +15,7 @@ public interface MixiTimelineStore {
     void storeUserMessage(String channelId,TimelineMessage timelineMessage);
     List<TimelineMessage> queryRoomHistoryMsg(String roomId);
     List<TimelineMessage> consumeMsgIfNeed(String channelId, String roomId);
+    void registerUserStore(String channelId);
+
+    void registerRoomStore(String roomId);
 }
