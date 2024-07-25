@@ -8,11 +8,16 @@ export type Profile = {
     resume: string;
 }
 
-export type linkLoginForm = {
+export type LinkLoginForm = {
     email:string;
     picId:string;
     picCode:string;
 }
-export type linkVerifyForm = {
+export type LinkVerifyForm = {
     linkToken:string;
+}
+export type VisitorLoginForm = {
+    fingerprint:string;
+    picId:string;
+    picCode:string;
 }

@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import router from "../router";
 import {storage} from "@/util/storage";
 import type {Profile} from "@/api/user/userType";
-
+import { getUserInfoApi } from "@/api/user/userApi";
 
 export const useAuthStore = defineStore({
   id: "auth",
@@ -14,6 +14,7 @@ export const useAuthStore = defineStore({
 
   getters: {
     getLoginState(state){
+      this.isLoggedIn = storage.get('Authorization')!=null
       return state.isLoggedIn
     },
     getProfile(state){
