@@ -55,11 +55,14 @@ public class WebRoomServiceImpl implements WebRoomService {
     @Resource
     private JoinPropertiesConfig joinPropertiesConfig;
 
-    @Value("${mixi.ticket.expire}")
+    @Value("${mixi.ticket.expire:60}")
     private Integer ticketExpire;
 
-    @Value("${netty.socket-ip}")
+    @Value("${netty.socket-ip:127.0.0.1}")
     private String socketIp;
+
+    @Value("${netty.video-ip:127.0.0.1}")
+    private String videoIp;
 
     @Override
     public Result<?> createRoom(CreateRoomDTO createRoomDTO, String uid) {
@@ -71,7 +74,7 @@ public class WebRoomServiceImpl implements WebRoomService {
         Map<String, Object> resultMap = new HashMap<>();
         // 判断当前用户状态
         if(redisOption.setHashNx(user(uid), OWN, roomId, 60, TimeUnit.SECONDS)){
-            WebRoom webRoom = new WebRoom(createRoomDTO, roomId);
+            WebRoom webRoom = new WebRoom(createRoomDTO, roomId, socketIp, videoIp);
 
             videoService.createRoom();
             // 设置房间相关信息
@@ -150,7 +153,7 @@ public class WebRoomServiceImpl implements WebRoomService {
         JoinVO joinVO = JoinVO.builder()
                 .videoIp(webRoom.getVideoIp())
                 .ticket(createTicket(ticket.getRoomId(), uid))
-                .socketIp(socketIp).build();
+                .socketIp(webRoom.getSocketIp()).build();
         redisOption.setCacheObject(user(uid) + ":" + TICKET, joinVO.getTicket(), ticketExpire, TimeUnit.SECONDS);
         ticketExpireListener.put(user(uid) + ":" + TICKET, new String[]{webRoom(ticket.getRoomId()), NUMBER});
 

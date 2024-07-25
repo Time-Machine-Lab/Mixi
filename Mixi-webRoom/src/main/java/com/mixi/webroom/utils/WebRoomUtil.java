@@ -23,10 +23,10 @@ public class WebRoomUtil {
     @Resource
     private TicketFactory ticketFactory;
 
-    @Value("${room.ip}")
+    @Value("${room.ip:127.0.0.1}")
     private String ip;
 
-    @Value("${room.port}")
+    @Value("${room.port:9020}")
     private String port;
 
     public String link(Ticket ticket){
@@ -34,7 +34,7 @@ public class WebRoomUtil {
     }
 
     public Ticket decryptLink(String key){
-        Ticket ticket = null;
+        Ticket ticket;
         try {
             ticket = ticketFactory.decryptTicket(key);
         } catch (Exception e) {
