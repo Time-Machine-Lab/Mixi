@@ -7,7 +7,7 @@ import feign.RequestInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 
-import static com.mixi.common.constant.constpool.TransferConstant.USER_INFO;
+import static com.mixi.common.constant.constpool.TransferConstant.*;
 
 /**
  * 描述: 用于远程调用时自动添加用户信息到请求头

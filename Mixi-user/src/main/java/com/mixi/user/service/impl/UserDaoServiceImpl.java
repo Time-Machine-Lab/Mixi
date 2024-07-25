@@ -24,7 +24,12 @@ public class UserDaoServiceImpl extends AssistantServiceImpl<UserMapper, User> i
                 throw ServeException.of(REGISTER_ERROR,"用户已经存在");
             }
         }catch (Exception e){
-            throw ServeException.of(REGISTER_ERROR,"用户已经存在");
+            throw ServeException.of(REGISTER_ERROR,"新建用户失败");
         }
+    }
+
+    @Override
+    public User getUserByFinger(String finger) {
+        return query().eq("finger", finger).one();
     }
 }

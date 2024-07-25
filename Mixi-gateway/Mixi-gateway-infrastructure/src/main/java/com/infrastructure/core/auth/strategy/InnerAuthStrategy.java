@@ -1,7 +1,7 @@
 package com.infrastructure.core.auth.strategy;
 
 import com.infrastructure.core.auth.AuthStrategy;
-import com.infrastructure.core.auth.AuthStrategyType;
+import com.infrastructure.core.auth.annotation.AuthStrategyType;
 import com.infrastructure.utils.ResponseUtils;
 import com.mixi.common.annotation.auth.AuthType;
 import lombok.extern.slf4j.Slf4j;

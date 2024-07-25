@@ -2,6 +2,8 @@ package com.infrastructure.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mixi.common.utils.R;
+import com.mixi.common.utils.RCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,4 +42,20 @@ public class ResponseUtils {
             return exchange.getResponse().setComplete();
         }
     }
+
+    /**
+     * 用于生成错误响应，返回错误响应
+     */
+    public static Mono<Void> respondError(ServerWebExchange exchange, RCode rCode) {
+        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        R<Object> errorResponse = R.error(rCode);
+        try {
+            byte[] bytes = objectMapper.writeValueAsBytes(errorResponse);
+            return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
+        } catch (JsonProcessingException e) {
+            log.error("Error writing response", e);
+            return exchange.getResponse().setComplete();
+        }
+    }
+
 }
