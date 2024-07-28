@@ -62,7 +62,6 @@ public class NettyServerHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("read");
         MixiNettyChannel channel = MixiNettyChannel.registerChannelIfAbsent(ctx.channel());
         handler.receive(channel,msg);
         super.channelRead(ctx, msg);

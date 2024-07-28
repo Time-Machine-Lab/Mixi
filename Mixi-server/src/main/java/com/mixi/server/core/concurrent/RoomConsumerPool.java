@@ -52,7 +52,6 @@ public class RoomConsumerPool {
                     for (MixiNettyChannel channel : roomInfo.getChannels()) {
                         //sleep这个状态在被处理一次后就会为true 防止重复消费
                         if(!sleep){
-                            System.out.println(channel.getChannelId()+"开始消费");
                             dispatchConsumer(channel);
                         }
                     }

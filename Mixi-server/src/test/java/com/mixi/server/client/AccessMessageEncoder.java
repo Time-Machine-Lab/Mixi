@@ -35,11 +35,11 @@ public class AccessMessageEncoder {
                 "\"uid\": " + uid + "," +
                 "\"cmd\": " + headerCmd +
                 "}")));
-        byte[] body = stringToBytes("{" +
+        byte[] body = headerCmd==12?stringToBytes("{" +
                 "\"roomId\": 123," +
                 "\"fromUid\":"+ uid + "," +
                 "\"content\": \""+ msg + "\"" +
-                "}");
+                "}"):new byte[]{};
         int totalLength = 0;
         for (Header header : headers) {
             totalLength += encodeVarInt(header.data.length).remaining() + 1 + header.data.length;

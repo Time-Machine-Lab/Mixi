@@ -14,6 +14,8 @@ import com.mixi.server.pojo.DTO.RemoteMsgSendDTO;
 import com.mixi.server.pojo.VO.TimelineMessage;
 import com.mixi.server.util.AccessMessageUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -28,6 +30,8 @@ import static com.mixi.server.netty.protocol.AccessResponse.*;
 @Component
 public class ChatRoomHandler extends MixiAbstractHandler {
 
+    private Logger log = LoggerFactory.getLogger(ChatRoomHandler.class);
+
     @Resource
     TimelineMessageManager timeline;
     @Resource
@@ -41,7 +45,6 @@ public class ChatRoomHandler extends MixiAbstractHandler {
             return INVALID_ROOM_NAME;
         }
         int cmd = jsonObject.getInteger(Constants.CHATROOM_CMD);
-        System.out.println(cmd);
         if(CommandEnum.CHATROOM_JOIN.getCode() == cmd){
             return joinRoom(channel,message,jsonObject);
         }else if(CommandEnum.CHATROOM_SEND.getCode() == cmd){
@@ -72,10 +75,9 @@ public class ChatRoomHandler extends MixiAbstractHandler {
         //发送消息
         for (MixiNettyChannel mixiNettyChannel : RoomChannelManager.getRoomInfo(roomId).getChannels()) {
             mixiNettyChannel.send(message);
-            System.out.println(mixiNettyChannel.getChannelId()+"收到消息:"+CommandEnum.CHATROOM_JOIN.name());
         }
         RemoteMsgSendDTO sendDTO = RemoteMsgSendDTO.convertMsg(roomId, uid, Constants.JOIN_ROOM, true);
-//        remoteApi.notifyRemote(sendDTO);
+        remoteApi.notifyRemote(sendDTO);
         return SUCCESS;
     }
 
@@ -99,7 +101,6 @@ public class ChatRoomHandler extends MixiAbstractHandler {
         //发送消息
         TimelineMessage timelineMessage = convertMsgToTimeline(message, roomId, attrs.getUid());
         timelineMessage.setContent(request.getContent());
-        System.out.println(request.getFromUid()+"发送消息:"+request.getContent());
         timeline.push(timelineMessage,channel.getChannelId());
         return SUCCESS;
     }

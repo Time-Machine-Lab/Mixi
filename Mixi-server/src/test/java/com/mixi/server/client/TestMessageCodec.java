@@ -1,5 +1,6 @@
 package com.mixi.server.client;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -9,6 +10,7 @@ import com.mixi.server.netty.codec.ServerMessageWebSocketDecoder;
 import com.mixi.server.netty.codec.ServerMessageWebSocketEncoder;
 import com.mixi.server.netty.protocol.AccessMessage;
 import com.mixi.server.netty.protocol.AccessResponse;
+import com.mixi.server.netty.protocol.ChatroomMsg;
 import com.mixi.server.utils.VarInt;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -35,7 +37,6 @@ import java.nio.charset.StandardCharsets;
  */
 @SpringBootTest
 public class TestMessageCodec {
-    private static SocketChannel channel;
     private static String uri;
     public static void start() {
         try {
@@ -63,7 +64,7 @@ public class TestMessageCodec {
                     ByteBuf byteBuf = Unpooled.wrappedBuffer(message);
                     AccessMessage decode = MessageCodec.decode(byteBuf);
                     String s = new String(decode.getBody(), StandardCharsets.UTF_8);
-                    System.out.println("client"+"Received ByteBuffer message: "+s);
+                    System.out.println("client "+"Received ByteBuffer message: "+decode+s);
                 }
 
                 @Override
@@ -98,8 +99,8 @@ public class TestMessageCodec {
 
                     ByteBuf byteBuf = Unpooled.wrappedBuffer(message);
                     AccessMessage decode = MessageCodec.decode(byteBuf);
-                    String s = new String(decode.getBody(), StandardCharsets.UTF_8);
-                    System.out.println("client1"+"Received ByteBuffer message: "+s);
+                    String body = new String(decode.getBody(),StandardCharsets.UTF_8);
+                    System.out.println("client1 "+"Received ByteBuffer message: "+decode);
                 }
 
                 @Override

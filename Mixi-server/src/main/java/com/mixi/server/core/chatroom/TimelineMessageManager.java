@@ -28,7 +28,7 @@ public class TimelineMessageManager implements MixiTimeline{
     public void push(TimelineMessage message,String channelId) {
         //这里也同理
         timelineStore.storeRoomMessage(message);
-        timelineStore.storeUserMessage(channelId,message);
+        timelineStore.registerUserCursor(channelId);
         pool.consume(message.getRoomId(),message.getFromId());
     }
 
@@ -43,7 +43,7 @@ public class TimelineMessageManager implements MixiTimeline{
     }
 
     public void registerUserStore(String channelId){
-        timelineStore.registerUserStore(channelId);
+        timelineStore.registerUserCursor(channelId);
     }
 
     public void registerRoomStore(String roomId) {
