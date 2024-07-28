@@ -1,6 +1,8 @@
 package com.mixi.server.netty.channel;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
+import com.mixi.server.core.store.TimelineMemoryStore;
+import com.mixi.server.util.ApplicationContextUtils;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,6 +35,7 @@ public class RoomChannelManager {
         }
 
         public MixiNettyChannel registerUid(String uid, MixiNettyChannel channel) {
+            channels.add(channel);
             return memberChannelsMap.putIfAbsent(uid,channel);
         }
 
@@ -41,6 +44,7 @@ public class RoomChannelManager {
             if (StringUtils.isBlank(memberUid)) {
                 return false;
             }
+            channels.remove(channel);
             memberChannelsMap.remove(memberUid);
             return true;
         }
@@ -56,9 +60,8 @@ public class RoomChannelManager {
         if (StringUtils.isNotBlank(uid)) {
             roomInfo.registerUid(uid, channel);
         }
-        boolean isNewAdded = roomInfo.getChannels().add(channel);
         channel.getAttrs().setEnter(true);
-        return isNewAdded;
+        return true;
     }
 
     public static void removeChannel(String roomName, MixiNettyChannel channel,boolean admin) {
@@ -66,14 +69,17 @@ public class RoomChannelManager {
         RoomInfo roomInfo = ROOM_INFO_MAP.get(roomName);
         if (roomInfo != null) {
             Set<MixiNettyChannel> channels = roomInfo.getChannels();
+            TimelineMemoryStore store = ApplicationContextUtils.getBean(TimelineMemoryStore.class);
             if(admin){
                 destroyRoom(roomName);
+                store.removeRoomStore(roomName);
             }else{
                 channels.remove(channel);
                 if (channels.isEmpty()) {
                     ROOM_INFO_MAP.computeIfPresent(roomName, (k, v) -> v.getChannels().isEmpty() ? null : v);
                 }
                 roomInfo.deregisterUid(channel);
+                store.removeUserStore(channel.getChannelId());
             }
         }
         channel.getAttrs().setEnter(false);

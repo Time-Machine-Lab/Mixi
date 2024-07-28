@@ -25,7 +25,7 @@ public class MixiNettyChannel implements MixiChannelManager{
     private final ConcurrentHashMap<String,Object> attributes = new ConcurrentHashMap<>();
     private Channel channel;
     private boolean close;
-    private volatile boolean sleep;
+    private volatile boolean sleep = false;
 
     public MixiNettyChannel(Channel channel){
         this.channel = channel;
@@ -73,13 +73,13 @@ public class MixiNettyChannel implements MixiChannelManager{
 
     @Override
     public boolean isConnected() {
-        return !channel.isActive()&&close;
+        return channel.isActive()&&!close;
     }
 
     @Override
     public void send(Object message){
         if(!this.isConnected()){
-            log.error("Netty channel is close :[channelId:"+attributes);
+            log.error("Netty channel is close :[channelId:"+getChannelId()+"]");
         }
         channel.writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }

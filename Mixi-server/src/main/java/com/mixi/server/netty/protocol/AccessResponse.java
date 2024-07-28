@@ -1,10 +1,13 @@
 package com.mixi.server.netty.protocol;
 
+import lombok.Data;
+
 /**
  * @Description
  * @Author welsir
  * @Date 2024/7/9 21:29
  */
+@Data
 public class AccessResponse {
 
     public static final AccessResponse SUCCESS = new AccessResponse(200,"ok");

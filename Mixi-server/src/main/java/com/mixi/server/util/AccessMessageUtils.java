@@ -45,4 +45,12 @@ public class AccessMessageUtils {
         }
         return headers.stream().filter(header -> header.getType() == headerType).findFirst().map(header -> new String(header.getData(), StandardCharsets.UTF_8)).orElse(null);
     }
+
+    public static AccessMessage createResponse(int cmd, byte[] body) {
+        AccessMessage response = new AccessMessage();
+        response.setCmd(cmd);
+        response.setBody(body);
+        response.setVersion(1);
+        return response;
+    }
 }
