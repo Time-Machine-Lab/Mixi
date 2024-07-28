@@ -28,69 +28,46 @@ public class WebRoomController {
     @ApiAuth(value = AuthType.NEED)
     public Result<?> createRoom(@RequestBody
                                     @Valid
-                                    CreateRoomDTO createRoomDTO,
-                                    @RequestHeader
-                                    @Valid
-                                    @NotBlank
-                                    String uid) {
-        return webRoomService.createRoom(createRoomDTO, uid);
+                                    CreateRoomDTO createRoomDTO) {
+        return webRoomService.createRoom(createRoomDTO);
     }
 
     @GetMapping("/linkShare")
     @ApiAuth(value = AuthType.NEED)
-    public Result<?> linkShare(@RequestHeader
-                                   @Valid
-                                   @NotBlank
-                                   String uid) {
-        return webRoomService.linkShare(uid);
+    public Result<?> linkShare() {
+        return webRoomService.linkShare();
     }
 
     @PostMapping("/pull")
     @ApiAuth(value = AuthType.NEED, before = "TouristBeforeHandler")
-    public Result<?> pull(@RequestHeader
-                              @Valid
-                              @NotBlank
-                              String uid,
-                              @RequestBody
+    public Result<?> pull(@RequestBody
                               @Valid
                               @Size(max = 20, message = "The maximum limit for email list is 20")
                               List<String> emails) {
-        return webRoomService.pull(uid, emails);
+        return webRoomService.pull(emails);
     }
 
     @GetMapping("/linkJoin")
     @ApiAuth(value = AuthType.NEED)
-    public Result<?> linkJoin(@RequestHeader
-                                  @Valid
-                                  @NotBlank
-                                  String uid,
-                                  @RequestParam
+    public Result<?> linkJoin(@RequestParam
                                   @Valid
                                   @NotBlank
                                   String key) {
-        return webRoomService.linkJoin(uid, key);
+        return webRoomService.linkJoin(key);
     }
 
     @PostMapping("/quit")
     @ApiAuth(value = AuthType.NEED)
-    public Result<?> quitRoom(@RequestHeader
-                                  @Valid
-                                  @NotBlank
-                                  String uid,
-                                  @RequestPart
+    public Result<?> quitRoom(@RequestPart
                                   @Valid
                                   @NotBlank
                                   String roomId) {
-        return webRoomService.quitRoom(uid, roomId);
+        return webRoomService.quitRoom(roomId);
     }
 
     @PostMapping("/transferOwner")
     @ApiAuth(value = AuthType.NEED)
-    public Result<?> transferOwner(@RequestHeader
-                                   @Valid
-                                   @NotBlank
-                                   String uid,
-                                   @RequestPart
+    public Result<?> transferOwner(@RequestPart
                                    @Valid
                                    @NotBlank
                                    String owner){
