@@ -18,25 +18,23 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Component
 public class TimelineMemoryStore implements MixiTimelineStore{
-    private ConcurrentHashMap<String, Deque<TimelineMessage>> roomStore = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String,Deque<TimelineMessage>> userStore = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, List<TimelineMessage>> store = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,List<Integer>> consumerStore = new ConcurrentHashMap<>();
     private ReentrantLock lock = new ReentrantLock();
     @Override
     public void storeRoomMessage(TimelineMessage timelineMessage) {
-        Deque<TimelineMessage> list = roomStore.computeIfAbsent(timelineMessage.getRoomId(), (key) -> new ConcurrentLinkedDeque<>());
+        List<TimelineMessage> list = store.computeIfAbsent(timelineMessage.getRoomId(), (key) -> new CopyOnWriteArrayList<>());
         list.add(timelineMessage);
-        //这里需要考虑定期删除？如果消息无限膨胀占用内存
     }
 
     @Override
-    public void storeUserMessage(String channelId,TimelineMessage timelineMessage) {
-        Deque<TimelineMessage> list = userStore.computeIfAbsent(channelId, (key) -> new ConcurrentLinkedDeque<>());
-        list.add(timelineMessage);
+    public void registerUserCursor(String channelId) {
+        consumerStore.computeIfAbsent(channelId,(key)-> new CopyOnWriteArrayList<>()).add(1);
     }
 
     @Override
     public List<TimelineMessage> queryRoomHistoryMsg(String roomId) {
-        Deque<TimelineMessage> deque = roomStore.get(roomId);
+        List<TimelineMessage> deque = store.get(roomId);
         if (deque == null || deque.isEmpty()) {
             return Collections.emptyList();
         }
@@ -47,33 +45,18 @@ public class TimelineMemoryStore implements MixiTimelineStore{
     }
     @Override
     public List<TimelineMessage> consumeMsgIfNeed(String channelId, String roomId) {
-        if(userStore.get(channelId).getLast().getId()<roomStore.get(roomId).getLast().getId()){
+        Integer roomLastId = store.get(roomId).get(store.get(roomId).size()-1).getId();
+        Integer userLastId = consumerStore.get(channelId).get(consumerStore.get(channelId).size()-1);
+        if(Objects.equals(userLastId, roomLastId)){
             return null;
         }
-        Deque<TimelineMessage> userMessages = userStore.get(channelId);
-        Deque<TimelineMessage> roomMessages = roomStore.get(roomId);
+        List<TimelineMessage> roomMessages = store.get(roomId);
         List<TimelineMessage> res = new ArrayList<>();
         try {
             lock.lock();
-            if (userMessages != null && roomMessages != null) {
-                TimelineMessage lastUserMessage = userMessages.peekLast();
-                TimelineMessage lastRoomMessage = roomMessages.peekLast();
-
-                if (lastUserMessage != null && lastRoomMessage != null) {
-                    // 找出用户最后一条消息的下一个消息在房间中的位置
-                    Iterator<TimelineMessage> roomIterator = roomMessages.iterator();
-                    while (roomIterator.hasNext()) {
-                        TimelineMessage msg = roomIterator.next();
-                        if (msg.equals(lastUserMessage)) {
-                            // 房间中从下一个消息开始的集合
-                            while (roomIterator.hasNext()) {
-                                res.add(roomIterator.next());
-                            }
-                            // messagesFromNext 就是从 room 中从下一个消息开始的集合
-                            break;
-                        }
-                    }
-                }
+            int pullNums = roomLastId-userLastId;
+            for(int i=pullNums;i<roomMessages.size();i++){
+                res.add(roomMessages.get(i));
             }
         }finally {
             lock.unlock();
@@ -81,4 +64,20 @@ public class TimelineMemoryStore implements MixiTimelineStore{
         return res;
     }
 
+    @Override
+    public void registerRoomStore(String roomId) {
+        List<TimelineMessage> list = new CopyOnWriteArrayList<>();
+        list.add(new TimelineMessage(1));
+        store.put(roomId,list);
+    }
+
+    @Override
+    public void removeUserStore(String channelId) {
+        consumerStore.remove(channelId);
+    }
+
+    @Override
+    public void removeRoomStore(String roomId) {
+        store.remove(roomId);
+    }
 }

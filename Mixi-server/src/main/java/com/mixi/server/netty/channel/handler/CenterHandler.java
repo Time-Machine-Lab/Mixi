@@ -1,5 +1,6 @@
 package com.mixi.server.netty.channel.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.mixi.server.netty.channel.MixiNettyChannel;
 import com.mixi.server.netty.channel.handler.ChannelHandler;
 import com.mixi.server.netty.handler.MixiHandler;
@@ -36,7 +37,9 @@ public class CenterHandler implements ChannelHandler {
         AccessMessage message = (AccessMessage) msg;
         MixiHandler handler = MixiHandlerRouter.route(message.getCmd());
         Assert.notNull(handler,"cmd is error! please check the cmd");
-        handler.processEvent(channel,message);
+        Object res = handler.processEvent(channel, message);
+        AccessMessage response = AccessMessageUtils.createResponse(message.getCmd(), JSON.toJSONBytes(res));
+        channel.send(response);
     }
 
     @Override

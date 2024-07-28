@@ -3,6 +3,8 @@ package com.mixi.server.netty.handler;
 import com.mixi.server.netty.channel.MixiNettyChannel;
 import com.mixi.server.netty.protocol.AccessMessage;
 
+import java.util.Objects;
+
 /**
  * @Description
  * @Author welsir
@@ -12,8 +14,8 @@ public interface MixiHandler {
 
     Object handle(MixiNettyChannel channel, AccessMessage message);
 
-    default void processEvent(MixiNettyChannel channel, AccessMessage message) {
-        handle(channel, message);
+    default Object processEvent(MixiNettyChannel channel, AccessMessage message) {
+       return handle(channel, message);
     }
 
     int getMark();
