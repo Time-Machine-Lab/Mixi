@@ -65,6 +65,7 @@ public class TestMessageCodec {
                     AccessMessage decode = MessageCodec.decode(byteBuf);
                     String s = new String(decode.getBody(), StandardCharsets.UTF_8);
                     System.out.println("client "+"Received ByteBuffer message: "+decode+s);
+                    System.out.println(s);
                 }
 
                 @Override
@@ -101,6 +102,7 @@ public class TestMessageCodec {
                     AccessMessage decode = MessageCodec.decode(byteBuf);
                     String body = new String(decode.getBody(),StandardCharsets.UTF_8);
                     System.out.println("client1 "+"Received ByteBuffer message: "+decode);
+                    System.out.println(body);
                 }
 
                 @Override
