@@ -50,7 +50,7 @@ public class NetUtils {
         InetSocketAddress remoteAddr = (InetSocketAddress) ch.remoteAddress();
         try {
             String ipForwarded = requestHeaders.get("X-Forwarded-For");
-            if (StringUtils.isEmpty(ipForwarded)) {
+            if (!StringUtils.isEmpty(ipForwarded)) {
                 String[] ipArr = ipForwarded.split(",");
                 String ip = ipArr[0];
                 if ("0:0:0:0:0:0:0:1".equals(ip)) {

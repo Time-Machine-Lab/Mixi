@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface MixiTimeline {
 
-    void push(TimelineMessage message);
+    void push(TimelineMessage message,String channelId);
 
     void registerConsumer(String roomId);
 

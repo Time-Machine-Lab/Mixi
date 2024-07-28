@@ -1,12 +1,14 @@
 package com.mixi.server.netty.protocol;
 
 import com.mixi.server.common.compress.VarInt;
+import lombok.Data;
 
 /**
  * @Description
  * @Author welsir
  * @Date 2024/6/25 14:46
  */
+@Data
 public class Header {
     private int type;
 

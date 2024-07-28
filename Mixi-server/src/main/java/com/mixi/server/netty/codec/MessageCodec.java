@@ -22,8 +22,8 @@ public class MessageCodec {
     private static final int MAX_BODY_SIZE_TO_COMPRESS = 2048;
 
     public static void encode(ByteBuf buf, AccessMessage msg) {
-        buf.writeBoolean(msg.isHeartBeat());
         buf.writeByte(msg.getVersion());
+        buf.writeBoolean(msg.isHeartBeat());
         if (msg.isHeartBeat()) {
             return;
         }
