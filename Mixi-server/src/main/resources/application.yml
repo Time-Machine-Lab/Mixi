@@ -2,7 +2,7 @@ spring:
   application:
     name: Mixi-nettyServer
   config:
-    import: classpath:application-dev.yml
+    import: classpath:application-test.yml
   profiles:
     active: ${ACTIVE:dev}
 server:
