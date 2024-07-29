@@ -13,14 +13,14 @@ import java.util.List;
  */
 @Component
 public interface WebRoomService {
-    Result<?> createRoom(CreateRoomDTO createRoomDTO, String uid);
+    Result<?> createRoom(CreateRoomDTO createRoomDTO);
 
-    Result<?> linkShare(String uid);
+    Result<?> linkShare();
 
-    Result<?> pull(String uid, List<String> emails);
+    Result<?> pull(List<String> emails);
 
-    Result<?> linkJoin(String uid, String key);
+    Result<?> linkJoin(String key);
 
-    Result<?> quitRoom(String uid, String roomId);
+    Result<?> quitRoom(String roomId);
 
 }

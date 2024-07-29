@@ -1,17 +1,13 @@
 package com.mixi.webroom.utils;
 
+import com.mixi.common.exception.ServeException;
 import com.mixi.common.factory.TicketFactory;
 import com.mixi.common.pojo.Ticket;
-import com.mixi.webroom.core.exception.ServerException;
-import com.mixi.webroom.pojo.entity.WebRoom;
-import com.mixi.webroom.pojo.enums.ResultEnums;
-import lombok.Getter;
+import com.mixi.common.utils.RCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -38,10 +34,10 @@ public class WebRoomUtil {
         try {
             ticket = ticketFactory.decryptTicket(key);
         } catch (Exception e) {
-            throw new ServerException(ResultEnums.TRANSCODE_ERROR);
+            throw new ServeException(RCode.TRANSCODE_ERROR);
         }
         if(Objects.isNull(ticket)){
-            throw new ServerException(ResultEnums.TRANSCODE_ERROR);
+            throw new ServeException(RCode.TRANSCODE_ERROR);
         }
         return ticket;
     }
