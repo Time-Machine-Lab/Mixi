@@ -1,7 +1,7 @@
 package com.mixi.webroom.chain;
 
-import com.mixi.webroom.core.exception.ServerException;
-import com.mixi.webroom.pojo.enums.ResultEnums;
+import com.mixi.common.exception.ServeException;
+import com.mixi.common.utils.RCode;
 import com.mixi.webroom.domain.RedisOption;
 import io.github.servicechain.annotation.Chain;
 import io.github.servicechain.chain.AbstractFilterChain;
@@ -32,7 +32,7 @@ public class UserStatusVerifyChain extends AbstractFilterChain<String> {
     @Override
     public boolean filter(String uid) {
         if(redisOption.hashExist(user(uid), CONNECTED)){
-            throw new ServerException(ResultEnums.USER_CONNECTED);
+            throw new ServeException(RCode.USER_CONNECTED);
         }
         return true;
     }
