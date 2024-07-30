@@ -10,6 +10,6 @@ spring:
       namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
       discovery:
         namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
-        ip: ${SERVER_ADDR:ENC(hy60WTD38P1ONeIIHF27TBjLtxZuJNnmgWjS0yK92Ls=)}
+        ip: ${SERVER_ADDR:ENC(kRCy2gqHRxyftmTg1hLwvzorw0//KNIyq5PtJ5tY1vc=)}
       config:
         namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
