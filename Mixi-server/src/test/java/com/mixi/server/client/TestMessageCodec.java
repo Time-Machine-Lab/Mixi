@@ -78,46 +78,46 @@ public class TestMessageCodec {
                     ex.printStackTrace();
                 }
             };
-            WebSocketClient client1 = new WebSocketClient(new URI(uri)){
-                @Override
-                public void onOpen(ServerHandshake handshakedata) {
-                    System.out.println("client1"+"Connected");
-                    // Create the message
-                    byte[] message = AccessMessageEncoder.roomMessage(1234,10,"");
-
-                    // Send the message
-                    ByteBuffer buffer = ByteBuffer.wrap(message);
-                    send(buffer);
-                }
-
-                @Override
-                public void onMessage(String message) {
-                    System.out.println("Received: " + message);
-                }
-
-                @Override
-                public void onMessage(ByteBuffer message) {
-
-                    ByteBuf byteBuf = Unpooled.wrappedBuffer(message);
-                    AccessMessage decode = MessageCodec.decode(byteBuf);
-                    String body = new String(decode.getBody(),StandardCharsets.UTF_8);
-                    System.out.println("client1 "+"Received ByteBuffer message: "+decode);
-                    System.out.println(body);
-                }
-
-                @Override
-                public void onClose(int code, String reason, boolean remote) {
-                    System.out.println("Disconnected");
-                }
-
-                @Override
-                public void onError(Exception ex) {
-                    ex.printStackTrace();
-                }
-            };
+//            WebSocketClient client1 = new WebSocketClient(new URI(uri)){
+//                @Override
+//                public void onOpen(ServerHandshake handshakedata) {
+//                    System.out.println("client1"+"Connected");
+//                    // Create the message
+//                    byte[] message = AccessMessageEncoder.roomMessage(1234,10,"");
+//
+//                    // Send the message
+//                    ByteBuffer buffer = ByteBuffer.wrap(message);
+//                    send(buffer);
+//                }
+//
+//                @Override
+//                public void onMessage(String message) {
+//                    System.out.println("Received: " + message);
+//                }
+//
+//                @Override
+//                public void onMessage(ByteBuffer message) {
+//
+//                    ByteBuf byteBuf = Unpooled.wrappedBuffer(message);
+//                    AccessMessage decode = MessageCodec.decode(byteBuf);
+//                    String body = new String(decode.getBody(),StandardCharsets.UTF_8);
+//                    System.out.println("client1 "+"Received ByteBuffer message: "+decode);
+//                    System.out.println(body);
+//                }
+//
+//                @Override
+//                public void onClose(int code, String reason, boolean remote) {
+//                    System.out.println("Disconnected");
+//                }
+//
+//                @Override
+//                public void onError(Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            };
             client.connect();
             Thread.sleep(10000);
-            client1.connect();
+//            client1.connect();
             byte[] message = AccessMessageEncoder.roomMessage(123,12,"我觉得柳州螺蛳粉大于株洲螺蛳粉");
             // Send the message
             ByteBuffer buffer = ByteBuffer.wrap(message);
@@ -126,13 +126,13 @@ public class TestMessageCodec {
             Thread.sleep(500);
             byte[] message1 = AccessMessageEncoder.roomMessage(1234,12,"我同意");
             ByteBuffer buffer1 = ByteBuffer.wrap(message1);
-            client1.send(buffer1);
+//            client1.send(buffer1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     public static void main(String[] args) {
-        uri = "ws://localhost:8090/chat";
+        uri = "ws://123.249.107.238:8090/chat";
         start();
     }
 }
