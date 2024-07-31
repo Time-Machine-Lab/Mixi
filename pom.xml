@@ -58,7 +58,7 @@
         <module>Mixi-common</module>
         <module>Mixi-user</module>
         <module>Mixi-webRoom</module>
-        <module>Mixi-audoVideo</module>
+        <module>Mixi-audioVideo</module>
         <module>Mixi-gateway</module>
         <module>Mixi-rpc</module>
     </modules>
@@ -304,6 +304,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
 </project>
