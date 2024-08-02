@@ -1,5 +1,6 @@
 package com.mixi.server.netty.channel.support;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import lombok.Data;
@@ -8,6 +9,7 @@ import org.springframework.util.Assert;
 
 import java.net.InetSocketAddress;
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * @Description
@@ -25,6 +27,8 @@ public class ChannelAttrs {
     private String uid;
     private boolean isVisitor = false;
     private boolean isEnter = false;
+    private Set<String> rooms = new ConcurrentHashSet<>(2);
+
     public ChannelAttrs(InetSocketAddress remoteAddr){
         this.createTime = System.currentTimeMillis();
         this.channelId = ChannelIdGenerator.generateChannelId(remoteAddr, createTime);
@@ -37,17 +41,11 @@ public class ChannelAttrs {
 
     public static String getChannelId(Channel ch){
         ChannelAttrs attrs = getAttrs(ch);
-        String chId = attrs.getChannelId();
-        if(StringUtils.isBlank(chId)){
-            throw new IllegalStateException("ChannelId is blank! ch="+ch);
-        }
-        return chId;
+        return attrs==null?null:attrs.getChannelId();
     }
 
     public static ChannelAttrs getAttrs(Channel ch){
-        ChannelAttrs channelAttrs = ch.attr(MIXI_ATTRS).get();
-        Assert.notNull(channelAttrs,"MIXI_ATTRS is null! ch="+ch);
-        return channelAttrs;
+        return ch.attr(MIXI_ATTRS).get();
     }
     public static ChannelAttrs getAttrsIfExists(io.netty.channel.Channel ch) {
         return ch.attr(MIXI_ATTRS).get();
