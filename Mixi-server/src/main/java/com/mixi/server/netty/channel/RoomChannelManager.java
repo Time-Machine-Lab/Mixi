@@ -52,6 +52,10 @@ public class RoomChannelManager {
         public Integer generateMsgIdgenerateMsgId(){
             return msgCounter.incrementAndGet();
         }
+
+        public void removeMembers(MixiNettyChannel channel) {
+            channels.remove(channel);
+        }
     }
 
     public static boolean addChannel(String roomName, MixiNettyChannel channel, String uid) {
@@ -61,6 +65,7 @@ public class RoomChannelManager {
             roomInfo.registerUid(uid, channel);
         }
         channel.getAttrs().setEnter(true);
+        channel.getAttrs().getRooms().add(roomName);
         return true;
     }
 
@@ -80,6 +85,10 @@ public class RoomChannelManager {
                 }
                 roomInfo.deregisterUid(channel);
                 store.removeUserStore(channel.getChannelId());
+                if(roomInfo.getChannels().size()==0){
+                    destroyRoom(roomName);
+                    store.removeRoomStore(roomName);
+                }
             }
         }
         channel.getAttrs().setEnter(false);

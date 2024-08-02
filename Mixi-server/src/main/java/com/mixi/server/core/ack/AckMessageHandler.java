@@ -31,6 +31,7 @@ public class AckMessageHandler {
         this.timelineStore = timelineStore;
     }
     public void consumerAck(MixiNettyChannel channel){
+        log.info("The connection of {} -> {} ack message, channelId={}", channel.getRemoteAddress(), channel.getLocalAddress(), channel.getChannelId());
         String roomId = RoomChannelManager.getRoomId(channel.getChannelId());
         List<TimelineMessage> messages = timelineStore.consumeMsgIfNeed(channel.getChannelId(), roomId);
         if(Objects.nonNull(messages)){

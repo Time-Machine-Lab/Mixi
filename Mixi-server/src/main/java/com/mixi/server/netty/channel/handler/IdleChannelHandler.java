@@ -11,6 +11,7 @@ import com.mixi.server.util.ApplicationContextUtils;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.rmi.RemoteException;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @Author welsir
  * @Date 2024/7/5 19:51
  */
+@Slf4j
 public class IdleChannelHandler extends AbstractChannelHandler{
     public static final HashedWheelTimer IDLE_CHECK_TIMER = new HashedWheelTimer(new NamedThreadFactory("mercury-idleCheck", true), 1, TimeUnit.SECONDS, 128);
     public static final String KEY_READ_TIMESTAMP = "READ_TIMESTAMP";
@@ -103,6 +105,7 @@ public class IdleChannelHandler extends AbstractChannelHandler{
             handler.receive(channel, message);
             return;
         }
+        log.info("The connection of {} -> {} ack heartbeat message, channelId={}", channel.getRemoteAddress(), channel.getLocalAddress(), channel.getChannelId());
         channel.send(AccessMessageUtils.createHeartResponse());
     }
 }
