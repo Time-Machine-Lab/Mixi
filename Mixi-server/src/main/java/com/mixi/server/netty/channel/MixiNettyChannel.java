@@ -53,12 +53,13 @@ public class MixiNettyChannel implements MixiChannelManager{
         return CHANNEL_MAP.values();
     }
 
-    public static MixiNettyChannel getChannelById(String uid){
-        return CHANNEL_MAP.get(uid);
+    public static MixiNettyChannel getChannelById(String channelId){
+        return CHANNEL_MAP.get(channelId);
     }
 
     public String getChannelId() {
-        return ChannelAttrs.getAttrs(channel).getChannelId();
+        ChannelAttrs attrs = ChannelAttrs.getAttrs(channel);
+        return attrs==null?null:attrs.getChannelId();
     }
 
     @Override
@@ -78,6 +79,7 @@ public class MixiNettyChannel implements MixiChannelManager{
 
     @Override
     public void send(Object message){
+
         if(!this.isConnected()){
             log.error("Netty channel is close :[channelId:"+getChannelId()+"]");
         }
@@ -86,7 +88,6 @@ public class MixiNettyChannel implements MixiChannelManager{
 
     @Override
     public void close() {
-        channel.close();
         this.close = true;
     }
 

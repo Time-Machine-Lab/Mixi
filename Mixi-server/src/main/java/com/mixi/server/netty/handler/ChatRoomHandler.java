@@ -74,6 +74,7 @@ public class ChatRoomHandler extends MixiAbstractHandler {
         timeline.registerUserStore(channel.getChannelId());
         //发送消息
         for (MixiNettyChannel mixiNettyChannel : RoomChannelManager.getRoomInfo(roomId).getChannels()) {
+            log.info("The connection of {} -> {} send message, channelId={}", channel.getRemoteAddress(), channel.getLocalAddress(), channel.getChannelId());
             mixiNettyChannel.send(message);
         }
         RemoteMsgSendDTO sendDTO = RemoteMsgSendDTO.convertMsg(roomId, uid, Constants.JOIN_ROOM, true);
