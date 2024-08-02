@@ -57,6 +57,7 @@ public class NettyServerHandler extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
         MixiNettyChannel channel = MixiNettyChannel.registerChannelIfAbsent(ctx.channel());
+        log.info("The connection of {} -> {} is writing, channelId={}", channel.getRemoteAddress(), channel.getLocalAddress(), channel.getChannelId());
         handler.send(channel, msg);
     }
 
@@ -69,13 +70,11 @@ public class NettyServerHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("new connect to build!");
-        log.info("current node save the channel nums:"+MixiNettyChannel.getAllChannels().size());
         initChannel(ctx.channel(), null);
         super.channelActive(ctx);
     }
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         MixiNettyChannel channel = MixiNettyChannel.registerChannelIfAbsent(ctx.channel());
         try {
             log.info("The connection of {} -> {} is disconnected, channelId={}", channel.getRemoteAddress(), channel.getLocalAddress(), channel.getChannelId());
@@ -84,7 +83,10 @@ public class NettyServerHandler extends ChannelDuplexHandler {
             MixiNettyChannel.removeChannel(ctx.channel());
         }
     }
-    private MixiNettyChannel initChannel(Channel ch, InetSocketAddress remoteAddr) throws Exception {
+    private MixiNettyChannel initChannel(Channel ch, InetSocketAddress remoteAddr) {
+        if(ChannelAttrs.getChannelId(ch)!=null){
+            return MixiNettyChannel.getChannelById(ChannelAttrs.getChannelId(ch));
+        }
         if (remoteAddr == null) {
             remoteAddr = (InetSocketAddress) ch.remoteAddress();
         }
