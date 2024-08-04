@@ -3,7 +3,7 @@ import { useSnackbarStore } from "@/stores/snackbarStore";
 import { statusTextMap,errorStatusCodes,ignoreStatusCodes } from '@/util/statusCodes'
 import { storage } from "./storage";
 const request = axios.create({
-  baseURL: "/api/gateway",
+  baseURL: "/mixiApi/gateway",
   // baseURL: "/api",
   timeout: 10000,
 });
@@ -16,7 +16,7 @@ request.interceptors.request.use(
     config.headers['Content-Type'] = 'application/json';
     const Authorization = storage.get<string>('Authorization')
     config.headers.Authorization = 'Bearer ' + Authorization
-    config.headers["X-Request-Prefix"] = '/api' + config.url
+    config.headers["X-Request-Prefix"] = config.url
     return config;
   },
   (error:any) => {

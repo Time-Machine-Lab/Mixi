@@ -1,8 +1,14 @@
+/*
+ * @Author: Dhx
+ * @Date: 2024-07-25 20:32:46
+ * @Description: 
+ * @FilePath: \Mixi\Mixi-ui\src\api\room\roomApi.ts
+ */
 import request from "@/util/request";
 import 'axios'
-import type {callback, parameter} from "@/api/room/roomType";
+import type {callback, Parameter} from "@/api/room/roomType";
 // 创建房间
-export function createApi(data: parameter) {
+export function createApi(data: Parameter) {
     return request({
         url: '/webRoom/create',
         method: 'post',
@@ -17,14 +23,14 @@ export function shareApi() {
     })
 }
 // 发送邀请链接到用户邮箱
-export function pullApi(data: object) {
+export function pullApi(data: String[]) {
     return request({
         url: '/webRoom/pull',
         method: 'post',
         data: data
     })
 }
-// 邀请加入
+// 加入房间
 export function joinApi(key:string) {
     return request({
         url: '/webRoom/linkJoin',

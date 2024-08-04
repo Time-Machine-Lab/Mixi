@@ -27,20 +27,11 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api/user': {
-        target: "http://119.3.234.15:9010/",
-        changeOrigin: true,
-      },
-      '/api/webRoom': {
-        target: 'http://122.152.215.226:9020/',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/webRoom/, "/webRoom"),
-      },
-      '/api/gateway': {
+      '/mixiApi/gateway/': {
         target: 'http://116.205.236.94:8080/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/gateway/,"/api")
-      }
+        rewrite: (path) => path.replace(/^\/mixiApi\/gateway/,"/")
+      },
     }
   }
 })

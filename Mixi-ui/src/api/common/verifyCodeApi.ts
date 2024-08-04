@@ -2,6 +2,6 @@ import request from "@/util/request";
 export function getVerifyCodeApi () {
     return request({
         method: 'get',
-        url: '/user/code/pic'
+        url: '/api/user/code/pic'
     })
 }
