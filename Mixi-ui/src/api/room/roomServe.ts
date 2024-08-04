@@ -1,15 +1,21 @@
+/*
+ * @Author: Dhx
+ * @Date: 2024-07-25 14:49:33
+ * @Description: 
+ * @FilePath: \Mixi\Mixi-ui\src\api\room\roomServe.ts
+ */
 import {callbackApi, createApi, joinApi, pullApi, quitApi, shareApi} from '@/api/room/roomApi'
-import type {callback, parameter} from '@/api/room/roomType'
+import type {callback, Parameter} from '@/api/room/roomType'
 import router from "@/router";
 
 // 创建房间
-export async function create(data: parameter) {
+export async function create(data: Parameter) {
   const response = await createApi(data)
   if (response.data.code != 200) {
     console.log(response.data.msg)
     return false;
   }
-  await router.push('') //
+  // await router.push('')
   return response.data.data.link // 返回房间链接
 }
 // 分享房间
@@ -31,7 +37,7 @@ export async function join(key: string) {
   return true // 返回房间链接
 }
 // 拉人
-export async function pull(data: object) {
+export async function pull(data: string[]) {
   const response = await pullApi(data)
   if (response.data.code != 200) {
     console.log(response.data.msg)

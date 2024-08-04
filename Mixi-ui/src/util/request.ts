@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { statusTextMap,errorStatusCodes,ignoreStatusCodes } from '@/util/statusCodes'
-import {storage} from "@/util/storage";
-
+import { storage } from "./storage";
 const request = axios.create({
-  baseURL: "http://122.152.215.226:9020",
+  baseURL: "/mixiApi/gateway",
+  // baseURL: "/api",
   timeout: 10000,
 });
 
@@ -15,7 +15,8 @@ request.interceptors.request.use(
   (config:any) => {
     config.headers['Content-Type'] = 'application/json';
     const Authorization = storage.get<string>('Authorization')
-    if(Authorization) config.headers.Authorization = Authorization
+    config.headers.Authorization = 'Bearer ' + Authorization
+    config.headers["X-Request-Prefix"] = config.url
     return config;
   },
   (error:any) => {
