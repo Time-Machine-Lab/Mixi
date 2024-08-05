@@ -29,7 +29,7 @@ public class AccessMessageUtils {
 
     public static AccessMessage createChatRoomResponse(ChatroomMsg chatroomMsg){
         AccessMessage message = new AccessMessage();
-        byte[] body = SerializationUtils.serialize(chatroomMsg);
+        byte[] body = JSON.toJSONBytes(chatroomMsg);
         message.setBody(body);
         message.setCmd(12);
         message.setVersion(1);
