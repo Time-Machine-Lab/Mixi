@@ -1,5 +1,6 @@
 package com.mixi.webroom.service.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.mixi.common.exception.ServeException;
 import com.mixi.common.utils.RCode;
@@ -13,6 +14,7 @@ import com.mixi.webroom.core.rpc.VideoService;
 import com.mixi.webroom.pojo.entity.WebRoom;
 import com.mixi.webroom.pojo.dto.CreateRoomDTO;
 import com.mixi.webroom.pojo.vo.JoinVO;
+import com.mixi.webroom.pojo.vo.RoomInfoVO;
 import com.mixi.webroom.service.EmailService;
 import com.mixi.webroom.service.WebRoomService;
 import com.mixi.webroom.utils.*;
@@ -174,5 +176,28 @@ public class WebRoomServiceImpl implements WebRoomService {
         }
         redisOption.deleteHash(user(uid));
         return Result.success();
+    }
+
+    @Override
+    public Result<?> transferOwner(String newOwner) {
+        String uid = UserThread.getUserId();
+        if(!redisOption.transferOwner(uid, newOwner)){
+            throw new ServeException(RCode.FAILED_TRANSFER);
+        }
+        return Result.success();
+    }
+
+
+    @Override
+    public Result<?> getRoomInfo() {
+        String uid = UserThread.getUserId();
+        String roomId = redisOption.getHashString(user(uid), CONNECTED);
+        if(roomId == null) throw new ServeException(RCode.THE_USER_DID_NOT_JOINED_ROOM);
+        Map<String, Object> roomMap = redisOption.getHashMap(webRoom(roomId));
+        WebRoom webRoom = JSONObject.parseObject((String) roomMap.get(INFO), WebRoom.class);
+        RoomInfoVO roomInfoVO = new RoomInfoVO();
+        BeanUtil.copyProperties(webRoom, roomInfoVO);
+        roomInfoVO.setCreateId((String) roomMap.get(OWNER));
+        return Result.success(roomInfoVO);
     }
 }
