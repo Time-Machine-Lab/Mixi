@@ -5,6 +5,10 @@ local hash_key = KEYS[1] -- The hash key passed as the first argument
 local number = tonumber(redis.call('HGET', hash_key, 'Number'))
 local max = tonumber(redis.call('HGET', hash_key, 'Max'))
 
+if number == false then
+    return false
+end
+
 -- Check if 'Number' is less than 'Max'
 if number < max then
     -- Increment 'Number' by 1 atomically

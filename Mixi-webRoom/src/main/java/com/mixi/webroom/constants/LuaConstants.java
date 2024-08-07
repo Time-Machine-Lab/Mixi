@@ -6,4 +6,6 @@ package com.mixi.webroom.constants;
  */
 public class LuaConstants {
     public static final String COMPARE_AND_INCREMENT = "/lua/CompareAndIncrement.lua";
+
+    public static final String TRANSFER_OWNER = "/lua/transferOwner.lua";
 }
