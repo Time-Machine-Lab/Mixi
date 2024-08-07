@@ -14,7 +14,7 @@ import javax.validation.Valid;
  * @author XiaoChun
  * @date 2024/7/19
  */
-@FeignClient(name = "webRoom-service", path = "/webRoom")
+@FeignClient(name = "Mixi-webRoom", path = "/webRoom")
 public interface WebRoomClient {
     @PostMapping("/callBack")
     Result<?> callBack(@RequestBody @Valid CallBackDTO callBackDTO);

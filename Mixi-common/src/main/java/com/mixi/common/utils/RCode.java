@@ -29,6 +29,9 @@ public enum RCode {
     ROOM_NOT_EXIST(428, "房间不存在"),
     THE_USER_DID_NOT_CREATE_A_ROOM(429, "用户未创建房间"),
     TRANSCODE_ERROR(430, "转码错误"),
+    THE_USER_DID_NOT_JOINED_ROOM(431, "用户未加入房间"),
+    NO_OPTION(432, "无权限"),
+    FAILED_TRANSFER(433, "转让失败"),
 
     /**
      * 参数异常

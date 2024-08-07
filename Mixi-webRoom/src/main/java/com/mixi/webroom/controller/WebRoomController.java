@@ -70,7 +70,13 @@ public class WebRoomController {
     public Result<?> transferOwner(@RequestPart
                                    @Valid
                                    @NotBlank
-                                   String owner){
-        return null;
+                                   String newOwner){
+        return webRoomService.transferOwner(newOwner);
+    }
+
+    @GetMapping("/getRoomInfo")
+    @ApiAuth(value = AuthType.NEED)
+    public Result<?> getRoomInfo() {
+        return webRoomService.getRoomInfo();
     }
 }

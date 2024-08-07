@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.mixi.webroom.constants.RedisKeyConstants.webRoom;
+import static com.mixi.webroom.constants.RedisKeyConstants.*;
 
 /**
  * @Author：XiaoChun
@@ -85,6 +85,12 @@ public class RedisOption {
         redisTemplate.expire(key, timeout, timeUnit);
     }
 
+    public void setHashObject(String key, Map<String, Object> map) {
+        HashOperations hashOperations = redisTemplate.opsForHash();
+        hashOperations.putAll(key, map);
+    }
+
+
     public void setHashObject(String key, String subKey, Object value) {
         redisTemplate.opsForHash().put(key, subKey, value);
     }
@@ -95,6 +101,10 @@ public class RedisOption {
 
     public <T> T getHashObject(String key, String subKey, Class<T> clazz) {
         return JSONObject.parseObject((String) redisTemplate.opsForHash().get(key, subKey), clazz);
+    }
+
+    public Map getHashMap(String key) {
+        return redisTemplate.opsForHash().entries(key);
     }
 
     public String getHashString(String key, String subKey) {
@@ -127,8 +137,8 @@ public class RedisOption {
         hashIncrement(key, subKey, 1);
     }
 
-    public void deleteHash(String key, String subKey){
-        redisTemplate.opsForHash().delete(key);
+    public Long deleteHash(String key, String subKey){
+       return redisTemplate.opsForHash().delete(key);
     }
 
     public void deleteHash(String key){
@@ -177,10 +187,24 @@ public class RedisOption {
     }
 
     public Boolean compareAndIncrement(String key){
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-        redisScript.setResultType(Long.class);
-        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(LuaConstants.COMPARE_AND_INCREMENT)));
+        return luaOption(Long.class, LuaConstants.COMPARE_AND_INCREMENT, key, new ArrayList<>());
+    }
+
+    public Boolean transferOwner(String oldOwner, String newOwner){
+        List<String> args = new ArrayList<>();
+        args.add(oldOwner);
+        args.add(newOwner);
+        args.add(OWN);
+        args.add(OWNER);
+        args.add(CONNECTED);
+        return luaOption(Long.class, LuaConstants.TRANSFER_OWNER, null, args);
+    }
+
+    private <T> Boolean luaOption(Class<T> resultType, String luaFilePath, String key, List<String> args){
+        DefaultRedisScript<T> redisScript = new DefaultRedisScript<>();
+        redisScript.setResultType(resultType);
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(luaFilePath)));
         // Ensure you pass the hashKey as a list of keys to the execute method
-        return Objects.nonNull(redisTemplate.execute(redisScript, Collections.singletonList(key)));
+        return Objects.nonNull(redisTemplate.execute(redisScript, Collections.singletonList(key), args.toArray()));
     }
 }

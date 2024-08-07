@@ -23,4 +23,7 @@ public interface WebRoomService {
 
     Result<?> quitRoom(String roomId);
 
+    Result<?> transferOwner(String newOwner);
+
+    Result<?> getRoomInfo();
 }

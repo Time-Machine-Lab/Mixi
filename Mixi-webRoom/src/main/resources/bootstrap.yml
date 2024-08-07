@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: webRoom-service
+    name: Mixi-webRoom
   config:
     import: classpath:you-cant-see-that.yml
   profiles:
