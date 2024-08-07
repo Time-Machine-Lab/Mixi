@@ -14,7 +14,7 @@ spring:
       namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
       discovery:
         namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
-        ip: ${SERVER_ADDR:ENC(xATqm5e29UvVpUscJHh3av8NUJAAOjTheeYYKQGqJhY=)}
+        ip: ${SERVER_ADDR:ENC(k8vJSnZr6caJGxQ1KPjdbKYkVJrBUeSWSAK0ry8TfBk=)}
       config:
         namespace: b21e6a4b-33d1-44c3-9b24-8a682c897292
   redis:

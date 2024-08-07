@@ -21,12 +21,11 @@ spring:
     password: ${EMAIL_PASSWORD:ENC(IFKjNrj7WUsXTiTldZ8TDgHxBxgkYHXBD5RrrjZ2SlGFXMCaObgqgA==)}
     test-connection: false
 
-netty:
-  socket-ip: 127.0.0.1
-
-room:
-  ip: 127.0.0.1
-  port: 9020
-
 mixi:
-  verifyLinkUrl: ${VERIFY_LINK:ENC(TSJqSXcliRzeuAglhUhXoXKKFZ5h2Xg22QdG6k2i/fAhQUOwGBpsEykeT/SJUTSYW8Xko2Kda+SIMa8O4u4XFQ==)}
+  socket:
+    ip: ENC(xdh1UDqvjAQO8SEO7VmcAl4guWhmqzTvGVqVdj9IRw8=)
+  video:
+    ip: ENC(xdh1UDqvjAQO8SEO7VmcAl4guWhmqzTvGVqVdj9IRw8=)
+  ticket:
+    expire: 15
+  verifyLinkUrl: ${VERIFY_LINK:ENC(nRUOcrR5gSV2zIY+QoyIsIhRXcc2nWK0ZQ5Pztj4gnsQA5BELF7U5JDNFersmcLMFsQ2tudp97ZBrC32OUnzig==)}

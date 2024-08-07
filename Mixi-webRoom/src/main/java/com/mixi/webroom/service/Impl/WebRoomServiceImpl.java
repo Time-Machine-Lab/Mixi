@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.mixi.common.exception.ServeException;
 import com.mixi.common.utils.RCode;
 import com.mixi.common.utils.UserThread;
-import com.mixi.webroom.config.JoinPropertiesConfig;
 import com.mixi.webroom.core.listener.TicketExpireListener;
 import com.mixi.webroom.core.worker.SnowFlakeIdWorker;
 import com.mixi.webroom.domain.RedisOption;
@@ -55,17 +54,8 @@ public class WebRoomServiceImpl implements WebRoomService {
     @Resource
     private TicketExpireListener ticketExpireListener;
 
-    @Resource
-    private JoinPropertiesConfig joinPropertiesConfig;
-
     @Value("${mixi.ticket.expire:60}")
     private Integer ticketExpire;
-
-    @Value("${netty.socket-ip:127.0.0.1}")
-    private String socketIp;
-
-    @Value("${netty.video-ip:127.0.0.1}")
-    private String videoIp;
 
     @Override
     public Result<?> createRoom(CreateRoomDTO createRoomDTO) {
@@ -78,7 +68,7 @@ public class WebRoomServiceImpl implements WebRoomService {
         Map<String, Object> resultMap = new HashMap<>();
         // 判断当前用户状态
         if(redisOption.setHashNx(user(uid), OWN, roomId, 60, TimeUnit.SECONDS)){
-            WebRoom webRoom = new WebRoom(createRoomDTO, roomId, socketIp, videoIp);
+            WebRoom webRoom = new WebRoom(createRoomDTO, roomId, webRoomUtil.balanceSocketIp(), webRoomUtil.balanceVideoIp());
 
             videoService.createRoom();
             // 设置房间相关信息
@@ -92,6 +82,14 @@ public class WebRoomServiceImpl implements WebRoomService {
     }
 
     private String createTicket(String roomId, String uid){
+        Ticket ticket = Ticket.builder()
+                .uId(uid)
+                .roomId(roomId)
+                .build();
+        return webRoomUtil.ticket(ticket);
+    }
+
+    private String createLink(String roomId, String uid){
         Ticket ticket = Ticket.builder()
                 .uId(uid)
                 .roomId(roomId)
@@ -125,11 +123,10 @@ public class WebRoomServiceImpl implements WebRoomService {
             throw new ServeException(RCode.PULL_HAS_NOT_COOLED_DOWN);
         }
 
-        String roomLink = createTicket(roomId, null);
+        String roomLink = createLink(roomId, null);
         for(String email : new HashSet<>(emails)){
             asyncEmailSender.sendLink(email, roomLink);
         }
-
         return Result.success();
     }
 
